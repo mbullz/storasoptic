@@ -19,7 +19,7 @@ if(!$mysqli)
 }
 
 // define variable config
-$base_url = "optic";
+$base_url = "";
 
 $company_name = '';
 $company_address = '';
@@ -41,6 +41,12 @@ $rs = $mysqli->query("SELECT * FROM config WHERE config LIKE 'company_telephone'
 if ($data = mysqli_fetch_assoc($rs))
 {
 	$company_address .= $data['value'];
+}
+
+$rs = $mysqli->query("SELECT * FROM config WHERE config LIKE 'base_url'");
+if ($data = mysqli_fetch_assoc($rs))
+{
+	$base_url = $data['value'];
 }
 
 ?>
