@@ -1,0 +1,178 @@
+@charset "utf-8";
+/* CSS Document */
+
+.utama{
+	padding-left:10px;
+	padding-right:20px;
+	padding-bottom:10px;
+	padding-top:10px;
+	border-bottom:4px solid #003046;
+}
+.txt1-1{
+	color:#333;
+	font-family:arial;
+	font-size:32px;
+	font-weight:bold;
+	letter-spacing:3px;
+}
+.txt1-2{
+	color:#333;
+	font-family:arial;
+	font-size:14pxpx;
+	letter-spacing: 2px;
+	font-weight:bold;
+}
+.txt2-1{
+	text-transform:uppercase;
+	font-size:24px;
+	font-family:"Times New Roman", Times, serif;
+	letter-spacing: 10px;
+	padding-bottom:10px;
+	padding-top:5px;
+}
+.txt2-2{
+	text-transform:uppercase;
+	font-size:14pxpx;
+	font-family:Arial;
+	font-weight:bold;
+	letter-spacing: 3px;
+	padding-bottom:10px;
+	padding-top:5px;
+}
+.txt2-3{
+	text-transform:uppercase;
+	font-size:14pxpx;
+	font-family:Arial;
+	padding-top:3px;
+	padding-bottom:10px;
+}
+.txt3-1{
+	text-transform:uppercase;
+	font-size:12px;
+	text-decoration:underline;
+	font-weight:bold;
+	font-family:Arial;
+	padding-top:3px;
+}
+.txt3-2{
+	border-bottom:1px solid #333;
+	padding-top:2px;
+	text-transform:uppercase;
+	font-size:12px;
+	font-family:Arial;
+}
+.txt3-3{
+	font-family:Arial;
+	font-size:12px;
+	padding:2px;
+}
+.txt4-h1{
+	text-transform:uppercase;
+	font-size:14px;
+	text-decoration:underline;
+	font-weight:bold;
+	font-family:Arial;
+	padding-top:3px;
+	padding-bottom:3px;
+}
+.txt4-h{
+	font-size:14px;
+	font-weight:bold;
+	font-family:Arial;
+	padding-top:3px;
+}
+.txt4-h2{
+	font-size:14px;
+	font-weight:bold;
+	font-family:Arial;
+	padding-top:3px;
+	padding-bottom:5px;
+}
+.tag_RP{
+	padding-left:5px;
+	padding-top:1px;
+	padding-bottom:5px;
+	text-align:left;
+	font-family:Arial;
+	font-size:13px;	
+}
+.tag_RPB{
+	padding-left:5px;
+	padding-bottom:5px;
+	padding-top:1px;
+	text-align:left;
+	font-family:Arial;
+	font-size:13px;
+	font-weight:bold;
+}
+.tag_RP2{
+	padding-right:5px;
+	padding-top:1px;
+	padding-bottom:5px;
+	text-align:right;
+	font-family:Arial;
+	font-size:13px;	
+}
+.tag_RPBL{
+	border-top:2px solid #333;
+	padding-right:5px;
+	padding-bottom:5px;
+	padding-top:1px;
+	text-align:right;
+	font-family:Arial;
+	font-size:13px;
+	font-weight:bold;
+}
+.fot-1{
+	text-align:right;
+	font-family:Arial;
+	font-size:12px;
+ }
+.fot-1b{
+	text-align:right;
+	font-family:Arial;
+	font-size:12px;
+	font-weight:bold;
+}
+.fot-2{
+	text-align:left;
+	font-family:Arial;
+	font-size:12px;
+}
+.fot-b{
+	 text-align:left;
+	 font-family:Arial;
+	 font-size:12px;
+	 text-decoration:underline;
+	 font-weight:bold;
+ }
+.almt-1{
+	 font-family:Arial;
+	 font-size:13px;
+	 padding-bottom:2px;
+}
+.almt-2{
+	font-family:Arial;
+	font-size:14px;
+	font-weight:bold;
+	text-transform:uppercase;	
+}
+.almt-3{
+	font-family:Arial;
+	font-size:13px;
+	padding-bottom:2px;
+	text-transform:capitalize;
+}
+.almt-4{	
+	font-family:Arial;
+	font-size:13px;
+	padding-bottom:2px;
+	text-transform:capitalize;
+}
+.upto{
+	font-family:Arial;
+	font-size:13px;
+	font-style:italic;
+	text-decoration:underline;
+	color:#666;
+	}

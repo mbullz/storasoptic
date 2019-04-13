@@ -1,0 +1,9 @@
+kode,jenis,barang,frame,color,qty,price,price2,kode_harga,info,ukuran,tipe(frame=1|softlens=2|lensa=3),tgl_masuk_akhir(yyyy-mm-dd),tgl_keluar_akhir(yyyy-mm-dd)
+A0002,F0001,GA0244,Metal Frame,GUN,1,480000,450000,ABC45,,,1,9/27/2013,1/11/2014
+A0004,F0001,GA0370,Metal Frame,SILVER,1,480000,450000,ASDF1,,,1,9/28/2013,1/12/2014
+A0005,F0001,17 135,Metal Frame,SILVER,1,480000,450000,123DE,,,1,9/29/2013,1/13/2014
+A0042,F0002,Titan-P,Metal Frame,SILVER,1,650000,630000,,,,1,9/30/2013,1/14/2014
+A0083,F0003,427760,Frameless,RED,1,300000,275000,,,,1,,
+A0094,F0004,HK-I COL5,Kid Frame,BLUE,1,275000,250000,,,,1,,
+A0152,F0005,1078,Metal Frame,RED,1,500000,480000,,,,1,,
+A0163,F0006,SLY 529,Metal Frame,BROWN,1,1200000,1000000,,,,1,,

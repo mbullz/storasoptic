@@ -1,0 +1,14 @@
+Options +FollowSymLinks
+RewriteEngine on
+RewriteRule index-c-(.*)-k-(.*)-q-(.*)-p-(.*)\.pos$ index.php?component=$1&klasifikasi=$2&q=$2&page=$3
+RewriteRule index-c-(.*)-t-(.*)-k-(.*)-(.*)\.pos$ index.php?component=$1&task=$2&klasifikasi=$3&id=$4
+RewriteRule index-c-(.*)-t-(.*)-k-(.*)\.pos$ index.php?component=$1&task=$2&klasifikasi=$3
+RewriteRule index-c-(.*)-t-(.*)-(.*)\.pos$ index.php?component=$1&task=$2&id=$3
+RewriteRule index-c-(.*)-k-(.*)-p-(.*)\.pos$ index.php?component=$1&klasifikasi=$2&page=$3
+RewriteRule index-c-(.*)-q-(.*)-p-(.*)\.pos$ index.php?component=$1&q=$2&page=$3
+RewriteRule index-c-(.*)-k-(.*)-q-(.*)\.pos$ index.php?component=$1&klasifikasi=$2&q=$3
+RewriteRule index-c-(.*)-t-(.*)\.pos$ index.php?component=$1&task=$2
+RewriteRule index-c-(.*)-q-(.*)\.pos$ index.php?component=$1&q=$2
+RewriteRule index-c-(.*)-p-(.*)\.pos$ index.php?component=$1&page=$2
+RewriteRule index-c-(.*)\.pos$ index.php?component=$1
+RewriteRule index\.pos$ index.php
