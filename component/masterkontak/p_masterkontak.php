@@ -10,14 +10,16 @@
 	$jen = $_POST['jenis'];
     $gen = intval($_POST['gender']);
 	$kon = $mysqli->real_escape_string($_POST['kontak']);
-	$pass = md5($mysqli->real_escape_string($_POST['pass']));
+	$pass = md5('123456');
 	$ala = $mysqli->real_escape_string($_POST['alamat']);
 	$kpe = $mysqli->real_escape_string($_POST['kperson']);
-	$pbb = $mysqli->real_escape_string($_POST['pinbb']);
+	$pbb = $_POST['pinbb'] ?? '';
+	$pbb = $mysqli->real_escape_string($pbb);
 	$jab = $mysqli->real_escape_string($_POST['jabatan']);
 	$tlp = $mysqli->real_escape_string($_POST['notlp']);
 	$tlp2= $mysqli->real_escape_string($_POST['notlp2']);
-	$hp  = $mysqli->real_escape_string($_POST['hp']);
+	$hp = $_POST['hp'] ?? '';
+	$hp  = $mysqli->real_escape_string($hp);
 	$fax = $mysqli->real_escape_string($_POST['fax']);
 	$ema = $mysqli->real_escape_string($_POST['email']);
 	$inf = $mysqli->real_escape_string($_POST['info']);
@@ -95,7 +97,7 @@
 			default:
 				if ($klas == "karyawan")
 				{
-					$query_exe = "insert into kontak(pass,gender,akses,jenis,kontak,alamat,kperson,pinbb,mulai,aktif,jabatan,notlp,notlp2,hp,fax,email,info) values ('$pass', '$gen','','$jen','$kon','$ala','$kpe','$pbb','$mul','$sta','$jab','$tlp','$tlp2','$hp','$fax','$ema','$inf')";
+					$query_exe = "INSERT INTO kontak(pass, gender, akses, jenis, kontak, alamat, kperson, pinbb, mulai, aktif, jabatan, notlp, notlp2, hp, fax, email, info) values ('$pass', '$gen','','$jen','$kon','$ala','$kpe','$pbb','$mul','$sta','$jab','$tlp','$tlp2','$hp','$fax','$ema','$inf')";
 				}
 				else
 				{

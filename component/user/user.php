@@ -1,18 +1,17 @@
 <?php
-include('include/define.php');
+
+global $mysqli;
+global $q, $bp, $b, $p, $c;
+
 $query_data  = "SELECT user_id, kontak, akses 
                 FROM kontak a 
                 JOIN jeniskontak b ON b.kode = a.jenis 
-                WHERE b.klasifikasi LIKE 'karyawan' ";
+                WHERE b.klasifikasi LIKE 'karyawan' 
+                ORDER BY kode, kontak ";
 //----
 $query_all   = $query_data;
-//---- filter data
-if($q <>'') {
-	$query_data .= " AND (kode LIKE '%$q%' OR kontak LIKE '%$q%')";	
-	$query_all  .= " AND (kode LIKE '%$q%' OR kontak LIKE '%$q%')";
-}
+
 //----
-$query_data .= " order by kode,kontak limit $b offset $bp";
 $data = $mysqli->query($query_data);
 $row_data = mysqli_fetch_assoc($data);
 //---
@@ -55,7 +54,11 @@ $(document).ready(function() {
     <h1>User Internal</h1>
     <table class="datatable" width="100%" border="0" cellspacing="1" cellpadding="3">
       <tr valign="top">
-        <td colspan="2"><?php if(strstr($_SESSION['akses'],"add_".$c)) { ?><a href="index-c-<?php echo $c;?>-t-add.pos"><img src="images/add.png" border="0"/>&nbsp;Tambah Data</a><?php } ?></td>
+        <td colspan="2">
+          <?php if(strstr($_SESSION['akses'],"add_".$c)): ?>
+            <!--<a href="index-c-<?php echo $c;?>-t-add.pos"><img src="images/add.png" border="0"/>&nbsp;Tambah Data</a>-->
+          <?php endif; ?>
+        </td>
         <td colspan="3" align="right"><label>
             <input name="q" type="text" id="q" value="<?php echo $q;?>" size="30" onkeypress="return event.keyCode!=13;"/>
           </label>
@@ -65,7 +68,6 @@ $(document).ready(function() {
         </td>
       </tr>
       <tr>
-        <th width="2%"><label><input type="checkbox" name="checkbox" value="checkbox" onclick="if(this.checked) { for (i=0;i<<?php echo $totalRows_data;?>;i++){document.getElementById('data'+i).checked=true;}}else{ for (i=0;i<<?php echo $totalRows_data;?>;i++){document.getElementById('data'+i).checked=false;}}"/></label></th>
         <th width="12%">Kode</th>
         <th width="20%">Kontak</th>
         <th>Hak Akses</th>
@@ -74,7 +76,6 @@ $(document).ready(function() {
       <?php if($totalRows_data > 0) { ?>
       <?php $no=0; do { ?>
       <tr valign="top">
-        <td align="center"><input name="data[]" type="checkbox" id="data<?php echo $no;$no++;?>" value="<?php echo $row_data['kode'];?>" /></td>
         <td align="center"><a href="#"><?php echo $row_data['user_id'];?></a></td>
         <td align="left"><?php echo $row_data['kontak'];?></td>
         <td align="left"><?php echo substr($row_data['akses'],0,95);?> ...</td>
@@ -115,10 +116,7 @@ $(document).ready(function() {
       <?php if(strstr($_SESSION['akses'],"delete_".$c)) { ?>
 	  <tr>
         <td colspan="5" valign="middle">
-          <img src="images/arrow_ltr.png" />&nbsp;&nbsp;
-          <label>
-          <input name="D_ALL" type="submit" id="D_ALL" value="Hapus Sekaligus" title="Hapus Sekaligus Data ( Cek )" style="background:#006699;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="return confirm('Lanjutkan Proses ... ?');"/>
-        </label>
+          <br />
         </td>
       </tr>
       <?php } ?>

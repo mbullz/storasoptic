@@ -1,7 +1,7 @@
 <?php
 
 global $mysqli;
-global $klas;
+global $klas, $c;
 
 $query_data  = "SELECT a.user_id, a.gender, a.kontak, a.alamat, a.kperson, a.pinbb, a.mulai, a.jabatan, a.notlp, a.notlp2, a.hp, a.fax, a.email, a.info, b.jenis 
 				FROM kontak a 

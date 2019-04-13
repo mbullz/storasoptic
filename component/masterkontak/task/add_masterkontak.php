@@ -1,5 +1,8 @@
-<?php include('include/define.php');?>
 <?php
+  global $mysqli;
+
+  include('include/define.php');
+
 // get jenis kontak
 $query_jkontak = "select kode, jenis from jeniskontak where klasifikasi='$klas' order by jenis";
 $jkontak       = $mysqli->query($query_jkontak);
@@ -100,31 +103,12 @@ table ul li {
         <td align="right" valign="top">Jenis Kelamin *</td>
         <td valign="top">:</td>
         <td>
-            <label><input type="radio" name="gender" value="1" />Laki-laki</label>
+            <label><input type="radio" name="gender" value="1" checked="checked" />Laki-laki</label>
             <label><input type="radio" name="gender" value="0" />Perempuan</label>
         </td>
         <?php } ?>
     </tr>
-    <?php
-		if ($klas == 'karyawan')
-		{
-			?>
-            	<tr>
-                    <td align="right" valign="top">Password *</td>
-                    <td valign="top">:</td>
-                    <td valign="top"><input name="pass" type="password" id="pass" size="30" maxlength="100" /></td>
-                    <td align="right" valign="top">Bagian</td>
-                    <td valign="top">:</td>
-                    <td>
-                       	<select>
-                        	<option>Kepala Cabang</option>
-                            <option>Kasir</option>
-                        </select>
-                    </td>
-                </tr>
-            <?php
-		}
-	?>
+    
     <tr valign="top">
       <td align="right">Alamat <?php if ($klas != "customer") echo "*"; ?></td>
       <td align="center">:</td>
@@ -133,15 +117,15 @@ table ul li {
       </label></td>
     </tr>
     <tr valign="top">
-      <td align="right">No. Telp <?php if ($klas == "customer") echo "*"; ?></td>
+      <td align="right">Phone 1 <?php if ($klas == "customer") echo "*"; ?></td>
       <td align="center">:</td>
       <td><label>
-        <input name="notlp" type="text" id="notlp" size="25" maxlength="100" />
+        <input name="notlp" type="number" id="notlp" size="25" maxlength="100" />
       </label></td>
-      <td align="right">No. Telp 2</td>
+      <td align="right">Phone 2</td>
       <td>:</td>
       <td><label>
-        <input name="notlp2" type="text" id="notlp2" size="25" maxlength="100" />
+        <input name="notlp2" type="number" id="notlp2" size="25" maxlength="100" />
       </label></td>
     </tr>
 <!--    <tr valign="top">
@@ -157,10 +141,10 @@ table ul li {
       </label></td>
     </tr>-->
     <tr valign="top">
-      <td align="right">PIN BB</td>
+      <td align="right">Phone 3</td>
       <td align="center">:</td>
       <td><label>
-        <input name="pinbb" type="text" id="pinbb" size="15" maxlength="30" />
+        <input name="hp" type="number" id="hp" size="25" maxlength="100" />
       </label></td>
       <td align="right">Email</td>
       <td>:</td>
@@ -169,11 +153,11 @@ table ul li {
       </label></td>
     </tr>
 <!--    <tr valign="top">
-      <td align="right">Handphone</td>
+      <td align="right">Pin BB</td>
       <td align="center">:</td>
-      <td><label>
-        <input name="hp" type="text" id="hp" size="15" maxlength="30" />
-      </label></td>
+      <td>
+        <input name="pinbb" type="text" id="pinbb" size="15" maxlength="30" />
+      </td>
       <td align="right">Fax</td>
       <td>:</td>
       <td><label>
