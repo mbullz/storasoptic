@@ -28,10 +28,10 @@ switch($mode)
 					b.referensi, b.tgl, 
 					c.barang, c.frame, c.color, d.jenis 
                 	FROM dkeluarbarang a 
-					JOIN keluarbarang b on b.referensi = a.noreferensi 
+					JOIN keluarbarang b on b.keluarbarang_id = a.keluarbarang_id 
 					JOIN barang c on c.product_id = a.product_id 
 					JOIN jenisbarang d on d.brand_id = c.brand_id
-                	WHERE b.client=$user_id";
+                	WHERE b.client = $user_id";
         
         $res = $mysqli->query($query);
         while($row = mysqli_fetch_assoc($res))

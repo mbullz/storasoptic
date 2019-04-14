@@ -47,45 +47,61 @@ $(document).ready(function()
   $(this).hide();
   });
 })
+
+	function deleteData(brand_id) {
+		var c = confirm('Apakah anda yakin ingin menghapus data ini ?');
+
+		if (c) {
+			$.ajax({
+				type: 'GET',
+				url: 'component/jenisbarang/p_jenisbarang.php?p=delete&id=' + brand_id,
+				success: function(data) {
+					$('#result').html(data);
+				},
+			});
+		}
+	}
+
 </script>
 
-    <h1>Master Brand</h1>
-    
+	<h1>Master Brand</h1>
+
+	<div id="result" style="display:none;"></div>
+	
 	<?php if(strstr($_SESSION['akses'],"add_".$c)) { ?><a href="index-c-<?php echo $c;?>-t-add.pos"><img src="images/add.png" border="0"/>&nbsp;Tambah Data</a>
-    <!--<a href="index-c-jenisbarang-t-add-k-importcsv.pos" title="Import CSV"><img src="images/_xls.png" width="20" height="20" border="0" align="right" /></a>-->
 	<?php } ?>
 
-    <div style="clear:both;margin-top:10px;">
-        <form method="post" id="formTipe">
-           	Tipe : 
-            <select name="tipe" id="tipe" onchange="document.forms['formTipe'].submit();">
-                <option value="1" <?php echo ($tipe == 1) ? 'selected' : '' ?>>Frame</option>
-                <option value="2" <?php echo ($tipe == 2) ? 'selected' : '' ?>>Softlens</option>
-                <option value="3" <?php echo ($tipe == 3) ? 'selected' : '' ?>>Lensa</option>
-                <option value="4" <?php echo ($tipe == 4) ? 'selected' : '' ?>>Accessories</option>
-            </select>
-        </form>
-    </div>
+	<div style="clear:both;margin-top:10px;">
+		<form method="post" id="formTipe">
+			Tipe : 
+			<select name="tipe" id="tipe" onchange="document.forms['formTipe'].submit();">
+				<option value="1" <?php echo ($tipe == 1) ? 'selected' : '' ?>>Frame</option>
+				<option value="2" <?php echo ($tipe == 2) ? 'selected' : '' ?>>Softlens</option>
+				<option value="3" <?php echo ($tipe == 3) ? 'selected' : '' ?>>Lensa</option>
+				<option value="4" <?php echo ($tipe == 4) ? 'selected' : '' ?>>Accessories</option>
+			</select>
+		</form>
+	</div>
 
-    <br />
+	<br />
 
 	<table id="example" class="display" cellspacing="0" cellpadding="0" width="100%">
 		<thead> 
-      <tr>
-        <th width="20%" align="center" style="color: <?=$font_color?>;">BRAND</th>
-        <th align="center" style="color: <?=$font_color?>;">SUPPLIER</th>
-        <th align="center" style="color: <?=$font_color?>;">TIPE</th>
-        <th width="8%" align="center" style="color: <?=$font_color?>;"></th>
-      </tr>
+	  <tr>
+		<th width="20%" align="center" style="color: <?=$font_color?>;">BRAND</th>
+		<th align="center" style="color: <?=$font_color?>;">SUPPLIER</th>
+		<th align="center" style="color: <?=$font_color?>;">TIPE</th>
+		<th width="8%" align="center" style="color: <?=$font_color?>;"></th>
+	  </tr>
 		</thead>
-        
-        <tbody>
-      <?php $no=0; 
+		
+		<tbody>
+	  <?php $no=0; 
 	  while ($row_data = mysqli_fetch_assoc($data)) { ?>
-      <tr valign="top">
-        <td align="left"><?php echo $row_data['jenis'];?></td>
-        <td align="left"><?php echo $row_data['info'];?></td>
-        <td align="center">
+	  <tr valign="top">
+		<td align="left"><?php echo $row_data['jenis'];?></td>
+		<td align="left"><?php echo $row_data['info'];?></td>
+		<td align="center">
 			<?php
 				switch ($row_data['tipe'])
 				{
@@ -107,16 +123,16 @@ $(document).ready(function()
 				}
 			?>
 		</td>
-        <td align="center">
-        	<?php if(strstr($_SESSION['akses'],"edit_".$c)) : ?>
-        		<a href="index-c-<?=$c?>-t-add-<?=$row_data['brand_id']?>.pos" title="Edit Data"><img src="images/edit_icon.png" border="0" width="16px" height="16px" /></a>
-        	<?php endif; ?>
-        	&nbsp;
-        	<?php if(strstr($_SESSION['akses'],"delete_".$c)) : ?>
-          		<img src="images/delete_icon.png" title="Delete Data" border="0" width="16px" height="16px" style="cursor: pointer;" />
-      		<?php endif; ?>
-        </td>
-        </tr>
-      <?php } ?>
+		<td align="center">
+			<?php if(strstr($_SESSION['akses'],"edit_".$c)) : ?>
+				<a href="index-c-<?=$c?>-t-add-<?=$row_data['brand_id']?>.pos" title="Edit Data"><img src="images/edit_icon.png" border="0" width="16px" height="16px" /></a>
+			<?php endif; ?>
+			&nbsp;
+			<?php if(strstr($_SESSION['akses'],"delete_".$c)) : ?>
+				<img src="images/delete_icon.png" title="Delete Data" border="0" width="16px" height="16px" style="cursor: pointer;" onclick="deleteData(<?=$row_data['brand_id']?>)" />
+			<?php endif; ?>
+		</td>
+		</tr>
+	  <?php } ?>
 		</tbody>
 	</table>
