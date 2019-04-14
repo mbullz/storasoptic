@@ -55,7 +55,7 @@ $.FusionCharts.config.extend({
         <br />
         <ul>
         <?php
-			$query = "SELECT a.referensi, a.tgl, (SELECT SUM(qty) FROM dmasukbarang WHERE noreferensi LIKE a.referensi) AS qty, b.kontak 
+			$query = "SELECT a.referensi, a.tgl, (SELECT SUM(qty) FROM dmasukbarang WHERE masukbarang_id LIKE a.masukbarang_id) AS qty, b.kontak 
 					FROM masukbarang a 
 					JOIN kontak b ON b.user_id = a.supplier 
 					WHERE a.tgl BETWEEN CURDATE()-INTERVAL 7 DAY AND CURDATE() 
@@ -305,11 +305,11 @@ $.FusionCharts.config.extend({
 				}
 			}
 			
-			$query = "SELECT a.referensi, a.tgl, (SELECT SUM(qty) FROM dmasukbarang WHERE noreferensi LIKE a.referensi) AS qty, b.kontak, (SELECT SUM(subtotal) FROM dmasukbarang WHERE noreferensi = a.referensi) AS total 
+			$query = "SELECT a.masukbarang_id, a.referensi, a.tgl, (SELECT SUM(qty) FROM dmasukbarang WHERE masukbarang_id = a.masukbarang_id) AS qty, b.kontak, (SELECT SUM(subtotal) FROM dmasukbarang WHERE masukbarang_id = a.masukbarang_id) AS total 
 					FROM masukbarang a 
 					JOIN kontak b ON b.user_id = a.supplier 
 					WHERE a.tgl = '$periode' 
-					ORDER BY referensi ASC";
+					ORDER BY a.tgl ASC, a.masukbarang_id ASC ";
 			$rs = $mysqli->query($query);
 			while ($data = mysqli_fetch_assoc($rs))
 			{

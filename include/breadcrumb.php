@@ -8,14 +8,14 @@
     <?php if ($current == 'home') { ?>
     <?php echo $menu['home'][0]; ?>
     <?php } else { ?>
-    <a href="/<?=$base_url?>/index.php"><?php echo $menu['home'][0]; ?></a>
+    <a href="<?=$base_url?>index.php"><?php echo $menu['home'][0]; ?></a>
     <?php } ?>
     
     <?php if (!empty($c) && isset($c)) { ?>
         <?php if ($current == $c) { ?>
         &gt; <?php echo $menu[$c][0]; ?>
         <?php } else { ?>
-        &gt; <a href="/<?=$base_url?>/index-c-<?php echo $c; ?>-k-<?php echo $klas; ?>-q-.pos"><?php echo $menu[$c][0]; ?></a>
+        &gt; <a href="<?=$base_url?>index-c-<?php echo $c; ?>-k-<?php echo $klas; ?>-q-.pos"><?php echo $menu[$c][0]; ?></a>
         <?php } ?>
     <?php } ?>
     

@@ -2,7 +2,7 @@
 
 global $mysqli;
 
-$query_data  = "SELECT a.masukbarang_id, a.referensi, a.tgl, (SELECT SUM(subtotal) FROM dmasukbarang WHERE noreferensi LIKE a.referensi) AS total, a.info, b.kontak, c.matauang, a.lunas 
+$query_data  = "SELECT a.masukbarang_id, a.referensi, a.tgl, (SELECT SUM(subtotal) FROM dmasukbarang WHERE masukbarang_id LIKE a.masukbarang_id) AS total, a.info, b.kontak, c.matauang, a.lunas 
 				FROM masukbarang a 
 				JOIN kontak b ON a.supplier = b.user_id 
 				JOIN matauang c ON a.matauang_id = c.matauang_id 
@@ -113,7 +113,7 @@ function viewInfo(infoID) {
 	  while ($row_data = mysqli_fetch_assoc($data)) { ?>
       <?php
 		// list detail barang
-		$query_detbrg = "select a.id, a.qty, b.product_id, b.barang, b.color, a.subtotal, a.harga, c.satuan_id as sid, c.satuan, d.jenis from dmasukbarang a join barang b on a.product_id=b.product_id join satuan c on a.satuan_id=c.satuan_id join jenisbarang d on b.brand_id = d.brand_id where a.noreferensi='$row_data[referensi]' order by a.id desc";
+		$query_detbrg = "select a.id, a.qty, b.product_id, b.barang, b.color, a.subtotal, a.harga, c.satuan_id as sid, c.satuan, d.jenis from dmasukbarang a join barang b on a.product_id=b.product_id join satuan c on a.satuan_id=c.satuan_id join jenisbarang d on b.brand_id = d.brand_id where a.masukbarang_id = $row_data[masukbarang_id] order by a.id desc";
 		$detbrg       = $mysqli->query($query_detbrg);
 		$row_detbrg   = mysqli_fetch_assoc($detbrg);
 		$total_detbrg = mysqli_num_rows($detbrg);
@@ -135,11 +135,11 @@ function viewInfo(infoID) {
           <?php $done = true; do { ?>
           <?php 
 		  // terima barang
-		  $query_terbrg = "select sum(qty) as terima from terimabarang where noreferensi='$row_data[referensi]' AND product_id='$row_detbrg[product_id]' AND satuan_id='$row_detbrg[sid]'";
+		  $query_terbrg = "select sum(qty) as terima from terimabarang where masukbarang_id = $row_data[masukbarang_id] AND product_id='$row_detbrg[product_id]' AND satuan_id='$row_detbrg[sid]'";
 		  $terbrg       = $mysqli->query($query_terbrg);
 		  $row_terbrg   = mysqli_fetch_assoc($terbrg);
 		  // retur barang
-		  $query_retur  = "select sum(qty) as retur from terimabarang_r where noreferensi='$row_data[referensi]' AND product_id='$row_detbrg[product_id]' AND satuan_id='$row_detbrg[sid]'";
+		  $query_retur  = "select sum(qty) as retur from terimabarang_r where masukbarang_id = $row_data[masukbarang_id] AND product_id='$row_detbrg[product_id]' AND satuan_id='$row_detbrg[sid]'";
 		  $retur        = $mysqli->query($query_retur);
 		  $row_retur    = mysqli_fetch_assoc($retur);
 		  // ---

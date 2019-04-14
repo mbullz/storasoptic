@@ -4,30 +4,25 @@
     $stat = '';
 	$url = "index-c-user.pos";
 	$p   = $_GET['p'];
-	$nik = $_POST['nik'];
-	$pas = $_POST['password'];
-	$per = $_POST['per'];
+	$user_id = $_POST['user_id'];
+	$nik = $_POST['nik'] ?? '';
+	$pas = $_POST['password'] ?? '';
+	$per = $_POST['per'] ?? [];
 	$jper= count($per);
 	// gen per
 	$genper = "";
 	for($p=0;$p<$jper;$p++) {
 		$genper .= $per[$p];
-		if($i < $jdata-1) {
+		if($p < $jper-1) {
 			$genper .=",";	
 		}
 	}
 	//------
-	$data = $_POST['data'];
+	$data = $_POST['data'] ?? [];
 	$jdata = count($data);
+	
 	//Validasi
-	if($p == 'add' OR $p == 'edit') {
-		if (trim($nik) == '') {
-			$error[] = '- Kontak harus diisi !!!';
-		}
-		if (trim($pas) == '') {
-			$error[] = '- Password harus diisi !!!';
-		}
-	}else if($p =='mdelete') {
+	if($p == 'mdelete') {
 		if($jdata <= 0) {
 			$error[] ="- Proses gagal, Pilih min 1 data yang ingin dihapus !!!";
 		}
@@ -57,36 +52,22 @@
             }
 			break;
 			case("edit"):
-			$query_exe = "update kontak set pass='$pas', akses='$genper' where kode='$nik'";
-			$exe = $mysqli->query($query_exe);
-			if($exe) {
-					//echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data telah disimpan ...</b></center>";
-                $stat = 'Data telah disimpan ...';
-				}else{
-					//echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data gagal dihapus, coba lagi !!!</b></center>";
+				$query_exe = "UPDATE kontak SET akses = '$genper' WHERE user_id = $user_id";
+				$exe = $mysqli->query($query_exe);
+				if($exe) {
+                	$stat = 'Data telah disimpan ...';
+				}
+				else {
                     $stat = 'Data gagal dihapus, coba lagi !!!';
 				}
 			break;
-			case("delete"):
-			/*$query_exe = "delete from agen where kd='$kd'";
-			$exe = $mysqli->query($query_exe, $tiket) or die(mysql_error());
-			if($exe) {
-					echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data has been deleted...</b></center>";
-				}else{
-					echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data deleted failed, try again !!!</b></center>";
-				}*/
-			//echo "not used again ...";
-                $stat = 'not used again';
-			break;
+			
 			default:
-				$query_exe = "update kontak set pass='$pas', akses='$genper' where kode='$nik'";
+				$query_exe = "UPDATE kontak SET akses = '$genper' WHERE user_id = $user_id";
 				$exe = $mysqli->query($query_exe);
-				//echo $query_exe;
 				if($exe) {
-					//echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data telah disimpan ...</b></center>";
                     $stat = 'Data telah disimpan ...';
 				}else{
-					//echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data gagal disimpan, coba lagi !!!</b></center>";
                     $stat = 'Data gagal disimpan, coba lagi !!!';
 				}
 			break;
@@ -96,6 +77,6 @@
 <script type="text/javascript">
     alert('<?php echo $stat; ?>');
     <?php if ($exe) { ?>
-    location.href = '/<?=$base_url?>/<?php echo $url; ?>';
+    location.href = '<?=$base_url?><?=$url?>';
     <?php } ?>
 </script>

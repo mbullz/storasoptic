@@ -1,19 +1,14 @@
 <?php
+global $mysqli;
+
 include('include/define.php');
-$query_data  = "select * from matauang";
-//----
-$query_all   = $query_data;
-//---- filter data
-if($q <>'') {
-	$query_data .= " where kode LIKE '%$q%' OR matauang LIKE '%$q%'";	
-	$query_all  .= " where kode LIKE '%$q%' OR matauang LIKE '%$q%'";
-}
-//----
-$query_data .= " order by kode limit $b offset $bp";
+
+$query_data  = "SELECT * FROM matauang ORDER BY matauang_id";
+
 $data = $mysqli->query($query_data);
 $row_data = mysqli_fetch_assoc($data);
 //---
-$alldata = $mysqli->query($query_all);
+$alldata = $mysqli->query($query_data);
 $totalRows_data = mysqli_num_rows($alldata);
 // --
 $totalPages_data = ceil($totalRows_data / $b) - 1;
@@ -62,7 +57,6 @@ $(document).ready(function() {
         </td>
       </tr>
       <tr>
-        <th width="2%"><label><input type="checkbox" name="checkbox" value="checkbox" onclick="if(this.checked) { for (i=0;i<<?php echo $totalRows_data;?>;i++){document.getElementById('data'+i).checked=true;}}else{ for (i=0;i<<?php echo $totalRows_data;?>;i++){document.getElementById('data'+i).checked=false;}}"/></label></th>
         <th width="12%">Kode</th>
         <th width="28%">Mata Uang</th>
         <th>Info</th>
@@ -71,11 +65,19 @@ $(document).ready(function() {
       <?php if($totalRows_data > 0) { ?>
       <?php $no=0; do { ?>
       <tr valign="top">
-        <td align="center"><input name="data[]" type="checkbox" id="data<?php echo $no;$no++;?>" value="<?php echo $row_data['kode'];?>" /></td>
         <td align="center"><?php echo $row_data['kode'];?></td>
         <td align="left"><?php echo $row_data['matauang'];?></td>
         <td align="left"><?php echo $row_data['info'];?></td>
-        <td align="center"><?php if(strstr($_SESSION['akses'],"edit_".$c)) { ?><a href="index.php?component=<?php echo $c;?>&amp;task=edit&amp;id=<?php echo $row_data['kode'];?>" title="Edit Data"><img src="images/edit-icon.png" border="0" />Edit</a><?php } ?></td>
+        <td align="center">
+          <?php if(strstr($_SESSION['akses'],"edit_".$c)) { ?>
+            <a href="index.php?component=<?php echo $c;?>&amp;task=edit&amp;id=<?php echo $row_data['matauang_id'];?>" title="Edit Data"><img src="images/edit_icon.png" border="0" width="16px" height="16px" /></a>
+          <?php } ?>
+            &nbsp;
+            <?php if(strstr($_SESSION['akses'],"delete_".$c)) { ?>
+              <img src="images/delete_icon.png" width="16px" height="16px" />
+            <?php } ?>
+
+        </td>
         </tr>
       <?php } while ($row_data = mysqli_fetch_assoc($data)); ?>
       <?php }else{ ?>
@@ -109,15 +111,7 @@ $(document).ready(function() {
         </table></td>
       </tr>
       <?php } ?>
-      <?php if(strstr($_SESSION['akses'],"delete_".$c)) { ?>
-	  <tr>
-        <td colspan="5" valign="middle">
-          <img src="images/arrow_ltr.png" />&nbsp;&nbsp;
-          <label>
-          <input name="D_ALL" type="submit" id="D_ALL" value="Hapus Sekaligus" title="Hapus Sekaligus Data ( Cek )" style="background:#006699;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="return confirm('Lanjutkan Proses ... ?');"/>
-        </label><a href="export_xls.php?tabel=matauang" title="Export Data XLS"><img src="images/_xls.png" width="20" height="20" border="0" align="right" /></a></td>
-      </tr>
-      <?php } ?>
+
       <tr>
         <td colspan="5" align="right"><span style="border-bottom:double #333333;padding:2px;"><?php echo $totalRows_data." Data";?></span> </td>
       </tr>

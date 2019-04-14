@@ -4,8 +4,9 @@
 	
 	$tipe = $_POST['tipe'] ?? 1;
 	
-	$rs3 = $mysqli->query("SELECT jenis FROM jenisbarang WHERE tipe = $tipe AND info NOT LIKE 'DELETED' ORDER BY jenis ASC");
+	$rs3 = $mysqli->query("SELECT * FROM jenisbarang WHERE tipe = $tipe AND info NOT LIKE 'DELETED' ORDER BY jenis ASC");
 	$i = 0;
+	$listBrand = '';
 	while ($data3 = mysqli_fetch_assoc($rs3))
 	{
 		if ($i == 0) $listBrand = "'" . $mysqli->real_escape_string(strtoupper($data3['jenis'])) . "'";
@@ -13,8 +14,9 @@
 		$i++;
 	}
 	
-	$rs3 = $mysqli->query("SELECT DISTINCT frame FROM barang WHERE tipe = 1 AND qty > 0 ORDER BY frame ASC");
+	$rs3 = $mysqli->query("SELECT DISTINCT frame FROM barang WHERE tipe = 1 ORDER BY frame ASC");
 	$i = 0;
+	$listFrame = '';
 	while ($data3 = mysqli_fetch_assoc($rs3))
 	{
 		if ($i == 0) $listFrame = "'" . $mysqli->real_escape_string(strtoupper($data3['frame'])) . "'";
@@ -22,8 +24,9 @@
 		$i++;
 	}
 	
-	$rs3 = $mysqli->query("SELECT DISTINCT color FROM barang WHERE tipe = 1 AND qty > 0 ORDER BY color ASC");
+	$rs3 = $mysqli->query("SELECT DISTINCT color FROM barang WHERE tipe = 1 ORDER BY color ASC");
 	$i = 0;
+	$listColor = '';
 	while ($data3 = mysqli_fetch_assoc($rs3))
 	{
 		if ($i == 0) $listColor = "'" . $mysqli->real_escape_string(strtoupper($data3['color'])) . "'";
@@ -31,8 +34,9 @@
 		$i++;
 	}
 	
-	$rs3 = $mysqli->query("SELECT DISTINCT color FROM barang WHERE tipe = 2 AND qty > 0 ORDER BY color ASC");
+	$rs3 = $mysqli->query("SELECT DISTINCT color FROM barang WHERE tipe = 2 ORDER BY color ASC");
 	$i = 0;
+	$listColorSoftlens = '';
 	while ($data3 = mysqli_fetch_assoc($rs3))
 	{
 		if ($i == 0) $listColorSoftlens = "'" . $mysqli->real_escape_string(strtoupper($data3['color'])) . "'";
@@ -40,8 +44,9 @@
 		$i++;
 	}
 	
-	$rs3 = $mysqli->query("SELECT kontak FROM kontak WHERE jenis LIKE 'S0001' ORDER BY kontak ASC");
+	$rs3 = $mysqli->query("SELECT * FROM kontak WHERE jenis LIKE 'S001' ORDER BY kontak ASC");
 	$i = 0;
+	$listContact = '';
 	while ($data3 = mysqli_fetch_assoc($rs3))
 	{
 		if ($i == 0) $listContact = "'" . $mysqli->real_escape_string(strtoupper($data3['kontak'])) . "'";
@@ -99,7 +104,7 @@
 			},
 			close: function()
 			{
-				window.location = "/<?=$base_url?>/index-c-masterbarang.pos";
+				window.location = "<?=$base_url?>index-c-masterbarang.pos";
 			},
 			buttons:
 			{
@@ -178,10 +183,10 @@ if(isset($_POST['import'])) {  ?>
   		];
 	
 	var row_header = [
-		["Kode", "Brand Frame", "Tipe Frame", "Frame", "Color", "Qty", "Harga 1", "Harga 2", "Kode Harga", "Diskon", "Supplier", "Tanggal Masuk"],
-		["Kode", "Brand Softlens", "Tipe Softlens", "Expiry Date", "Minus", "Color", "Qty", "Harga 1", "Harga 2", "Kode Harga", "Diskon", "Supplier", "Tanggal Masuk"],
-		["Kode", "Brand Lensa", "Jenis Lensa", "Minus", "Silinder", "Qty", "Harga 1", "Harga 2", "Kode Harga", "Diskon", "Supplier", "Tanggal Masuk"],
-		["Kode", "Brand Acc", "Info Acc", "Qty", "Harga 1", "Harga 2", "Kode Harga", "Diskon", "Supplier", "Tanggal Masuk"]
+		["Kode", "Brand Frame", "Nama Product", "Frame", "Color", "Qty", "Harga Beli", "Harga Jual", "Kode Harga", "Supplier", "Tanggal Masuk"],
+		["Kode", "Brand Softlens", "Nama Product", "Expiry Date", "Minus", "Color", "Qty", "Harga Beli", "Harga Jual", "Kode Harga", "Supplier", "Tanggal Masuk"],
+		["Kode", "Brand Lensa", "Nama Product", "Minus", "Silinder", "Qty", "Harga Beli", "Harga Jual", "Kode Harga", "Supplier", "Tanggal Masuk"],
+		["Kode", "Brand Acc", "Nama Product", "Qty", "Harga Beli", "Harga Jual", "Kode Harga", "Supplier", "Tanggal Masuk"]
 		];
 
 	$('#example').handsontable(
@@ -313,10 +318,6 @@ if(isset($_POST['import'])) {  ?>
 			},
 			{},
 			{
-				type: 'numeric',
-				format: '0,0'
-			},
-			{
 				//supplier
 				type: 'autocomplete',
 				source: [<?=$listContact?>],
@@ -393,7 +394,7 @@ if(isset($_POST['import'])) {  ?>
 				{
 					alert(res);
 					openDialogPrintInvoice();
-					//window.location = "/<?=$base_url?>/index-c-masterbarang.pos";
+					//window.location = "<?=$base_url?>index-c-masterbarang.pos";
 				}
 			});
 		}	

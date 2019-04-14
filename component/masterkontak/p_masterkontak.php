@@ -9,20 +9,25 @@
 	$kod = intval($_POST['kode']);
 	$jen = $_POST['jenis'];
     $gen = intval($_POST['gender']);
-	$kon = $mysqli->real_escape_string($_POST['kontak']);
+    $kon = $_POST['kontak'] ?? '';
+	$kon = $mysqli->real_escape_string($kon);
 	$pass = md5('123456');
-	$ala = $mysqli->real_escape_string($_POST['alamat']);
-	$kpe = $mysqli->real_escape_string($_POST['kperson']);
-	$pbb = $_POST['pinbb'] ?? '';
-	$pbb = $mysqli->real_escape_string($pbb);
-	$jab = $mysqli->real_escape_string($_POST['jabatan']);
-	$tlp = $mysqli->real_escape_string($_POST['notlp']);
-	$tlp2= $mysqli->real_escape_string($_POST['notlp2']);
+	$ala = $_POST['alamat'] ?? '';
+	$ala = $mysqli->real_escape_string($ala);
+	$kpe = '';
+	$pbb = '';
+	$jab = '';
+	$tlp = $_POST['notlp'] ?? '';
+	$tlp = $mysqli->real_escape_string($tlp);
+	$tlp2 = $_POST['notlp2'] ?? '';
+	$tlp2= $mysqli->real_escape_string($tlp2);
 	$hp = $_POST['hp'] ?? '';
 	$hp  = $mysqli->real_escape_string($hp);
-	$fax = $mysqli->real_escape_string($_POST['fax']);
-	$ema = $mysqli->real_escape_string($_POST['email']);
-	$inf = $mysqli->real_escape_string($_POST['info']);
+	$fax = '';
+	$ema = $_POST['email'] ?? '';
+	$ema = $mysqli->real_escape_string($ema);
+	$inf = $_POST['info'] ?? '';
+	$inf = $mysqli->real_escape_string($inf);
 	$sta = $_POST['status'];
 	$mul = $_POST['mulai'];
 	//------
@@ -74,8 +79,26 @@
 				}
 			break;
 			case("edit"):
-			$query_exe = "UPDATE kontak SET kontak='$kon', gender=$gen, jenis='$jen', alamat='$ala', kperson='$kpe', pinbb='$pbb', jabatan='$jab', notlp='$tlp', notlp2='$tlp2', hp='$hp', fax='$fax', email='$ema', mulai='$mul', aktif='$sta', info='$inf' where user_id = $kod";
-			$exe = $mysqli->query($query_exe);
+				$query_exe = "UPDATE kontak SET 
+						kontak = '$kon', 
+						gender = '$gen', 
+						jenis = '$jen', 
+						alamat = '$ala', 
+						kperson = '$kpe', 
+						pinbb = '$pbb', 
+						jabatan = '$jab', 
+						notlp = '$tlp', 
+						notlp2 = '$tlp2', 
+						hp = '$hp', 
+						fax = '$fax', 
+						email = '$ema', 
+						mulai = '$mul', 
+						aktif = '$sta', 
+						info = '$inf' 
+					WHERE user_id = $kod";
+
+				$exe = $mysqli->query($query_exe);
+				
 			if($exe) {
 //					echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data telah disimpan ...</b></center>";
                 $stat = 'Data telah disimpan ...';
@@ -119,12 +142,12 @@
 <script type="text/javascript">
 	alert('<?php echo $stat; ?>');
     <?php if ($exe) { ?>
-   	location.href = '/<?=$base_url?>/<?=$url?>';
+   	location.href = '<?=$base_url?><?=$url?>';
     <?php }
 		else
 		{
 			?>
-				location.href = '/<?=$base_url?>/<?=$url?>';
+				location.href = '<?=$base_url?><?=$url?>';
 			<?php
 		}
 	?>

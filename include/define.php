@@ -86,6 +86,16 @@ $menu = array(
         'add'       => 'Satuan Baru',
         'edit'      => 'Edit Satuan'
     ),
+    'matauang'      => array(
+        '0'         => 'Mata Uang',
+        'add'       => 'Mata Uang Baru',
+        'edit'      => 'Edit Mata Uang',
+    ),
+    'cbayar'        => array(
+        '0'         => 'Cara Pembayaran',
+        'add'       => 'Cara Pembayaran Baru',
+        'edit'      => 'Edit Cara Pembayaran',
+    ),
     'jenisbarang'       => array(
         '0'         => 'Jenis Brand',
         'add'       => 'Jenis Brand Baru',

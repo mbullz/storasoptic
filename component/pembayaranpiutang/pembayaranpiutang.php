@@ -54,7 +54,7 @@ function generateReport()
 				{
 					alert("Sukses Menghapus Data");
 
-					window.location = "/<?=$base_url?>/index-c-pembayaranpiutang.pos";
+					window.location = "<?=$base_url?>index-c-pembayaranpiutang.pos";
 				}
 			});
 		}

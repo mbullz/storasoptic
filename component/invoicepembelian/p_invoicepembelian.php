@@ -214,7 +214,7 @@ echo mysql_error();
 <script type="text/javascript">
     alert('<?php echo $stat; ?>');
 <?php if ($exe) { ?>
-        location.href = '/<?=$base_url?>/<?php echo $url; ?>';
+        location.href = '<?=$base_url?><?php echo $url; ?>';
 <?php } else { ?>
         history.go(-1);
 <?php } ?>

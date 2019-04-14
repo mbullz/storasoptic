@@ -129,7 +129,7 @@ function onLoad()
 					{
 						alert("Sukses Memindahkan Barang Antar Cabang");
 
-						window.location = "/" + base_url + "/index-c-masterbarang.pos";
+						window.location = base_url + "index-c-masterbarang.pos";
 					}
 				});
 			}
@@ -266,7 +266,7 @@ function onLoad()
 					{
 						alert("Sukses Retur Barang");
 
-						window.location = "/" + base_url + "/index-c-masterbarang.pos";
+						window.location = base_url + "index-c-masterbarang.pos";
 					}
 				});
 				
@@ -310,7 +310,7 @@ function deleteProduct()
 				{
 					alert("Sukses Menghapus Barang");
 
-					window.location = "/" + base_url + "/index-c-masterbarang.pos";
+					window.location = base_url + "index-c-masterbarang.pos";
 				}
 			});
 		}
@@ -391,7 +391,7 @@ function retur(product_id, qty, info)
 			{
 				alert("Sukses Melakukan Retur");
 
-				window.location = "/" + base_url + "/index-c-masterbarang.pos";
+				window.location = base_url + "index-c-masterbarang.pos";
 			}
 		});
 	}

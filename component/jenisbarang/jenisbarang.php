@@ -69,15 +69,13 @@ $(document).ready(function()
 
     <br />
 
-<form id="formdata" name="formdata" method="post" action="component/<?php echo $c;?>/p_<?php echo $c;?>.php?p=mdelete">
 	<table id="example" class="display" cellspacing="0" cellpadding="0" width="100%">
 		<thead> 
       <tr>
-        <th width="2%" align="center"><label><input type="checkbox" name="checkbox" value="checkbox" onclick=""/></label></th>
         <th width="20%" align="center" style="color: <?=$font_color?>;">BRAND</th>
         <th align="center" style="color: <?=$font_color?>;">SUPPLIER</th>
         <th align="center" style="color: <?=$font_color?>;">TIPE</th>
-        <th width="8%" align="center" style="color: <?=$font_color?>;">PENGATURAN</th>
+        <th width="8%" align="center" style="color: <?=$font_color?>;"></th>
       </tr>
 		</thead>
         
@@ -85,7 +83,6 @@ $(document).ready(function()
       <?php $no=0; 
 	  while ($row_data = mysqli_fetch_assoc($data)) { ?>
       <tr valign="top">
-        <td align="center"><input name="data[]" type="checkbox" id="data<?php echo $no;$no++;?>" value="<?php echo $row_data['brand_id'];?>" /></td>
         <td align="left"><?php echo $row_data['jenis'];?></td>
         <td align="left"><?php echo $row_data['info'];?></td>
         <td align="center">
@@ -110,18 +107,16 @@ $(document).ready(function()
 				}
 			?>
 		</td>
-        <td align="center"><?php if(strstr($_SESSION['akses'],"edit_".$c)) { ?><a href="index.php?component=<?php echo $c;?>&amp;task=edit&amp;id=<?php echo $row_data['brand_id'];?>" title="Edit Data"><img src="images/edit-icon.png" border="0" />Edit</a><?php } ?></td>
+        <td align="center">
+        	<?php if(strstr($_SESSION['akses'],"edit_".$c)) : ?>
+        		<a href="index-c-<?=$c?>-t-add-<?=$row_data['brand_id']?>.pos" title="Edit Data"><img src="images/edit_icon.png" border="0" width="16px" height="16px" /></a>
+        	<?php endif; ?>
+        	&nbsp;
+        	<?php if(strstr($_SESSION['akses'],"delete_".$c)) : ?>
+          		<img src="images/delete_icon.png" title="Delete Data" border="0" width="16px" height="16px" style="cursor: pointer;" />
+      		<?php endif; ?>
+        </td>
         </tr>
       <?php } ?>
 		</tbody>
 	</table>
-    
-      <?php if(strstr($_SESSION['akses'],"delete_".$c)) { ?>
-          <img src="images/arrow_ltr.png" />&nbsp;&nbsp;
-          <label>
-          <input name="D_ALL" type="submit" id="D_ALL" value="Hapus Sekaligus" title="Hapus Sekaligus Data ( Cek )" style="background:#006699;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="if(prompt('Kode Hapus :')=='1234') return confirm('Lanjutkan Proses ... ?'); else return false;"/>
-        </label>
-        <!--<a href="export_xls.php?tabel=jenisbarang" title="Export Data XLS"><img src="images/_xls.png" width="20" height="20" border="0" align="right" /></a>-->
-      <?php } ?>
-	
-    </form>

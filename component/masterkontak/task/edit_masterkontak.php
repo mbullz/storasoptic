@@ -1,5 +1,9 @@
-<?php include('include/define.php');?>
 <?php
+
+  global $mysqli;
+
+  include('include/define.php');
+
 $id = $_GET['id'];
 // query edit
 $query_edit = "select * from kontak where user_id='$id'";

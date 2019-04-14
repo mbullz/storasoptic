@@ -1,8 +1,11 @@
-<?php include('include/define.php');?>
+<?php 
+global $mysqli;
+include('include/define.php');
+?>
 <?php
 $id = $_GET['id'];
 // query edit
-$query_edit = "select * from matauang where kode='$id'";
+$query_edit = "SELECT * FROM matauang WHERE matauang_id = $id";
 $edit = $mysqli->query($query_edit);
 $row_edit = mysqli_fetch_assoc($edit);
 $total_edit = mysqli_num_rows($edit);
@@ -71,12 +74,13 @@ table ul li {
 <div id="result" style="display:none;"></div>
 <h1> Edit Mata Uang</h1> 
 <form action="component/<?php echo $c;?>/p_<?php echo $c;?>.php?p=<?php echo $t;?>" method="post" name="edit" id="edit">
+  <input type="hidden" name="matauang_id" id="matauang_id" value="<?=$row_edit['matauang_id']?>" />
   <table width="100%" border="0" cellspacing="0" cellpadding="4">
     <tr>
       <td align="right" valign="top">Kode *</td>
       <td align="center" valign="top">:</td>
       <td valign="top"><label>
-        <input name="kode" type="text" id="kode" onfocus="this.blur();" value="<?php echo $row_edit['kode'];?>" size="8" maxlength="10"/>
+        <input name="kode" type="text" id="kode" value="<?php echo $row_edit['kode'];?>" size="8" maxlength="10"/>
       </label></td>
     </tr>
     <tr>

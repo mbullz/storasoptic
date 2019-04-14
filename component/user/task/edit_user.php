@@ -21,7 +21,7 @@ $kar = $mysqli->query($query_kar);
 $row_kar = mysqli_fetch_assoc($kar);
 $total_kar = mysqli_num_rows($kar);
 ?>
-<script type="text/javascript" src="js/jquery.wysiwyg.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function() {
 
@@ -50,7 +50,6 @@ $(document).ready(function() {
 })
 $(function()
 	{
-			$('#keterangan').wysiwyg();
 	});
 </script>
 <style type="text/css">
@@ -80,20 +79,20 @@ table ul li {
 	list-style:none;	
 }
 </style>
-<link type="text/css" rel="stylesheet" href="css/jquery.wysiwyg.css" />
+
 <div id="loading" style="display:none;"><img src="images/loading.gif" alt="loading..." /></div>
 <div id="result" style="display:none;"></div>
 <h1>Edit User</h1> 
 <form action="component/<?php echo $c;?>/p_<?php echo $c;?>.php?p=<?php echo $t;?>" method="post" name="edit" id="edit">
+	<input type="hidden" name="user_id" id="user_id" value="<?=$id?>" />
 	<table width="100%" border="0" cellspacing="0" cellpadding="4">
 		<tr>
-			<td width="12%" align="right" valign="top">Karyawan *</td>
+			<td width="12%" align="right" valign="top">Karyawan</td>
 			<td width="1%" align="center" valign="top">:</td>
 			<td width="82%" valign="top">
 				<label>
-					<input name="q_ajax" type="text" id="q_ajax" size="10" maxlength="30" onchange="getKaryawan(this.value);" value="NIK / Nama" onclick="this.value='';"/>
-			</label>
-
+					<?=$row_edit['kontak']?>
+				</label>
 			</td>
 		</tr>
 		<tr>

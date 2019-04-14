@@ -110,7 +110,7 @@
 
 				refreshLunas($keluarbarang_id);
 
-				header("location:/$base_url/index-c-piutangjtempo.pos");
+				header("location:" . $base_url ."index-c-piutangjtempo.pos");
 			break;
 			default:
 				$query_exe = "INSERT INTO aruskas VALUES (0, $bay, $keluarbarang_id, '$tipe', '$tgl', $opr, '$referensi', $jum, 1, '$inf')";

@@ -39,13 +39,12 @@ $totalRows_data = mysqli_num_rows($data);
 	<table id="example" class="display" cellspacing="0" cellpadding="0" width="100%">
     	<thead>
       <tr>
-        <th width="2%" align="center"><label><input type="checkbox" name="checkbox" value="checkbox" onclick="if(this.checked) { for (i=0;i<<?php echo $totalRows_data;?>;i++){document.getElementById('data'+i).checked=true;}}else{ for (i=0;i<<?php echo $totalRows_data;?>;i++){document.getElementById('data'+i).checked=false;}}"/></label></th>
         <th width="16%" align="center"><font color="#0000CC"><?php echo strtoupper($klas);?></font></th>
         <th width="18%" align="center"><font color="#0000CC">ALAMAT</font></th>
         <th width="12%" align="center"><font color="#0000CC">PHONE</font></th>
         <th width="10%" align="center"><font color="#0000CC">BERGABUNG</font></th>
         <th align="center"><font color="#0000CC">KONTAK INFO</font></th>
-        <th width="8%" align="center"><font color="#0000CC">PENGATURAN</font></th>
+        <th width="8%" align="center"><font color="#0000CC"></font></th>
       </tr>
 		</thead>
         
@@ -53,8 +52,6 @@ $totalRows_data = mysqli_num_rows($data);
       		<?php
 	  			$no=0;
 	   			while ($row_data = mysqli_fetch_assoc($data)) { ?>
-      <tr valign="top">
-        <td align="center"><input name="data[]" type="checkbox" id="data<?php echo $no;$no++;?>" value="<?php echo $row_data['user_id'];?>" /></td>
         <td align="left"><?php echo $row_data['kontak'];?></td>
         <td align="left"><?php echo $row_data['alamat'];?></td>
         <td align="center"><?php echo $row_data['notlp'];?></td>
@@ -62,16 +59,12 @@ $totalRows_data = mysqli_num_rows($data);
         <td><small style="float:right;">[ <a href="javascript:void(0);" onclick="viewKontak('infotable_<?php echo $row_data['user_id'];?>');">Lihat Info</a> ]</small>
           <table width="100%" border="0" cellspacing="0" cellpadding="4" id="infotable_<?php echo $row_data['user_id'];?>" style="display:none;">
           <tr>
-            <td width="40%" align="right" valign="top"><strong>Telp :</strong></td>
-            <td valign="top"><?php echo $row_data['notlp'];?></td>
-          </tr>
-          <tr>
-            <td align="right" valign="top"><strong>Telp2 :</strong></td>
+            <td width="40%" align="right" valign="top"><strong>Phone 2 :</strong></td>
             <td valign="top"><?php echo $row_data['notlp2'];?></td>
           </tr>
           <tr>
-            <td align="right" valign="top"><strong>PIN BB :</strong></td>
-            <td valign="top"><?php echo $row_data['pinbb'];?></td>
+            <td align="right" valign="top"><strong>Phone 3 :</strong></td>
+            <td valign="top"><?php echo $row_data['hp'];?></td>
           </tr>
           <tr>
             <td align="right" valign="top"><strong>Email :</strong></td>
@@ -123,19 +116,17 @@ $totalRows_data = mysqli_num_rows($data);
 			}
 		  ?>
         </table></td>
-        <td align="center"><?php if(strstr($_SESSION['akses'],"edit_".$c)) { ?><a href="index-c-<?php echo $c;?>-t-edit-k-<?php echo $klas;?>-<?=$row_data['user_id']?>.pos" title="Edit Data"><img src="images/edit-icon.png" border="0" />Edit</a><?php } ?></td>
+        <td align="center">
+            <?php if(strstr($_SESSION['akses'],"edit_".$c)) { ?><a href="index-c-<?=$c?>-t-add-k-<?=$klas?>-<?=$row_data['user_id']?>.pos" title="Edit Data"><img src="images/edit_icon.png" border="0" height="16px" width="16px" /></a><?php } ?>
+            &nbsp;
+            <?php if (strstr($_SESSION['akses'], "delete_" . $c)): ?>
+                <img src="images/delete_icon.png" height="16px" width="16px" style="cursor: pointer;" />
+            <?php endif; ?>
+        </td>
         </tr>
       <?php } ?>
 		</tbody>
 	</table>
-      
-      <?php if(strstr($_SESSION['akses'],"delete_".$c)) { ?>
-          <img src="images/arrow_ltr.png" />&nbsp;&nbsp;
-          <label>
-          <input name="D_ALL" type="submit" id="D_ALL" value="Hapus Sekaligus" title="Hapus Sekaligus Data ( Cek )" style="background:#006699;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="return confirm('Lanjutkan Proses ... ?');"/>
-        </label>
-        <!--<a href="export_xls.php?tabel=kontak&klas=<?php echo $klas;?>" title="Export Data XLS"><img src="images/_xls.png" width="20" height="20" border="0" align="right" /></a>-->
-	<?php } ?>
     
     <br /><br />
     

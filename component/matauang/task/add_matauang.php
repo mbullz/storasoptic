@@ -1,4 +1,7 @@
-<?php include('include/define.php');?>
+<?php 
+global $mysqli;
+include('include/define.php');
+?>
 <script type="text/javascript" src="js/jquery.wysiwyg.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
