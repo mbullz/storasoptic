@@ -5,7 +5,7 @@
 	$klas = $_POST['klas'];
 	$url = "index-c-masterkontak-k-$klas-q-.pos";
 	$p   = $_GET['p'];
-	$id  = $_POST['id'];
+	$id  = $_POST['id'] ?? 0;
 	$kod = intval($_POST['kode']);
 	$jen = $_POST['jenis'];
     $gen = intval($_POST['gender']);
@@ -60,24 +60,6 @@
         $stat = 'Kesalahan:\n' . implode('\n', $error);
 	} else {
 		switch($p) {
-			case("mdelete"):
-			$where = " where ";
-			for($i=0;$i<$jdata;$i++) {
-				$where .="user_id='$data[$i]'";
-				if($i < $jdata-1) {
-					$where .=" OR ";	
-				}
-			}
-			$query_exe = "delete from kontak".$where;
-			$exe = $mysqli->query($query_exe);
-			if($exe) {
-//					echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data telah dihapus ...</b></center>";
-                $stat = 'Data telah dihapus ...';
-				}else{
-//					echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data gagal dihapus, coba lagi !!!</b></center>";
-                    $stat = 'Data gagal dihapus, coba lagi !!!';
-				}
-			break;
 			case("edit"):
 				$query_exe = "UPDATE kontak SET 
 						kontak = '$kon', 
@@ -108,16 +90,17 @@
 				}
 			break;
 			case("delete"):
-			/*$query_exe = "delete from agen where kd='$kd'";
-			$exe = $mysqli->query($query_exe, $tiket) or die(mysql_error());
-			if($exe) {
-					echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data telah dihapus ...</b></center>";
-				}else{
-					echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data gagal dihapus, coba lagi !!!</b></center>";
-				}*/
-			$stat = "not used again ...";
+				$query_exe = "DELETE FROM kontak WHERE user_id = $id";
+				$exe = $mysqli->query($query_exe);
+
+				if ($exe) {
+                	$stat = 'Delete data berhasil';
+				}
+				else {
+                    $stat = 'Delete data gagal';
+				}
 			break;
-			default:
+			case 'add':
 				if ($klas == "karyawan")
 				{
 					$query_exe = "INSERT INTO kontak(pass, gender, akses, jenis, kontak, alamat, kperson, pinbb, mulai, aktif, jabatan, notlp, notlp2, hp, fax, email, info) values ('$pass', '$gen','','$jen','$kon','$ala','$kpe','$pbb','$mul','$sta','$jab','$tlp','$tlp2','$hp','$fax','$ema','$inf')";
@@ -127,13 +110,12 @@
 					$query_exe = "insert into kontak(pass,gender,akses,jenis,kontak,alamat,kperson,pinbb,mulai,aktif,jabatan,notlp,notlp2,hp,fax,email,info) values ('', '$gen','','$jen','$kon','$ala','$kpe','$pbb','$mul','$sta','$jab','$tlp','$tlp2','$hp','$fax','$ema','$inf')";
 				}
 				$exe = $mysqli->query($query_exe);
-				//echo $query_exe;
-				if($exe) {
-//					echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data telah disimpan ...</b></center>";
-                    $stat = "Data telah disimpan ...";
-				}else{
-//					echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data gagal disimpan, coba lagi !!!</b></center>";
-                    $stat = 'Data gagal disimpan, coba lagi !!!';
+
+				if ($exe) {
+                    $stat = "Tambah data berhasil";
+				}
+				else{
+                    $stat = 'Tambah data gagal';
 				}
 			break;
 		}

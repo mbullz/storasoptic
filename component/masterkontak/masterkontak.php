@@ -29,6 +29,8 @@ $totalRows_data = mysqli_num_rows($data);
     }
 </style>
 
+<div id="result" style="display: none;"></div>
+
 <form id="formdata" name="formdata" method="post" action="component/<?php echo $c;?>/p_<?php echo $c;?>.php?p=mdelete">
 	<input type="hidden" name="klas" value="<?=$klas?>" />
   <div class="tablebg">
@@ -120,7 +122,7 @@ $totalRows_data = mysqli_num_rows($data);
             <?php if(strstr($_SESSION['akses'],"edit_".$c)) { ?><a href="index-c-<?=$c?>-t-add-k-<?=$klas?>-<?=$row_data['user_id']?>.pos" title="Edit Data"><img src="images/edit_icon.png" border="0" height="16px" width="16px" /></a><?php } ?>
             &nbsp;
             <?php if (strstr($_SESSION['akses'], "delete_" . $c)): ?>
-                <img src="images/delete_icon.png" height="16px" width="16px" style="cursor: pointer;" />
+                <img src="images/delete_icon.png" height="16px" width="16px" style="cursor: pointer;" onclick="deleteData('<?=$klas?>', '<?=$row_data['user_id']?>')" />
             <?php endif; ?>
         </td>
         </tr>

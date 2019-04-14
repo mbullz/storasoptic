@@ -87,3 +87,18 @@ function viewKontak(infoID) {
 		$('#' + infoID).toggle();					   
 	})
 }
+
+function deleteData(klas, user_id) {
+	var c = confirm('Apakah anda yakin ingin menghapus data ini ?');
+
+	if (c) {
+		$.ajax({
+			type: 'POST',
+			url: 'component/masterkontak/p_masterkontak.php?p=delete',
+			data: 'klas=' + klas + '&id=' + user_id,
+			success: function(data) {
+				$('#result').html(data);
+			},
+		});
+	}
+}
