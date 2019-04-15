@@ -3,6 +3,8 @@ session_start();
 
 if (!isset($_SESSION['akses'])) $_SESSION['akses'] = '';
 
+$_SESSION['is_logged_in'] = $_SESSION['is_logged_in'] ?? false;
+
 require('include/config_db.php');
 
 require('include/define.php');
@@ -31,23 +33,23 @@ include('include/function.php');
 <style type="text/css" media="print">
   
   .hide,#topnav,#logo_container,#navigation,#footer, .notesetting {
-    display:none;	
+	display:none;	
   }
 
   body {
-    background:none;	
+	background:none;	
   }
 
 </style>
 
   <!--
-    
-    <script type="text/javascript" src="js/jconfirmaction.jquery.js"></script>
-    <script type="text/javascript" src="js/greybox.js"></script>
-    <script type="text/javascript" src="js/jquery.cluetip.js"></script>
-    <script type="text/javascript" src="js/demo.js"></script>
-    <script type="text/javascript" src="js/ajax_data.js"></script>
-    <script type="text/javascript" src="js/jquery.calculator.js"></script>
+	
+	<script type="text/javascript" src="js/jconfirmaction.jquery.js"></script>
+	<script type="text/javascript" src="js/greybox.js"></script>
+	<script type="text/javascript" src="js/jquery.cluetip.js"></script>
+	<script type="text/javascript" src="js/demo.js"></script>
+	<script type="text/javascript" src="js/ajax_data.js"></script>
+	<script type="text/javascript" src="js/jquery.calculator.js"></script>
   -->
 
   <script type="text/javascript" language="javascript" src="js/jquery-1.11.2.min.js"></script>
@@ -59,28 +61,28 @@ include('include/function.php');
 
   //Jquery Mask Input IP Address
    jQuery(function($){
-      /*$("#ip").mask("999.99.999.999 / 999.99.999.999");
-    $(".jam").mask("99:99");
-    $(".thn").mask("9999");
-    $(".tgl").mask("9999-99-99");*/
+	  /*$("#ip").mask("999.99.999.999 / 999.99.999.999");
+	$(".jam").mask("99:99");
+	$(".thn").mask("9999");
+	$(".tgl").mask("9999-99-99");*/
    });
    //Jquery Calendar Input
    $(function(){
-        $('.calendar').datepicker({
-            appendText : "",
-            dateFormat : 'yy-mm-dd'
-        });
-        $('.monthcalendar').datepicker({
-            appendText : "",
-            dateFormat : 'yy-mm'
-        });
-        //$('#basicCalculator').calculator({
-        //showOn: 'both', buttonImageOnly: true, buttonImage: 'images/calculator.png'});
-        // striped table
-        $(".datatable tr:nth-child(even)").addClass("rowhighlight");
-        $("form table tr:nth-child(even)").addClass("rowhighlight");
-        //$('#alamat').wysiwyg();
-        //$('#info').wysiwyg();
+		$('.calendar').datepicker({
+			appendText : "",
+			dateFormat : 'yy-mm-dd'
+		});
+		$('.monthcalendar').datepicker({
+			appendText : "",
+			dateFormat : 'yy-mm'
+		});
+		//$('#basicCalculator').calculator({
+		//showOn: 'both', buttonImageOnly: true, buttonImage: 'images/calculator.png'});
+		// striped table
+		$(".datatable tr:nth-child(even)").addClass("rowhighlight");
+		$("form table tr:nth-child(even)").addClass("rowhighlight");
+		//$('#alamat').wysiwyg();
+		//$('#info').wysiwyg();
    });
    //Javascript Open Center Window
    var win = null;
@@ -92,25 +94,25 @@ include('include/function.php');
   }
   //-------- Hide tooltips
   /*$(document).ready(function(){
-    $("a.title").click(function(){
-    $(".cluetip-default").hide(2000);
+	$("a.title").click(function(){
+	$(".cluetip-default").hide(2000);
   });
   });*/
   //Hide Notification
   $(document).ready(function(){
   $(".close").click(function(){
-    $("#notifyInbox").fadeTo("slow",0.00);
-    });
+	$("#notifyInbox").fadeTo("slow",0.00);
+	});
   });
   //Check & Uncheck all
   function checkAll(field) {
-    for (i = 0; i < field.length; i++)
-    field[i].checked = true ;
+	for (i = 0; i < field.length; i++)
+	field[i].checked = true ;
   }
 
   function uncheckAll(field) {
-    for (i = 0; i < field.length; i++)
-    field[i].checked = false ;
+	for (i = 0; i < field.length; i++)
+	field[i].checked = false ;
   }
 </script>
 
@@ -124,7 +126,7 @@ include('include/function.php');
 <div id="mynotes"><textarea id="mynotesbox" rows="15" cols="80">B-POS :: point of sales asli indonesia</textarea><br /><input type="button" value="Save" id="savenotes" /></div>
 <div id="topnav">
 <?php if(isset($_SESSION['i_sesadmin'])) { ?>
-  <div id="welcome">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Selamat Datang ,  <strong><a href="javascript:void(0);"><?php echo $_SESSION['nama'];?></a></strong>&nbsp;&nbsp; <?php //include('include/todo_inbox.php');?> [ <a href="logout.php" title="Logout">Logout</a> ]</div>
+  <div id="welcome">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Selamat Datang ,  <strong><a href="index-c-profile.pos"><?php echo $_SESSION['nama'];?></a></strong>&nbsp;&nbsp; <?php //include('include/todo_inbox.php');?> [ <a href="logout.php" title="Logout">Logout</a> ]</div>
   <?php } ?>
   <div id="date">&nbsp;<?php //echo date("l, d M Y"); ?></div>
 <div class="clear"></div>
@@ -167,18 +169,27 @@ include('include/function.php');
 <?php } ?>
 <div id="content_container">
   <div id="content">
-    <?php include 'include/breadcrumb.php'; ?>
-  <?php 
-  	if(isset($_SESSION['i_sesadmin'])) {
-  		getBody($_GET['component'] ?? '', $_GET['task'] ?? '', $_SESSION['i_sesadmin'] ?? '', $_SESSION['akses'] ?? '');
-	}else{
-		if(isset($_GET['component']) && $_GET['component']=='copyright') {
-			include('component/copyright/copyright.php');
-		}else{
-			include('include/login.php');
-		}	
-	}
-  ?>
+	<?php include 'include/breadcrumb.php'; ?>
+	
+	<?php 
+		if($_SESSION['is_logged_in']) {
+			if ($c == 'profile') {
+				include('component/profile/profile.php');
+			}
+			else {
+				getBody($_GET['component'] ?? '', $_GET['task'] ?? '', $_SESSION['i_sesadmin'] ?? '', $_SESSION['akses'] ?? '');
+			}
+	   	}
+	   	else {
+			if ($c == 'copyright') {
+				include('component/copyright/copyright.php');
+			}
+			else {
+				include('include/login.php');
+			}	
+		}
+	?>
+
   </div>
   <div class="clear">&nbsp;</div>
 </div>

@@ -276,6 +276,99 @@ function onLoad()
 	});
 }
 
+function getInfo(row, tr, product_id) {
+	var html = '';
+
+	/*
+	$.ajax({
+		url: 'component/masterbarang/task/ajax_masterbarang.php',
+		type: 'GET',
+		dataType: 'json',
+		data: 'mode=get_info&product_id=' + product_id,
+		success: function(result) {
+			html += '<table class="table table-bordered">';
+
+			if (Object.keys(result[0].latest_purchase).length > 0)
+			{
+				var data = result[0].latest_purchase;
+				html += '<tr>';
+				html += '<td width="20%">Latest Purchase</td>';
+				html += '<td>';
+					html += 'Date: ' + data.transaction_date + '<br />';
+					html += 'Project: ' + data.project_kontak + ' - ' + data.project_location + '<br />';
+					html += 'Vendor: ' + data.vendor_kontak + '<br />';
+					html += 'Price: ' + digits(data.price) + ' / ' + data.satuan + ' (Qty: ' + digits(data.quantity) + ' ' + data.satuan + ')';
+				html += '</td>';
+				html += '</tr>';
+			}
+
+			if (Object.keys(result[0].cheapest_purchase).length > 0)
+			{
+				var data = result[0].cheapest_purchase;
+				html += '<tr>';
+				html += '<td width="20%">Cheapest Purchase</td>';
+				html += '<td>';
+					html += 'Date: ' + data.transaction_date + '<br />';
+					html += 'Project: ' + data.project_kontak + ' - ' + data.project_location + '<br />';
+					html += 'Vendor: ' + data.vendor_kontak + '<br />';
+					html += 'Price: ' + digits(data.price) + ' / ' + data.satuan + ' (Qty: ' + digits(data.quantity) + ' ' + data.satuan + ')';
+				html += '</td>';
+				html += '</tr>';
+			}
+
+			if (Object.keys(result[0].most_expensive_purchase).length > 0)
+			{
+				var data = result[0].most_expensive_purchase;
+				html += '<tr>';
+				html += '<td width="20%">Most Expensive Purchase</td>';
+				html += '<td>';
+					html += 'Date: ' + data.transaction_date + '<br />';
+					html += 'Project: ' + data.project_kontak + ' - ' + data.project_location + '<br />';
+					html += 'Vendor: ' + data.vendor_kontak + '<br />';
+					html += 'Price: ' + digits(data.price) + ' / ' + data.satuan + ' (Qty: ' + digits(data.quantity) + ' ' + data.satuan + ')';
+				html += '</td>';
+				html += '</tr>';
+			}
+
+			if (Object.keys(result[0].vendors).length > 0)
+			{
+				html += '<tr>';
+				html += '<td width="20%">Vendors</td>';
+				html += '<td>';
+
+				for (i=0;i<Object.keys(result[0].vendors).length;i++)
+				{
+					var data = result[0].vendors[i];
+
+					html += 'Date: ' + data.transaction_date + '<br />';
+					html += 'Vendor: ' + data.vendor_kontak + '&nbsp;&nbsp;&nbsp;(' + data.project_kontak + ' - ' + data.project_location + ')<br />';
+					html += 'Price: ' + digits(data.price) + ' / ' + data.satuan + '&nbsp;&nbsp;&nbsp;(Qty: ' + digits(data.quantity) + ' ' + data.satuan + ')<hr />';
+				}
+
+				html += '</td>';
+				html += '</tr>';
+			}
+
+			html += '';
+			html += '';
+			html += '';
+			html += '';
+			html += '';
+			html += '</table>';
+			//alert(Object.keys(result[0].empty_array).length);
+		},
+		complete: function()
+		{
+			row.child( html ).show();
+           	tr.addClass('shown');
+		}
+	});
+	*/
+
+	row.child( html ).show();
+	tr.addClass('shown');
+}
+
 function deleteProduct()
 {
 	var oTable = $("#example").dataTable();
@@ -473,11 +566,27 @@ $(document).ready(function()
 {	
 	var table = $("#example").DataTable(
 	{
-		dom: 'T<"clear">lfrtip',
-		tableTools:
-		{
-			"sSwfPath": "media/swf/copy_csv_xls_pdf.swf"
-		},
+		dom: 'B<"clear">lfrtip',
+		buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
+        columns: [
+			{ data: [1], orderable: false },
+			{ className: 'details-control', data: [2], orderable: false },
+			{ data: [3] },
+			{ data: [4] },
+			{ data: [5] },
+			{ data: [6] },
+			{ data: [7] },
+			{ className: ' text-center td-nowrap ', data: [8] },
+			{ data: [9], orderable: false },
+		],
+		data: data,
+		deferRender: true,
+		order: [
+			[2, 'asc']
+		],
+		rowId: [0],
 		"footerCallback": function ( row, data, start, end, display )
 		{
 			var api = this.api(), data;
@@ -492,7 +601,7 @@ $(document).ready(function()
  
 			// Total over all pages
 			total = api
-				.column( 6 )
+				.column( 7 )
 				.data()
 				.reduce( function (a, b) {
 					return intVal(a) + intVal(b);
@@ -500,14 +609,14 @@ $(document).ready(function()
  
 			// Total over this page
 			pageTotal = api
-				.column( 6, { page: 'current'} )
+				.column( 7, { page: 'current'} )
 				.data()
 				.reduce( function (a, b) {
 					return intVal(a) + intVal(b);
 				}, 0 );
  
 			// Update footer
-			$( api.column( 6 ).footer() ).html( pageTotal + ' of ' + total );
+			$( api.column( 7 ).footer() ).html( pageTotal + ' of ' + total );
 		}
 	});
 	
@@ -516,7 +625,7 @@ $(document).ready(function()
 	{
 		var title = $('#example tfoot th').eq( $(this).index() ).text();
 		title = $.trim(title);
-		if (title != "" && $(this).index() != 6)
+		if (title != "" && $(this).index() != 7)
 			$(this).html( '<input type="text" placeholder="' + title + '" style="width:100%;padding:3px;box-sizing:border-box;" />' );
 	} );
 	
@@ -536,5 +645,24 @@ $(document).ready(function()
 	{
 		countChecked();
 	});
+
+	$('#example tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row(tr);
+        var product_id = $(tr).attr("id");
+ 
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            getInfo(row, tr, product_id);
+            //row.child( html ).show();
+            //tr.addClass('shown');
+        }
+	});
+
 });
 	

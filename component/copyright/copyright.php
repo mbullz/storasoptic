@@ -1,4 +1,5 @@
-  <h1>Point of Sales</h1>
+<h1>Point of Sales</h1>
+
 <table width="100%" border="0" align="center" cellpadding="2" cellspacing="0">
     <tr>
       <td>&nbsp;</td>

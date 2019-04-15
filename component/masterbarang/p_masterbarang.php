@@ -42,28 +42,12 @@
 	$jdata = count($data);
 	//Validasi
 	if($p <>'mdelete' AND $p <>'delete') {
-		if($p=='add') {
-			// cek username
-			/*
-			$query_cek = "select kode from barang where kode='$kod'";
-			$cek       = $mysqli->query($query_cek);
-			$row_cek   = mysqli_fetch_assoc($cek);
-			$total_cek = mysqli_num_rows($cek);
-			if($total_cek > 0)
-			{
-				$error[] = '- Kode <b>'.$row_cek[kode].'</b> sudah digunakan !!!';	
-			}
-			*/
-		}
 		if (trim($jen) == '') {
 			$error[] = '- Jenis Barang harus diisi !!!';
 		}
 		if (trim($brg) == '') {
 			$error[] = '- Nama Barang harus diisi !!!';
 		}
-        if ($tipe == 2 && trim($size) == '') {
-            $error[] = '- Ukuran softlens harus diisi !!!';
-        }
 	}else if($p =='mdelete'){
 		if($jdata <= 0) {
 			$error[] ="- Proses gagal, Pilih min 1 data yang ingin dihapus !!!";	
@@ -94,14 +78,28 @@
 				}
 			break;
 			case("edit"):
-			$query_exe = "update barang set kode='$kod', barang='$brg', brand_id=$jen, frame='$fra', color='$col', qty=$qty, price=$price, price2=$price2, kode_harga='$kode_harga', info='$inf', tipe=$tipe, tgl_masuk_akhir=$masuk, last_update_user_id=$_SESSION[user_id], last_update_date=NOW() where product_id=$product_id";
-			$exe = $mysqli->query($query_exe);
-			if($exe) {
-//					echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data telah disimpan ...</b></center>";
-                $stat = 'Data telah disimpan ...';
-				}else{
-//					echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data gagal disimpan, coba lagi !!!</b></center>";
-                    $stat = 'Data gagal disimpan, coba lagi !!!';
+				$query_exe = "UPDATE barang SET 
+						kode = '$kod', 
+						brand_id = $jen, 
+						barang = '$brg', 
+						frame = '$fra', 
+						color = '$col', 
+						qty = $qty, 
+						price = $price, 
+						price2 = $price2, 
+						kode_harga = '$kode_harga', 
+						info = '$inf', 
+						ukuran = '$size', 
+						tipe = $tipe, 
+						last_update_user_id = $_SESSION[user_id], 
+						last_update_date = NOW() 
+					WHERE product_id = $product_id";
+				$exe = $mysqli->query($query_exe);
+				if ($exe) {
+                	$stat = 'Edit data berhasil';
+				}
+				else {
+                    $stat = 'Edit data gagal';
 				}
 			break;
 			case("delete"):
@@ -129,11 +127,8 @@
 		}
 	}
 ?>
+
 <script type="text/javascript">
     alert('<?php echo $stat; ?>');
-    <?php if ($exe) { ?>
     location.href = '<?=$base_url?><?php echo $url; ?>';
-    <?php } else { ?>
-   	history.go(-1);
-    <?php } ?>
 </script>

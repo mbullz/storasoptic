@@ -5,18 +5,23 @@ menu1[1]='<a href="index-c-masterbarang.pos"><img src="images/invoices.png" alig
 <?php if(strstr($_SESSION['akses'],'jeniskontak')) { ?>
 //menu1[2]='<a href="index-c-jeniskontak.pos" style="border-bottom:solid 2px #FFF;"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Jenis Kontak</a>'
 <?php } ?>
+
 <?php if(strstr($_SESSION['akses'],'masterkontak')) { ?>
 menu1[3]='<a href="index-c-masterkontak-k-customer-q-.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Data Customer</a>'
 <?php } ?>
+
 <?php if(strstr($_SESSION['akses'],'masterkontak')) { ?>
 menu1[4]='<a href="index-c-masterkontak-k-supplier-q-.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Data Supplier</a>'
 <?php } ?>
+
 <?php if(strstr($_SESSION['akses'],'masterkontak')) { ?>
 //menu1[5]='<a href="index-c-masterkontak-k-sales-q-.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Data Sales</a>'
 <?php } ?>
-<?php if(strstr($_SESSION['akses'],'masterkontak')) { ?>
+
+<?php if($_SESSION['is_admin'] && strstr($_SESSION['akses'],'masterkontak')) { ?>
 menu1[6]='<a href="index-c-masterkontak-k-karyawan-q-.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Data Karyawan</a>'
 <?php } ?>
+
 <?php if(strstr($_SESSION['akses'],'masterkontak')) { ?>
 menu1[7]='<a href="index-c-masterkontak-k-cabang-q-.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Data Cabang</a>'
 <?php } ?>
@@ -82,13 +87,13 @@ menu3[16]='<a href="index.php?component=peringatan"><img src="images/invoices.pn
 menu3[18]='<a href="index.php?component=resign"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Berhenti Kerja</a>'*/
 
 var menu4=new Array()
-<?php if(strstr($_SESSION['akses'],'invoicepembelian') && $_SESSION['i_sesadmin'] == 1) { ?>
+<?php if(strstr($_SESSION['akses'],'invoicepembelian')) { ?>
 menu4[0]='<a href="index-c-invoicepembelian.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Data Pembelian</a>'
 <?php } ?>
-<?php if(strstr($_SESSION['akses'],'hutangjtempo') && $_SESSION['i_sesadmin'] == 1) { ?>
+<?php if(strstr($_SESSION['akses'],'hutangjtempo')) { ?>
 menu4[1]='<a href="index-c-hutangjtempo.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Pembayaran Hutang</a>'
 <?php } ?>
-<?php if(strstr($_SESSION['akses'],'pembayaranhutang') && $_SESSION['i_sesadmin'] == 1) { ?>
+<?php if(strstr($_SESSION['akses'],'pembayaranhutang')) { ?>
 menu4[2]='<a href="index-c-pembayaranhutang.pos" style="border-bottom:solid 2px #FFF;"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Hutang Lunas</a>'
 <?php } ?>
 <?php /* if(strstr($_SESSION['akses'],'barangmasuk')) { ?>

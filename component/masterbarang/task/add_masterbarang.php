@@ -356,10 +356,10 @@ if(isset($_POST['import'])) {  ?>
 					{
 						var col = 
 						<?php
-							if ($tipe == 1) echo "10";
-							else if ($tipe == 2) echo "11";
-							else if ($tipe == 3) echo "10";
-							else if ($tipe == 4) echo "8";
+							if ($tipe == 1) echo "9";
+							else if ($tipe == 2) echo "10";
+							else if ($tipe == 3) echo "9";
+							else if ($tipe == 4) echo "7";
 						?>;
 						hot.setDataAtCell(change[0][0], col, response);
 					},

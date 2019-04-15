@@ -174,6 +174,9 @@ $menu = array(
     ),
     'copyright'         => array(
         '0'         => 'Copyright'
-    )
+    ),
+    'profile'       => array(
+        '0'         => 'Profile',
+    ),
 );
 ?>

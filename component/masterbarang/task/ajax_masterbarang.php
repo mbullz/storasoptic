@@ -7,10 +7,13 @@ $arr = array();
 switch($mode) {
     case 'get_jenis':
         $tipe = $mysqli->real_escape_string($_GET['tipe']);
-        $query = "SELECT * FROM jenisbarang WHERE tipe=$tipe ORDER BY jenis ASC";
+        $query = "SELECT * FROM jenisbarang WHERE tipe = $tipe AND info != 'DELETED' ORDER BY jenis ASC";
         $res = $mysqli->query($query);
         while ($row = mysqli_fetch_assoc($res)) {
-            array_push($arr, array('brand_id' => $row['brand_id'], 'jenis' => $row['jenis']));
+            array_push($arr, array(
+                'brand_id'  => $row['brand_id'], 
+                'jenis'     => $row['jenis'],
+            ));
         }
         echo json_encode($arr);
         break;

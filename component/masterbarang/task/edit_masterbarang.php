@@ -1,61 +1,24 @@
-<?php include('include/define.php');?>
 <?php
+    
+    global $mysqli;
+    global $base_url;
+
+    include('include/define.php');
+
 $id = $_GET['id'];
 // query edit
-$query_edit = "select * from barang where product_id=$id";
+$query_edit = "SELECT * FROM barang WHERE product_id = $id";
 $edit = $mysqli->query($query_edit);
 $row_edit = mysqli_fetch_assoc($edit);
 $total_edit = mysqli_num_rows($edit);
-// get jenis barang
-$query_jbarang = "select product_id, kode, jenis from jenisbarang order by jenis";
-$jbarang       = $mysqli->query($query_jbarang);
-$row_jbarang   = mysqli_fetch_assoc($jbarang);
-$total_jbarang = mysqli_num_rows($jbarang);
-// get jenis frame
-$query_jenis    = "SELECT * FROM frame_type ORDER BY frame ASC";
-$jenis          = $mysqli->query($query_jenis);
-$row_jenis      = mysqli_fetch_assoc($jenis);
-?>
-<script type="text/javascript" src="js/jquery.wysiwyg.js"></script>
-<script type="text/javascript">
-function changeTipe() {
-    var tipe = $("#tipe").val();
-    if (tipe == 1) {
-        $("#tipeFrame").html('Tipe Frame');
-		$("#jenisFrame").html('Frame');
-        $("#size").parent().parent().hide();
-    } else if (tipe == 2) {
-        $("#tipeFrame").html('Tipe Softlens');
-		$("#jenisFrame").html('Softlens');
-        $("#size").parent().parent().show();
-    } else if (tipe == 3) {
-		$("#tipeFrame").html('Tipe Lensa');
-		$("#jenisFrame").html('Lensa');
-        $("#size").parent().parent().show();
-	}
-    reloadFrame();
-}
 
-function reloadFrame() {
+?>
+
+<script type="text/javascript">
+
+function refreshBrand() {
     var tipe = $("#tipe").val();
-    $.ajax({
-        url: 'component/masterbarang/task/ajax_masterbarang.php',
-        type: 'GET',
-        dataType: 'json',
-        data: 'mode=get_jenis_frame&tipe=' + tipe,
-        success: function(result) {
-            var html = '<option value="">-- Choose Frame --</option>';
-            var frame0 = $("#frame0").val();
-            for (i=0; i<result.length; i++) {
-                if (result[i].frame == frame0) {
-                    html += '<option value="' + result[i].frame + '" selected>' + result[i].frame + '</option>';
-                } else {
-                    html += '<option value="' + result[i].frame + '">' + result[i].frame + '</option>';
-                }
-            }
-            $("#frame").html(html);
-        }
-    });
+    
     $.ajax({
         url: 'component/masterbarang/task/ajax_masterbarang.php',
         type: 'GET',
@@ -65,8 +28,9 @@ function reloadFrame() {
             var html = '<option value="">-- Choose Brand --</option>';
             for (i=0; i<result.length; i++) {
 				if (result[i].brand_id == '<?php echo $row_edit['brand_id']; ?>') {
-				html += '<option value="' + result[i].brand_id + '" selected="selected">' + result[i].jenis + '</option>';
-				} else {
+				    html += '<option value="' + result[i].brand_id + '" selected="selected">' + result[i].jenis + '</option>';
+				}
+                else {
 					html += '<option value="' + result[i].brand_id + '">' + result[i].jenis + '</option>';
 				}
             }
@@ -102,7 +66,6 @@ $(document).ready(function() {
 })
 $(function()
   {
-      $('#keterangan').wysiwyg();
   });
 </script>
 <style type="text/css">
@@ -132,7 +95,7 @@ table ul li {
 	list-style:none;	
 }
 </style>
-<link type="text/css" rel="stylesheet" href="css/jquery.wysiwyg.css" />
+
 <div id="loading" style="display:none;"><img src="images/loading.gif" alt="loading..." /></div>
 <div id="result" style="display:none;"></div>
 <h1>Edit Master Barang</h1> 
@@ -140,73 +103,105 @@ table ul li {
 	<input type="hidden" name="product_id" id="product_id" value="<?=$id?>" />
   <table width="100%" border="0" cellspacing="0" cellpadding="4">
     <tr>
-      <td width="12%" align="right" valign="top">Kode</td>
-      <td width="1%" align="center" valign="top">:</td>
-      <td width="82%" valign="top"><label>
-        <input name="kode" type="text" id="kode" value="<?php echo $row_edit['kode'];?>" size="10" />
-      </label></td>
-    </tr>
-    <tr>
-        <td align="right" valign="top">Tipe</td>
-        <td align="center" valign="top">:</td>
-        <td valign="top">
-            <select name="tipe" id="tipe" onchange="changeTipe();">
+        <td width="12%" align="right" valign="top">Tipe</td>
+        <td width="1%" align="center" valign="top">:</td>
+        <td width="82%" valign="top">
+            <input type="hidden" name="tipe" id="tipe" value="<?=$row_edit['tipe']?>" />
+            <select disabled="disabled">
                 <option value="1" <?php echo ($row_edit['tipe'] == 1) ? 'selected' : '' ?>>Frame</option>
+                <option value="2" <?php echo ($row_edit['tipe'] == 2) ? 'selected' : '' ?>>Softlens</option>
+                <option value="3" <?php echo ($row_edit['tipe'] == 3) ? 'selected' : '' ?>>Lensa</option>
+                <option value="4" <?php echo ($row_edit['tipe'] == 4) ? 'selected' : '' ?>>Accessories</option>
             </select>
         </td>
     </tr>
     <tr>
-        <td align="right" valign="top"><label id="jenisFrame">Frame</label> *</td>
-        <td align="center" valign="top">:</td>
-        <td valign="top">
-            <input type="hidden" value="<?php echo $row_edit['frame']; ?>" id="frame0" />
-            <select name="frame" id="frame">
-            </select>
+      <td align="right" valign="top">Kode</td>
+      <td align="center" valign="top">:</td>
+      <td valign="top">
+        <label>
+            <input name="kode" type="text" id="kode" value="<?php echo $row_edit['kode'];?>" size="10" />
+        </label>
         </td>
     </tr>
+    
     <tr>
-      <td align="right" valign="top">Nama Brand *</td>
+      <td align="right" valign="top">Brand</td>
       <td align="center" valign="top">:</td>
       <td valign="top"><label>
         <select name="jenis" id="jenis">
         </select>
       </label></td>
     </tr>
+
     <tr>
-      <td align="right" valign="top"><label id="tipeFrame">Tipe Frame *</label></td>
+      <td align="right" valign="top">Nama Product</td>
       <td align="center" valign="top">:</td>
       <td valign="top"><label>
         <input name="barang" type="text" id="barang" value="<?php echo $row_edit['barang'];?>" size="30" maxlength="100" />
       </label></td>
     </tr>
+
+    <?php if ($row_edit['tipe'] < 4): ?>
+
     <tr>
-        <td align="right" valign="top">Warna *</td>
-        <td align="center" valign="top">:</td>
-        <td valign="top">
-            <select name="color" id="color">
-            	<option value="">-- Choose Color --</option>
-                <?php
-					$rs2 = $mysqli->query("SELECT * FROM color_type ORDER BY color ASC");
-					while ($data2 = mysqli_fetch_assoc($rs2))
-					{
-						?>
-                        	<option value="<?=$data2['color']?>" 
-                            <?php
-								if ($row_edit['color'] == $data2['color']) echo "selected='selected'";
-                            ?>><?=$data2['color']?></option>
-                        <?php
-					}
-				?>
-            </select>
+        <td align="right">
+            <?php
+                switch ($row_edit['tipe']) {
+                    case 1:
+                        echo 'Frame';
+                    break;
+
+                    case 2:
+                        echo 'Minus';
+                    break;
+
+                    case 3:
+                        echo 'Minus';
+                    break;
+                }
+            ?>
+        </td>
+        <td align="center">:</td>
+        <td>
+            <input type="text" name="frame" id="frame" value="<?=$row_edit['frame']?>" />
         </td>
     </tr>
+
     <tr>
-        <td align="right" valign="top">Ukuran *</td>
-        <td align="center" valign="top">:</td>
-        <td valign="top">
-            <input name="size" type="text" id="size" size="30" maxlength="30" value="<?php echo $row_edit['ukuran']; ?>" />
+        <td align="right">
+            <?php
+                switch ($row_edit['tipe']) {
+                    case 1:
+                        echo 'Color';
+                    break;
+
+                    case 2:
+                        echo 'Color';
+                    break;
+
+                    case 3:
+                        echo 'Silinder';
+                    break;
+                }
+            ?>
+        </td>
+        <td align="center">:</td>
+        <td>
+            <input type="text" name="color" id="color" value="<?=$row_edit['color']?>" />
         </td>
     </tr>
+
+    <?php endif; ?>
+
+    <tr>
+        <td align="right">Expiry Date</td>
+        <td align="center">:</td>
+        <td>
+            <input type="date" name="size" id="size" value="<?=$row_edit['ukuran']?>" <?=($row_edit['tipe'] != 2) ? 'disabled="disabled"' : ''?> />
+        </td>
+    </tr>
+
     <tr valign="top">
         <td align="right">Qty</td>
         <td align="center">:</td>
@@ -215,14 +210,14 @@ table ul li {
         </td>
     </tr>
 	<tr valign="top">
-        <td align="right">Harga</td>
+        <td align="right">Harga Beli</td>
         <td align="center">:</td>
         <td>
             <input type="text" name="price" id="price" value="<?php echo $row_edit['price']; ?>" />
         </td>
     </tr>
 	<tr valign="top">
-        <td align="right">Harga 2</td>
+        <td align="right">Harga Jual</td>
         <td align="center">:</td>
         <td>
             <input type="text" name="price2" id="price2" value="<?php echo $row_edit['price2']; ?>" />
@@ -256,27 +251,19 @@ table ul li {
 			</select>
 		</label></td>
     </tr>
-	<tr valign="top">
-		<td align="right">Tanggal Masuk</td>
-		<td align="center">:</td>
-		<td>
-			<input type="text" class="calendar" id="tgl_masuk" name="tgl_masuk" value="<?php echo $row_edit['tgl_masuk_akhir']; ?>" />
-		</td>
-	</tr>
     <tr>
-      <td><em>*diisi</em></td>
-      <td align="center" valign="top">&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
       <td width="82%"><label>
         <input name="Save" type="submit" id="Save" value="Simpan" />
       </label>
         <label>
-          <input name="Cancel" type="reset" id="Cancel" onclick="javascript:history.go(-1);" value="Batal"/>
+          <input name="Cancel" type="reset" id="Cancel" onclick="javascript:window.location='<?=$base_url?>index-c-masterbarang.pos';" value="Batal"/>
         </label></td>
     </tr>
   </table>
 </form>
 
 <script>
-    $("#size").parent().parent().hide();
-    changeTipe();
+    refreshBrand();
 </script>

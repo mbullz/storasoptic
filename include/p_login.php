@@ -8,9 +8,16 @@ $pass   = $mysqli->real_escape_string($_POST['password']);
 		$rs2 = $mysqli->query("SELECT * FROM kontak WHERE kontak LIKE '$nik' AND pass LIKE '$pass'");
 		if ($data2 = mysqli_fetch_assoc($rs2))
 		{
-			if ($data2['jabatan'] == 'Administrator') $_SESSION['i_sesadmin'] = 1;
-			else $_SESSION['i_sesadmin'] = 0;
+			if ($data2['jabatan'] == 'Administrator') {
+				$_SESSION['i_sesadmin'] = 1;
+				$_SESSION['is_admin'] = true;
+			}
+			else {
+				$_SESSION['i_sesadmin'] = 0;
+				$_SESSION['is_admin'] = false;
+			}
 
+			$_SESSION['is_logged_in'] = true;
 			$_SESSION['nama'] = $data2['kontak'];
 			$_SESSION['akses'] = $data2['akses'];
 			$_SESSION['user_id'] = $data2['user_id'];
