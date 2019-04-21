@@ -15,7 +15,7 @@ menu1[4]='<a href="index-c-masterkontak-k-supplier-q-.pos"><img src="images/invo
 <?php } ?>
 
 <?php if(strstr($_SESSION['akses'],'masterkontak')) { ?>
-//menu1[5]='<a href="index-c-masterkontak-k-sales-q-.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Data Sales</a>'
+menu1[5]='<a href="index-c-masterkontak-k-sales-q-.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Data Sales</a>'
 <?php } ?>
 
 <?php if($_SESSION['is_admin'] && strstr($_SESSION['akses'],'masterkontak')) { ?>

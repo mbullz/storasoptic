@@ -14,16 +14,17 @@ include('include/function.php');
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo $GLOBALS['company_name']; ?></title>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title><?php echo $GLOBALS['company_name']; ?></title>
+	
 <link rel="shortcut icon" href="images/favicon.png" />
+
 <link href="css/style.css" rel="stylesheet" type="text/css" />
-<link href="css/ui.all.css" rel="stylesheet" type="text/css" />
-<?php /*<link href="css/ui.datepicker.css" rel="stylesheet" type="text/css" />*/ ?>
-<link href="css/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" type="text/css" />
-<link href="css/greybox.css" rel="stylesheet" type="text/css" media="all" />
-<link href="css/jquery.cluetip.css" rel="stylesheet" type="text/css" />
-<link href="css/jquery.calculator.css" rel="stylesheet" type="text/css" />
+
+<link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="css/jquery-ui.structure.min.css" />
+<link rel="stylesheet" type="text/css" href="css/jquery-ui.theme.min.css" />
 
 <?php include('include/menu_js.php');?>
 
@@ -52,8 +53,9 @@ include('include/function.php');
 	<script type="text/javascript" src="js/jquery.calculator.js"></script>
   -->
 
-  <script type="text/javascript" language="javascript" src="js/jquery-1.11.2.min.js"></script>
-  <script type="text/javascript" src="js/jqueryui.js"></script>
+  <script type="text/javascript" language="javascript" src="js/jquery-3.4.0.min.js"></script>
+  <script type="text/javascript" language="javascript" src="js/jquery-ui.min.js"></script>
+
   <script type="text/javascript" language="javascript" src="assets/DataTables/datatables.min.js"></script>
   <script type="text/javascript" language="javascript" src="js/jquery.tooltipster.min.js"></script>
 
@@ -125,8 +127,22 @@ include('include/function.php');
 
 <div id="mynotes"><textarea id="mynotesbox" rows="15" cols="80">B-POS :: point of sales asli indonesia</textarea><br /><input type="button" value="Save" id="savenotes" /></div>
 <div id="topnav">
-<?php if(isset($_SESSION['i_sesadmin'])) { ?>
-  <div id="welcome">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Selamat Datang ,  <strong><a href="index-c-profile.pos"><?php echo $_SESSION['nama'];?></a></strong>&nbsp;&nbsp; <?php //include('include/todo_inbox.php');?> [ <a href="logout.php" title="Logout">Logout</a> ]</div>
+  <?php if(isset($_SESSION['i_sesadmin'])) { ?>
+  <div id="welcome" style="margin-left: 50px;">
+    Selamat Datang ,  <strong><a href="index-c-profile.pos"><?php echo $_SESSION['nama'];?></a></strong>
+    [ <a href="logout.php" title="Logout">Logout</a> ]
+    <select style="margin-left: 16px;">
+      <option>ALL</option>
+      <?php
+        $rs = $mysqli->query("SELECT * FROM kontak WHERE jenis LIKE 'B001' ORDER BY kontak ASC");
+        while ($data = $rs->fetch_assoc()) {
+          ?>
+            <option value="<?=$data['user_id']?>"><?=$data['kontak']?></option>
+          <?php
+        }
+      ?>
+    </select>
+  </div>
   <?php } ?>
   <div id="date">&nbsp;<?php //echo date("l, d M Y"); ?></div>
 <div class="clear"></div>
@@ -179,8 +195,8 @@ include('include/function.php');
 			else {
 				getBody($_GET['component'] ?? '', $_GET['task'] ?? '', $_SESSION['i_sesadmin'] ?? '', $_SESSION['akses'] ?? '');
 			}
-	   	}
-	   	else {
+		}
+		else {
 			if ($c == 'copyright') {
 				include('component/copyright/copyright.php');
 			}

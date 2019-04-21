@@ -14,19 +14,7 @@
 	$jdata = count($data);
 	//Validasi
 	if($p <>'mdelete' AND $p <>'delete') {
-		if($p=='add') {
-			// cek username
-			$query_cek = "select kode from carabayar where kode='$kod'";
-			$cek       = $mysqli->query($query_cek);
-			$row_cek   = mysqli_fetch_assoc($cek);
-			$total_cek = mysqli_num_rows($cek);
-			if($total_cek > 0) {
-				$error[] = '- Kode <b>'.$row_cek[kode].'</b> sudah digunakan !!!';	
-			}
-		}
-		if (trim($kod) == '') {
-			$error[] = '- Kode harus diisi !!!';
-		}
+			
 		if (trim($bay) == '') {
 			$error[] = '- Cara Pembayaran harus diisi !!!';
 		}
@@ -60,12 +48,13 @@
 				}
 			break;
 			case("edit"):
-			$query_exe = "update carabayar set tipe='$tip', pembayaran='$bay', info='$inf' where kode='$kod'";
+			$query_exe = "UPDATE carabayar SET pembayaran = '$bay', info = '$inf' WHERE carabayar_id = $id";
 			$exe = $mysqli->query($query_exe);
+			
 			if($exe) {
-					echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data telah disimpan ...</b></center>";
+					$stat = 'Edit data berhasil';
 				}else{
-					echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data gagal disimpan, coba lagi !!!</b></center>";
+					$stat = 'Edit data gagal';
 				}
 			break;
 			case("delete"):
@@ -79,15 +68,13 @@
 			echo "not used again ...";
 			break;
 			default:
-				$query_exe = "insert into carabayar values ('$kod','$tip','$bay','$inf')";
+				$query_exe = "INSERT INTO carabayar(pembayaran, info) values ('$bay', '$inf')";
 				$exe = $mysqli->query($query_exe);
-				//echo $query_exe;
+
 				if($exe) {
-//					echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data telah disimpan ...</b></center>";
-                    $stat = 'Data telah disimpan ...';
+                    $stat = 'Tambah data berhasil';
 				}else{
-//					echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data gagal disimpan, coba lagi !!!</b></center>";
-                    $stat = 'Data gagal disimpan, coba lagi !!!';
+                    $stat = 'Tambah data gagal';
 				}
 			break;
 		}
@@ -95,7 +82,6 @@
 ?>
 <script type="text/javascript">
     alert('<?php echo $stat; ?>');
-    <?php if ($exe) { ?>
+
     location.href = '<?=$base_url?><?php echo $url; ?>';
-    <?php } ?>
 </script>

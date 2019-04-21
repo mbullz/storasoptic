@@ -42,13 +42,13 @@ global $c, $t;
 		$mysqli->query("INSERT INTO keluarbarang(referensi, tgl, created_by, created_at) VALUES('', NOW(), $_SESSION[user_id], NOW())");
 		$keluarbarang_id = $mysqli->insert_id;
 
-		$referensi = "INV-" . date("ymd");
+		$referensi = "INV-";
 		$rs = $mysqli->query("SELECT referensi FROM keluarbarang WHERE referensi like '$referensi%' ORDER BY referensi DESC LIMIT 0,1");
 		$data = $rs->fetch_assoc();
 
-		if ($data == null) $referensi .= '001';
+		if ($data == null) $referensi .= '000001';
 		else {
-			$lastreferensi = substr('00' . (substr($data['referensi'], -3) + 1), -3);
+			$lastreferensi = substr('00000' . (substr($data['referensi'], -6) + 1), -6);
 			$referensi .= $lastreferensi;
 		}
 
@@ -242,22 +242,21 @@ table ul li {
         <option value="4">ACCESSORIES</option>
 	</select>
     <br />
-	<!--<input type="checkbox" onchange="barangBaru(this.checked)" />Barang Baru-->
+
     <fieldset style="border:solid 1px #999999;margin-top:5px">
     <div>
         <div id="divDetail1" style="width:49%;float:left">
         	<table width="100%" border="0" cellspacing="0" class="datatable">
                 <tr class="tableDetail1">
-                    <td align="right" width="20%">Nama Barang</td>
+                    <td align="right" width="20%">Barang</td>
                     <td>:</td>
                     <td align="left">
                         <label>
-                            <!--<select name="qbrg" id="qbrg" onchange="getMasterBarang(this.value, document.getElementById('tipe').value)">-->
-							<input type="text" name="qbrg" id="qbrg" onkeyup="refreshBarang()" autocomplete="off" />
-                        </select>
+							<input type="text" name="qbrg" id="qbrg" onkeyup="refreshBarang()" autocomplete="off" placeholder="Cari Kode / Brand / Nama" size="50" />
                         </label>
+                        <br />
                         <label id="divMBarang">
-                            <select name="barang" id="barang" onchange="getDetailBarang(this.value);">
+                            <select name="barang" id="barang" onchange="getDetailBarang(this.value);" style="margin-top: 5px;margin-bottom: 5px;">
                             </select>
                         </label>
                     </td>
@@ -378,7 +377,7 @@ table ul li {
                     <td align="right">Harga Satuan</td>
                     <td>:</td>
                     <td>
-                        <input name="hsatuan" type="text" id="hsatuan" size="20" maxlength="10" value="0" onkeyup="calculate_subtotal2()" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'" />
+                        <input type="text" name="hsatuan" id="hsatuan" value="0" disabled="disabled" />
                     </td>
                 </tr>
                 <tr class="tableDetail1">
@@ -386,12 +385,12 @@ table ul li {
                     <td>:</td>
                     <td>
                         <label>
-                            <input name="diskon" type="text" id="diskon" size="8" maxlength="8" value="0" onkeyup="calculate_subtotal2()" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'" autocomplete="off" />
+                            <input name="diskon" type="text" id="diskon" size="8" maxlength="8" value="30" onkeyup="calculate_subtotal2()" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'" autocomplete="off" disabled="disabled" />
                         </label>
                         <label>
-                            <select name="tdiskon" id="tdiskon" style="font-size:9px;" onchange="calculate_subtotal2()">
-                                <option value="0">Normal</option>
+                            <select name="tdiskon" id="tdiskon" style="font-size:9px;" onchange="calculate_subtotal2()" disabled="disabled">
                                 <option value="1">%</option>
+                                <option value="0">Normal</option>
                             </select>
                         </label>
                     </td>
@@ -401,124 +400,15 @@ table ul li {
                     <td>:</td>
                     <td>
                         <label>
-                            <input name="subtotal" type="text" id="subtotal" size="10" maxlength="10" value="0" onfocus="this.blur();" style="background:#DDD;border:solid 1px #BBB;"/>
+                            <input name="subtotal" type="text" id="subtotal" value="0" disabled="disabled" />
                         </label>
                     </td>
                 </tr>
-                
-                <!-- Detail Barang Baru -->
-                
-                <tr class="tableDetail2" hidden="hidden">
-                    <td align="right" width="10%">
-                        Frame
-                    </td>
+                <tr class="tableDetail1">
+                    <td align="right">Keterangan</td>
                     <td>:</td>
                     <td>
-                        <select id="frame2" name="frame2">
-                            <option>-- Choose Frame --</option>
-                            <?php
-                                $rs3 = $mysqli->query("SELECT * FROM frame_type ORDER BY frame ASC");
-                                while ($data3 = mysqli_fetch_assoc($rs3))
-                                {
-                                    ?>
-                                        <option value="<?=$data3['frame']?>"><?=$data3['frame']?></option>
-                                    <?php
-                                }
-                            ?>
-                        </select><img src="images/plus2.png" height="20px" style="cursor:pointer;margin-left:10px;vertical-align:bottom" onclick="newItem('frame')" />
-                    </td>
-                </tr>
-                <tr class="tableDetail2" hidden="hidden">
-                    <td align="right">
-                        Brand
-                    </td>
-                    <td>:</td>
-                    <td>
-                        <select name="brand2" id="brand2">
-                            <option>-- Choose Brand --</option>
-                            <?php
-                                $rs2 = $mysqli->query("SELECT * FROM jenisbarang ORDER BY jenis ASC");
-                                while ($data2 = mysqli_fetch_assoc($rs2))
-                                {
-                                    ?>
-                                        <option value="<?=$data2['brand_id']?>"><?=$data2['jenis']?></option>
-                                    <?php
-                                }
-                            ?>
-                        </select><img src="images/plus2.png" height="20px" style="cursor:pointer;margin-left:10px;vertical-align:bottom" onclick="newItem('brand')" />
-                    </td>
-                </tr>
-                <tr class="tableDetail2" hidden="hidden">
-                    <td align="right">
-                        Tipe Frame
-                    </td>
-                    <td>:</td>
-                    <td>
-                        <input type="text" name="barang2" id="barang2" />
-                    </td>
-                </tr>
-                <tr class="tableDetail2" hidden="hidden">
-                    <td align="right">
-                        Warna
-                    </td>
-                    <td>:</td>
-                    <td>
-                        <select id="warna2" name="warna2">
-                            <option>-- Choose Color --</option>
-                            <?php
-                                $rs3 = $mysqli->query("SELECT * FROM color_type ORDER BY color ASC");
-                                while ($data3 = mysqli_fetch_assoc($rs3))
-                                {
-                                    ?>
-                                        <option value="<?=$data3['color']?>"><?=$data3['color']?></option>
-                                    <?php
-                                }
-                            ?>
-                        </select><img src="images/plus2.png" height="20px" style="cursor:pointer;margin-left:10px;vertical-align:bottom" onclick="newItem('color')" />
-                    </td>
-                </tr>
-                <tr class="tableDetail2" hidden="hidden">
-                    <td align="right">
-                        Qty
-                    </td>
-                    <td>:</td>
-                    <td>
-                        <input type="text" id="qty2" name="qty2" value="0" size="4" onkeyup="calculate_subtotal()" onfocus="if(this.value==0)this.value='';" onblur="if(this.value=='')this.value=0;" />
-                        <label>pcs</label>
-                    </td>
-                </tr>
-                <tr class="tableDetail2" hidden="hidden">
-                    <td align="right">
-                        Harga Satuan
-                    </td>
-                    <td>:</td>
-                    <td>
-                        <input type="text" id="hsatuan2" name="hsatuan2" value="0" size="10" onkeyup="calculate_subtotal()" onfocus="if(this.value==0)this.value='';" onblur="if(this.value=='')this.value=0;" />
-                    </td>
-                </tr>
-                <tr class="tableDetail2" hidden="hidden">
-                    <td align="right">Diskon</td>
-                    <td>:</td>
-                    <td>
-                        <label>
-                            <input type="text" name="diskon2" id="diskon2" size="8" maxlength="8" value="0" onkeyup="calculate_subtotal()" onfocus="javascript:if(this.value=='0')this.value=''" onblur="javascript:if(this.value=='')this.value='0'" />
-                        </label>
-                        <label>
-                            <select name="tdiskon2" id="tdiskon2" onchange="calculate_subtotal()">
-                                <option value="0">Normal</option>
-                                <option value="1">%</option>
-                            </select>
-                        </label>
-                    </td>
-                </tr>
-                <tr class="tableDetail2" hidden="hidden">
-                    <td align="right">
-                        Subtotal
-                    </td>
-                    <td>:</td>
-                    <td>
-                        <input type="text" id="subtotal2" name="subtotal2" value="0" readonly="readonly" style="background:#DDD;border:solid 1px #BBB;" />
-                        <a href="javascript:void(0);" onclick="manageInvoiceJual2('add2','');"><img src="images/add.png" border="0" /> Add to Cart</a>
+                        <textarea id="detailInfo" name="detailInfo" rows="3" cols="50"></textarea>
                     </td>
                 </tr>
             </table>
@@ -613,34 +503,31 @@ table ul li {
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="3" align="right">
-                        <label>
-                            Brand : 
-                            <input type="text" size="15" id="brandLensa" />
-                        </label>
+                    <td>
+                        Lensa :
                     </td>
-                    <td colspan="3" align="right">
-                        <label>
-                            Harga : 
-                            <input type="text" size="15" id="hargaLensa" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" />
-                        </label>
+                    <td colspan="5">
+                        <input type="text" size="30" id="brandLensa" placeholder="Cari Kode / Brand / Nama" />
+                        <br />
+                        <select style="margin-top: 5px;">
+                            <option>-- Pilih Lensa --</option>
+                            <?php
+                                $rs2 = $mysqli->query("SELECT DISTINCT b.jenis, a.kode, a.barang FROM barang a JOIN jenisbarang b ON a.brand_id = b.brand_id WHERE a.tipe = 3 ORDER BY b.jenis, a.barang");
+                                while ($data2 = $rs2->fetch_assoc()) {
+                                    ?>
+                                        <option><?=$data2['kode']?> # <?=$data2['jenis']?> # <?=$data2['barang']?></option>
+                                    <?php
+                                }
+                            ?>
+                        </select>
                     </td>
                 </tr>
-                <tr class="divSpecialOrderLensa">
-                    <td colspan="3" align="right">
-                    	<!--
-                        <label>
-                            Tipe : 
-                            <input type="text" size="15" id="tipeLensa" />
-                        </label>
-                        -->
-                        <label>
-                            Jenis : 
-                            <input type="text" size="15" id="jenisLensa" />
-                        </label>
+                <tr>
+                    <td>
+                        Harga : 
                     </td>
-                    <td colspan="3" align="right">
-                        
+                    <td colspan="5">
+                        <input type="text" id="hargaLensa" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" disabled="disabled" />
                     </td>
                 </tr>
                 <tr class="divSpecialOrderLensa">
@@ -648,33 +535,6 @@ table ul li {
                         <label>
                             Price List : 
                             <input type="text" size="15" id="hargaModalLensa" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" />
-                        </label>
-                    </td>
-                </tr>
-                <tr class="divSpecialOrderLensa">
-                    <td colspan="6">
-                        <label>
-                            Supplier : 
-                            <select id="supplierLensa">
-                            	<option value="">-- Choose Supplier --</option>
-                                <?php
-									$rs2 = $mysqli->query("SELECT a.user_id,a.kontak FROM kontak a , jeniskontak b WHERE a.jenis = b.kode AND b.klasifikasi LIKE 'supplier' ORDER BY kontak ASC");
-									while ($data2 = mysqli_fetch_assoc($rs2))
-									{
-										?>
-											<option value="<?=$data2['kontak']?>"><?=$data2['kontak']?></option>
-										<?php
-									}
-								?>
-                            </select>
-                        </label>
-                    </td>
-                </tr>
-                <tr class="divSpecialOrderLensa">
-                    <td colspan="6">
-                        <label>
-                            Info : 
-                            <input type="text" id="infoLensa" size="40" />
                         </label>
                     </td>
                 </tr>
@@ -704,6 +564,13 @@ table ul li {
       </td>
     </tr>
     <tr>
+        <td align="right">PPN</td>
+        <td align="center">:</td>
+        <td>
+            <input type="text" size="3" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" /> %
+        </td>
+    </tr>
+    <tr>
         <td align="right">Pembayaran</td>
         <td align="center">:</td>
         <td>
@@ -731,7 +598,7 @@ table ul li {
         <td align="right">Keterangan</td>
         <td align="center">:</td>
         <td>
-            <textarea cols="50" name="textInfoPembayaran" id="textInfoPembayaran"></textarea>
+            <textarea rows="3" cols="50" name="textInfoPembayaran" id="textInfoPembayaran"></textarea>
         </td>
     </tr>
     <tr>

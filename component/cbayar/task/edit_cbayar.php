@@ -1,11 +1,6 @@
 <?php include('include/define.php');?>
 <?php
-$id = $_GET['id'];
-// query edit
-$query_edit = "select * from carabayar where kode='$id'";
-$edit = $mysqli->query($query_edit);
-$row_edit = mysqli_fetch_assoc($edit);
-$total_edit = mysqli_num_rows($edit);
+
 ?>
 <script type="text/javascript" src="js/jquery.wysiwyg.js"></script>
 <script type="text/javascript">

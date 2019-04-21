@@ -1,6 +1,6 @@
 <?php
-	include('include/define.php');
 	include('include/config_db.php');
+	include('include/define.php');
 	
 	$tipe = $_POST['tipe'] ?? 1;
 	
@@ -166,7 +166,7 @@ if(isset($_POST['import'])) {  ?>
 <div id="example"></div>
 
 <br />
-<input type="password" id="textPasswordSave" placeholder="Password Save" size="15" />
+
 <input type="button" id="save" value="Save" />
 <!--
 <input type="button" onclick="printInvoice();" value="Print Barcode" />
@@ -374,29 +374,18 @@ if(isset($_POST['import'])) {  ?>
 	
 	$("#save").click(function()
 	{
-		if ($("#textPasswordSave").val() == "")
+		$.ajax(
 		{
-			alert("Password Save harus diisi");
-		}
-		else if ($("#textPasswordSave").val() != "123456")
-		{
-			alert("Password Save Salah");
-		}
-		else
-		{
-			$.ajax(
+			url: "component/masterbarang/task/save_handsontable.php",
+			data: {"data": $("#example").data('handsontable').getData(), "tipe":<?=$tipe?>},
+			dataType: 'json',
+			type: 'POST',
+			success: function (res)
 			{
-				url: "component/masterbarang/task/save_handsontable.php",
-				data: {"data": $("#example").data('handsontable').getData(), "tipe":<?=$tipe?>},
-				dataType: 'json',
-				type: 'POST',
-				success: function (res)
-				{
-					alert(res);
-					openDialogPrintInvoice();
-					//window.location = "<?=$base_url?>index-c-masterbarang.pos";
-				}
-			});
-		}	
+				alert(res);
+				openDialogPrintInvoice();
+				//window.location = "<?=$base_url?>index-c-masterbarang.pos";
+			}
+		});
 	});
 </script>

@@ -21,6 +21,8 @@ $pass   = $mysqli->real_escape_string($_POST['password']);
 			$_SESSION['nama'] = $data2['kontak'];
 			$_SESSION['akses'] = $data2['akses'];
 			$_SESSION['user_id'] = $data2['user_id'];
+			$_SESSION['branch_id'] = $data2['branch_id'];
+
 			?>
 				<script type="text/javascript">
 					alert('Login Berhasil ...');

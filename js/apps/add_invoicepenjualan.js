@@ -242,47 +242,6 @@ function formSubmit(e)
 	}
 }
 
-function addItem()
-{
-	if ( $("#newitem").val() == "" )
-	{
-	}
-	else
-	{
-		$("#newitem").after("&nbsp;<img src='images/loading.gif' />");
-		$.ajax(
-		{
-			url: 'ajaxdata/add_item.php',
-			type: 'POST',
-			data: 'category=' + $("#hiddenType").val() + '&item=' + $("#newitem").val() + '&tipe=' + $("#tipe").val(),
-			error: function(e)
-			{
-				alert(e.responseText);
-			},
-			success: function(response)
-			{
-				if ( $("#hiddenType").val() == "frame" )
-				{
-					$("#frame2").append("<option value='" + response + "'>" + response + "</option>");
-					$("#frame2 option[value='" + response + "']").prop("selected","selected");
-				}
-				else if ( $("#hiddenType").val() == "brand" )
-				{
-					$("#brand2").append("<option value='" + response + "'>" + $("#newitem").val() + "</option>");
-					$("#brand2 option[value='" + response + "']").prop("selected","selected");
-				}
-				else
-				{
-					$("#warna2").append("<option value='" + response + "'>" + response + "</option>");
-					$("#warna2 option[value='" + response + "']").prop("selected","selected");
-				}
-				
-				$("#dialog").dialog("close");
-			}
-		});
-	}
-}
-
 function onLoad()
 {
 	$("#satuan option[value='1']").prop("selected","selected");
@@ -341,39 +300,6 @@ function onLoad()
 			}
 		}
 	});
-}
-
-function newItem(type)
-{
-	if (type == "frame")
-	{
-		var html = '<br>Frame<br>' +
-		'<input type="text" id="newitem" size="30" onkeypress="javascript:if(event.keyCode == 13) addItem();">' +
-		'<input type="hidden" id="hiddenType" value="' + type + '">';
-		
-		$("#dialog").dialog("option","title","New Frame");
-		$("#dialog").html(html);
-	}
-	else if (type == "brand")
-	{
-		var html = '<br>Brand<br>' +
-		'<input type="text" id="newitem" size="30" onkeypress="javascript:if(event.keyCode == 13) addItem();">' +
-		'<input type="hidden" id="hiddenType" value="' + type + '">';
-		
-		$("#dialog").dialog("option","title","New Brand");
-		$("#dialog").html(html);
-	}
-	else
-	{
-		var html = '<br>Color<br>' +
-		'<input type="text" id="newitem" size="30" onkeypress="javascript:if(event.keyCode == 13) addItem();">' +
-		'<input type="hidden" id="hiddenType" value="' + type + '">';
-	
-		$("#dialog").dialog("option","title","New Color");
-		$("#dialog").html(html);
-	}
-	
-	$("#dialog").dialog("open");
 }
 
 function manageInvoiceJual(t, v)

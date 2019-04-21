@@ -55,7 +55,7 @@ $(document).ready(function() {
         </td>
       </tr>
       <tr>
-        <th width="12%">Kode</th>
+        <th width="12%">ID</th>
         <th width="28%">Cara Pembayaran</th>
         <th>Info</th>
         <th width="8%">Pengaturan</th>
@@ -67,7 +67,9 @@ $(document).ready(function() {
         <td align="left"><?php echo $row_data['pembayaran'];?></td>
         <td align="left"><?php echo $row_data['info'];?></td>
         <td align="center">
-          <?php if(strstr($_SESSION['akses'],"edit_".$c)) { ?><a href="index.php?component=<?php echo $c;?>&amp;task=edit&amp;id=<?php echo $row_data['kode'];?>" title="Edit Data"><img src="images/edit_icon.png" border="0" width="16px" height="16px" /></a><?php } ?>
+          <?php if(strstr($_SESSION['akses'],"edit_".$c)) { ?>
+            <a href="index.php?component=<?=$c?>&task=add&id=<?=$row_data['carabayar_id']?>" title="Edit Data"><img src="images/edit_icon.png" border="0" width="16px" height="16px" /></a>
+          <?php } ?>
           &nbsp;
           <?php if(strstr($_SESSION['akses'],"delete_".$c)) { ?>
             <img src="images/delete_icon.png" width="16px" height="16px" />

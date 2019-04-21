@@ -123,14 +123,5 @@
 ?>
 <script type="text/javascript">
 	alert('<?php echo $stat; ?>');
-    <?php if ($exe) { ?>
    	location.href = '<?=$base_url?><?=$url?>';
-    <?php }
-		else
-		{
-			?>
-				location.href = '<?=$base_url?><?=$url?>';
-			<?php
-		}
-	?>
 </script>
