@@ -3,17 +3,22 @@
 global $mysqli;
 global $klas, $c;
 
-$query_data  = "SELECT a.user_id, a.gender, a.kontak, a.alamat, a.kperson, a.pinbb, a.mulai, a.jabatan, a.notlp, a.notlp2, a.hp, a.fax, a.email, a.info, b.jenis 
-				FROM kontak a 
-				JOIN jeniskontak b ON b.kode = a.jenis ";
+$branch_id = $_SESSION['branch_id'] ?? 0;
 
-if($klas <>'')
-{
-	$query_data .= "WHERE b.klasifikasi='$klas' ";
+$branch_filter = '';
+if ($branch_id != 0 && ($klas == 'karyawan' || $klas == 'customer' || $klas == 'sales')) {
+    $branch_filter = " AND a.branch_id = $branch_id ";
 }
 
-$query_data .= " ORDER BY a.user_id ASC ";
-$data = $mysqli->query($query_data) or die(mysql_error());
+$query_data  = "SELECT 
+                    a.user_id, a.gender, a.kontak, a.alamat, a.kperson, a.pinbb, a.mulai, a.jabatan, a.notlp, a.notlp2, a.hp, a.fax, a.email, a.info, b.jenis 
+				FROM kontak a 
+				JOIN jeniskontak b ON b.kode = a.jenis 
+                WHERE b.klasifikasi = '$klas' 
+                $branch_filter 
+                ORDER BY a.user_id ASC ";
+
+$data = $mysqli->query($query_data);
 $totalRows_data = mysqli_num_rows($data);
 ?>
 

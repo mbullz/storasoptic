@@ -10,6 +10,8 @@ require('include/config_db.php');
 require('include/define.php');
 include('include/function.php');
 
+  $branch_id = $_SESSION['branch_id'] ?? 0;
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -116,6 +118,20 @@ include('include/function.php');
 	for (i = 0; i < field.length; i++)
 	field[i].checked = false ;
   }
+
+  function changeBranch(branch_id) {
+    $.ajax({
+      url: 'include/global_ajax.php',
+      type: 'POST',
+      dataType: 'json',
+      data: 'mode=change_branch&branch_id=' + branch_id,
+      success: function(result) {
+      },
+      complete: function() {
+        location.reload();
+      },
+  });
+  }
 </script>
 
 </head>
@@ -127,21 +143,26 @@ include('include/function.php');
 
 <div id="mynotes"><textarea id="mynotesbox" rows="15" cols="80">B-POS :: point of sales asli indonesia</textarea><br /><input type="button" value="Save" id="savenotes" /></div>
 <div id="topnav">
-  <?php if(isset($_SESSION['i_sesadmin'])) { ?>
+  <?php if(isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in']) { ?>
   <div id="welcome" style="margin-left: 50px;">
     Selamat Datang ,  <strong><a href="index-c-profile.pos"><?php echo $_SESSION['nama'];?></a></strong>
     [ <a href="logout.php" title="Logout">Logout</a> ]
-    <select style="margin-left: 16px;">
-      <option>ALL</option>
+    <?php if ($_SESSION['is_admin']): ?>
+    <select id="branch_id" style="margin-left: 16px;" onchange="changeBranch(this.value)">
+      <option value="0">ALL</option>
       <?php
         $rs = $mysqli->query("SELECT * FROM kontak WHERE jenis LIKE 'B001' ORDER BY kontak ASC");
         while ($data = $rs->fetch_assoc()) {
           ?>
-            <option value="<?=$data['user_id']?>"><?=$data['kontak']?></option>
+            <option value="<?=$data['user_id']?>" 
+            <?=($data['user_id'] == $_SESSION['branch_id'] ? 'selected="selected"' : '')?> >
+              <?=$data['kontak']?>
+            </option>
           <?php
         }
       ?>
     </select>
+    <?php endif; ?>
   </div>
   <?php } ?>
   <div id="date">&nbsp;<?php //echo date("l, d M Y"); ?></div>

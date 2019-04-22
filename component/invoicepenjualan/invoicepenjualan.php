@@ -1,6 +1,13 @@
 <?php
 
-global $mysqli;
+	global $mysqli;
+
+	$branch_id = $_SESSION['branch_id'] ?? 0;
+
+	$branch_filter = '';
+	if ($branch_id != 0) {
+	    $branch_filter = " AND a.branch_id = $branch_id ";
+	}
 
 $query_data = "SELECT a.keluarbarang_id, a.referensi, a.tgl, a.total, a.info, 
 					b.kontak, b.user_id as customer, c.matauang, 
@@ -12,6 +19,8 @@ $query_data = "SELECT a.keluarbarang_id, a.referensi, a.tgl, a.total, a.info,
 				FROM keluarbarang a 
 				JOIN kontak b ON b.user_id = a.client 
 				JOIN matauang c ON a.matauang_id = c.matauang_id 
+				WHERE 1 = 1 
+				$branch_filter 
 				ORDER BY a.tgl DESC, a.keluarbarang_id DESC ";
 
 $data = $mysqli->query($query_data);

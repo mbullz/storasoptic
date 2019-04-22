@@ -15,28 +15,6 @@ function refreshCustomer(keyword) {
 	});
 }
 
-function getDetailBarang(product_id)
-{
-	$.ajax({
-		url: 'component/masterbarang/task/ajax_masterbarang.php',
-		type: 'GET',
-		dataType: 'json',
-		data: 'mode=get_detail&product_id=' + product_id,
-		success: function(result)
-		{
-			if (result.length > 0) {
-				$("#frame").html(result[0].frame);
-				$("#hsatuan").val(result[0].price2);
-			} else {
-				$("#frame").html("");
-				$("#hsatuan").val("0");
-			}
-			
-			$("#qty").val("0");
-		}
-	});
-}
-
 function refreshTipe() {
 	var tipe = $("#tipe").val();
 	
@@ -124,6 +102,84 @@ function refreshBarang() {
 	});
 }
 
+function getDetailBarang(product_id)
+{
+	$.ajax({
+		url: 'component/masterbarang/task/ajax_masterbarang.php',
+		type: 'GET',
+		dataType: 'json',
+		data: 'mode=get_detail&product_id=' + product_id,
+		success: function(result)
+		{
+			if (result.length > 0) {
+				$("#frame").html(result[0].frame);
+				$("#hsatuan").val(result[0].price2);
+			} else {
+				$("#frame").html("");
+				$("#hsatuan").val("0");
+			}
+			
+			$("#qty").val("0");
+		}
+	});
+}
+
+function refreshLensa() {
+	var search = $('#searchLensa').val();
+
+	$.ajax({
+		url: 'component/invoicepenjualan/task/ajax_invoicepenjualan.php',
+		type: 'GET',
+		dataType: 'json',
+		data: 'mode=get_lensa&search=' + search,
+		success: function(result)
+		{
+			var html = '<option value="">-- Pilih Lensa --</option>';
+			for (i=0; i<result.length; i++) {
+				var value = result[i].kode + ' # ' + result[i].jenis + ' # ' + result[i].barang;
+
+				html += '<option value="' + value + '">';
+				html += value;
+				html += '</option>';
+			}
+			$("#lensa").html(html);
+		}
+	});
+}
+
+function getDetailLensa()
+{
+	var value = $('#lensa').val();
+	value = value.split(' # ');
+	var kode = value[0];
+	var jenis = value[1];
+	var barang = value[2];
+	var rSph = $("#rSph").val();
+	var rCyl = $("#rCyl").val();
+	var lSph = $("#lSph").val();
+	var lCyl = $("#lCyl").val();
+
+	$.ajax({
+		url: 'component/masterbarang/task/ajax_masterbarang.php',
+		type: 'GET',
+		dataType: 'json',
+		data: 'mode=get_detail_lensa&kode=' + kode + '&jenis=' + jenis + '&barang=' + barang + '&rSph=' + rSph + '&rCyl=' + rCyl + '&lSph=' + lSph + '&lCyl=' + lCyl,
+		success: function(result)
+		{
+			if (result.length > 0) {
+				$("#labelStockLensaLeft").html('L : ' + result[0].qty);
+				$("#labelStockLensaRight").html('R : ' + result[0].qty);
+				$("#hargaLensa").val(result[0].price2);
+			}
+			else {
+				$("#labelStockLensaLeft").html('L : 0');
+				$("#labelStockLensaRight").html('R : 0');
+				$("#hargaLensa").val("0");
+			}
+		}
+	});
+}
+
 function setTipePembayaran(val) {
 	if (val == 1) { //cash
 		$("#jtempo").attr('disabled', 'disabled');
@@ -170,6 +226,10 @@ $(function() {
 	$('#subtotal').number(true, 0);
 	$('#hargaLensa').number(true, 0);
 	$('#uangMuka').number(true, 0);
+
+	if ($('#branch_id').val() == 0) {
+		alert('Pilih cabang terlebih dahulu sebelum menambahkan data');
+	}
 });
 	
 function printInvoice() {
@@ -217,7 +277,7 @@ function formSubmit(e)
 	{
 		alert("Customer harus dipilih");
 	}
-	else if ( $(".datatable tr").length <= 29 )
+	else if ( $(".datatable tr").length <= 21 )
 	{
 		alert("Barang harus dimasukkan ke dalam keranjang (* Add to Cart)");
 	}
@@ -252,11 +312,6 @@ function onLoad()
 	$("#jenisLensa").autocomplete(
 	{
 		source: lensa
-	});
-	
-	$("#brandLensa").autocomplete(
-	{
-		source: brand
 	});
 	
 	$("#tipeLensa").autocomplete(
@@ -425,5 +480,5 @@ function resetField()
 	$('#subtotal').val('0');
 
 	$('#hargaLensa').val('0');
-	$('#brandLensa').val('');
+	$('#searchLensa').val('');
 }

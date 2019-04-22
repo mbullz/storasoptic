@@ -72,10 +72,9 @@ $(document).ready(function() {
 	$(this).hide();
 	});
 })
-$(function()
-	{
-	});
+
 </script>
+
 <style type="text/css">
 #result{ 
 	background-color: #F0FFED;
@@ -109,7 +108,7 @@ table ul li {
 <h1><?=$title?> <?php echo ucfirst($klas);?></h1> 
 <form action="component/<?php echo $c;?>/p_<?php echo $c;?>.php?p=<?php echo $t;?>&klas=<?php echo $klas;?>" method="post" name="add" id="add">
 	<input type="hidden" name="kode" value="<?=$user_id?>" />
-	<input type="hidden" name="klas" value="<?=$klas?>" />
+	<input type="hidden" name="klas" id="klas" value="<?=$klas?>" />
 	<table width="100%" border="0" cellspacing="0" cellpadding="4">
 		<tr>
 			<td width="12%" align="right" valign="top">Jenis Kontak *</td>
@@ -223,3 +222,12 @@ table ul li {
 		</tr>
 	</table>
 </form>
+
+<script type="text/javascript" language="javascript">
+	$(function()
+	{
+		if ($('#branch_id').val() == 0 && ($('#klas').val() == 'customer' || $('#klas').val() == 'sales' || $('#klas').val() == 'karyawan')) {
+			alert('Pilih cabang terlebih dahulu sebelum menambahkan data');
+		}
+	});
+</script>

@@ -26,7 +26,7 @@
 					$kode_harga = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][8]));
 					$diskon = 0;
 					$info = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][9]));
-					$tgl_masuk_akhir = $_POST['data'][$i][11]==""?date("Y-m-d"):$_POST['data'][$i][10];
+					$tgl_masuk_akhir = $_POST['data'][$i][10]==""?date("Y-m-d"):$_POST['data'][$i][10];
 					
 					$rs = $mysqli->query("SELECT * FROM frame_type WHERE frame LIKE '$frame'");
 					if (!mysqli_fetch_assoc($rs))
@@ -54,7 +54,7 @@
 					$kode_harga = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][9]));
 					$diskon = 0;
 					$info = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][10]));
-					$tgl_masuk_akhir = $_POST['data'][$i][12]==""?date("Y-m-d"):$_POST['data'][$i][11];
+					$tgl_masuk_akhir = $_POST['data'][$i][11]==""?date("Y-m-d"):$_POST['data'][$i][11];
 					
 					$rs = $mysqli->query("SELECT * FROM color_type WHERE color LIKE '$color'");
 					if (!mysqli_fetch_assoc($rs))
@@ -67,15 +67,15 @@
 					$kode = trim(strtoupper($_POST['data'][$i][0]));
 					$jenis = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][1]));
 					$barang = strtoupper($_POST['data'][$i][2]);
-					$frame = strtoupper($_POST['data'][$i][3]); //minus
-					$color = strtoupper($_POST['data'][$i][4]); //silinder
+					$frame = $_POST['data'][$i][3] ?? 0; //minus
+					$color = $_POST['data'][$i][4] ?? 0; //silinder
 					$qty = $_POST['data'][$i][5]==""?0:$_POST['data'][$i][5];
 					$price = $_POST['data'][$i][6]==""?0:$_POST['data'][$i][6];
 					$price2 = $_POST['data'][$i][7]==""?0:$_POST['data'][$i][7];
 					$kode_harga = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][8]));
 					$diskon = 0;
 					$info = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][9]));
-					$tgl_masuk_akhir = $_POST['data'][$i][11]==""?date("Y-m-d"):$_POST['data'][$i][10];
+					$tgl_masuk_akhir = $_POST['data'][$i][10]==""?date("Y-m-d"):$_POST['data'][$i][10];
 				break;
 				
 				case '4':
@@ -88,7 +88,7 @@
 					$kode_harga = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][6]));
 					$diskon = 0;
 					$info = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][7]));
-					$tgl_masuk_akhir = $_POST['data'][$i][11]==""?date("Y-m-d"):$_POST['data'][$i][8];
+					$tgl_masuk_akhir = $_POST['data'][$i][8]==""?date("Y-m-d"):$_POST['data'][$i][8];
 					
 					$frame = '';
 					$color = '';
@@ -113,7 +113,7 @@
 				}
 
 				$referensi = "PO-" . date("dmHis") . $i;
-				$mysqli->query("INSERT INTO masukbarang(referensi, tgl, jtempo, sales, supplier, matauang_id, total, info, lunas, tipe_pembayaran, created_by, created_at) VALUES('$referensi','$tgl_masuk_akhir', NULL,0,$supplier_id, 1,0,'','0','Cash', $_SESSION[user_id], NOW())");
+				$mysqli->query("INSERT INTO masukbarang(referensi, tgl, jtempo, sales, supplier, matauang_id, total, info, lunas, tipe_pembayaran, branch_id, created_by, created_at) VALUES('$referensi','$tgl_masuk_akhir', NULL,0,$supplier_id, 1,0,'','0','Cash', $_SESSION[branch_id], $_SESSION[user_id], NOW())");
 				$id = $mysqli->insert_id;
 
 				$masukbarang_id += array($id => $info);
@@ -124,7 +124,7 @@
 			}
 			
 			$brand_id = "";
-			$rs = $mysqli->query("SELECT * FROM jenisbarang WHERE jenis LIKE '$jenis' AND tipe = $tipe");
+			$rs = $mysqli->query("SELECT * FROM jenisbarang WHERE jenis LIKE '$jenis' AND tipe = $tipe AND info != 'DELETED'");
 			if ($data = mysqli_fetch_assoc($rs))
 			{
 				$brand_id = $data['brand_id'];
@@ -137,18 +137,18 @@
 				$brand_id = $data2[0];
 			}
 			
-			$rs2 = $mysqli->query("SELECT * FROM barang WHERE brand_id = $brand_id AND barang LIKE '$barang' AND frame LIKE '$frame' AND color LIKE '$color'");
+			$rs2 = $mysqli->query("SELECT * FROM barang WHERE kode = '$kode' AND brand_id = $brand_id AND barang LIKE '$barang' AND frame LIKE '$frame' AND color LIKE '$color' AND branch_id = $_SESSION[branch_id]");
 			if ($data2 = mysqli_fetch_assoc($rs2))
 			{
 				$mysqli->query("UPDATE barang SET qty = qty + $qty WHERE product_id = $data2[product_id]");
 
-				$mysqli->query("INSERT INTO dmasukbarang VALUES(0,$data2[product_id],1,$price,$qty,'0',0,'".($qty*$price)."','$id')");
+				$mysqli->query("INSERT INTO dmasukbarang(masukbarang_id, product_id, satuan_id, harga, qty, tdiskon, diskon, subtotal) VALUES($id, $data2[product_id], 1, $price, $qty, '0', 0, '".($qty*$price)."')");
 
 				$totalsuccess++;
 			}
 			else
 			{
-				$query = "INSERT INTO barang(product_id, kode, brand_id, barang, frame, color, qty, price, price2, kode_harga, info, ukuran, tipe, tgl_masuk_akhir, tgl_keluar_akhir, created_user_id, created_date, last_update_user_id, last_update_date) VALUES (0, '$kode', $brand_id, '$barang', '$frame', '$color', $qty, $price, $price2, '$kode_harga', '$info', '$ukuran', $tipe, '$tgl_masuk_akhir', NULL, $_SESSION[user_id], NOW(), NULL, NULL)";
+				$query = "INSERT INTO barang(product_id, kode, brand_id, barang, frame, color, qty, price, price2, kode_harga, info, ukuran, tipe, tgl_masuk_akhir, tgl_keluar_akhir, branch_id, created_user_id, created_date, last_update_user_id, last_update_date) VALUES (0, '$kode', $brand_id, '$barang', '$frame', '$color', $qty, $price, $price2, '$kode_harga', '$info', '$ukuran', $tipe, '$tgl_masuk_akhir', NULL, $_SESSION[branch_id], $_SESSION[user_id], NOW(), NULL, NULL)";
 				
 				$result = $mysqli->query($query);				
 				if ($result) $totalsuccess++;

@@ -1,4 +1,5 @@
 <?php
+	session_start();
 	include('../../include/config_db.php');
 	//Define variable
     $stat = '';
@@ -101,13 +102,16 @@
 				}
 			break;
 			case 'add':
+				$branch_id = $_SESSION['branch_id'] ?? 0;
+				if ($klas == 'supplier' || $klas == 'cabang') $branch_id = 0;
+
 				if ($klas == "karyawan")
 				{
-					$query_exe = "INSERT INTO kontak(pass, gender, akses, jenis, kontak, alamat, kperson, pinbb, mulai, aktif, jabatan, notlp, notlp2, hp, fax, email, info) values ('$pass', '$gen','','$jen','$kon','$ala','$kpe','$pbb','$mul','$sta','$jab','$tlp','$tlp2','$hp','$fax','$ema','$inf')";
+					$query_exe = "INSERT INTO kontak(pass, gender, akses, jenis, kontak, alamat, kperson, pinbb, mulai, aktif, jabatan, notlp, notlp2, hp, fax, email, info, branch_id) VALUES ('$pass', '$gen','','$jen','$kon','$ala','$kpe','$pbb','$mul','$sta','$jab','$tlp','$tlp2','$hp','$fax','$ema', '$inf', $branch_id)";
 				}
 				else
 				{
-					$query_exe = "insert into kontak(pass,gender,akses,jenis,kontak,alamat,kperson,pinbb,mulai,aktif,jabatan,notlp,notlp2,hp,fax,email,info) values ('', '$gen','','$jen','$kon','$ala','$kpe','$pbb','$mul','$sta','$jab','$tlp','$tlp2','$hp','$fax','$ema','$inf')";
+					$query_exe = "INSERT INTO kontak(pass,gender,akses,jenis,kontak,alamat,kperson,pinbb,mulai,aktif,jabatan,notlp,notlp2,hp,fax,email,info, branch_id) VALUES ('', '$gen','','$jen','$kon','$ala','$kpe','$pbb','$mul','$sta','$jab','$tlp','$tlp2','$hp','$fax','$ema','$inf', $branch_id)";
 				}
 				$exe = $mysqli->query($query_exe);
 

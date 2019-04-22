@@ -1,6 +1,7 @@
 <?php
 global $mysqli;
 global $c, $t;
+global $branch_id;
 // clear dkeluarbarang
 //$query_cleanup = "call sp_cleanup_trans";
 //$mysqli->query($query_cleanup);
@@ -43,7 +44,7 @@ global $c, $t;
 		$keluarbarang_id = $mysqli->insert_id;
 
 		$referensi = "INV-";
-		$rs = $mysqli->query("SELECT referensi FROM keluarbarang WHERE referensi like '$referensi%' ORDER BY referensi DESC LIMIT 0,1");
+		$rs = $mysqli->query("SELECT referensi FROM keluarbarang WHERE referensi LIKE '$referensi%' AND branch_id = $branch_id ORDER BY referensi DESC LIMIT 0,1");
 		$data = $rs->fetch_assoc();
 
 		if ($data == null) $referensi .= '000001';
@@ -69,13 +70,8 @@ $jkontak = $mysqli->query($jkontak_query);
 $row_jkontak   = mysqli_fetch_assoc($jkontak);
 $total_jkontak = mysqli_num_rows($jkontak);
 
-// get masterbarang
-$query_mbarang = "select a.product_id, a.kode, a.barang, b.jenis from barang a join jenisbarang b on a.brand_id = b.brand_id where qty > 0 and b.tipe=1 order by b.jenis, a.barang";
-$mbarang       = $mysqli->query($query_mbarang);
-$row_mbarang   = mysqli_fetch_assoc($mbarang);
-$total_mbarang = mysqli_num_rows($mbarang);
 // getsatuan
-$query_satuan = "select satuan_id,satuan from satuan order by satuan";
+$query_satuan = "SELECT * FROM satuan ORDER BY satuan ASC";
 $satuan       = $mysqli->query($query_satuan);
 $row_satuan   = mysqli_fetch_assoc($satuan);
 $total_satuan = mysqli_num_rows($satuan);
@@ -157,20 +153,21 @@ table ul li {
 
 <form name="add" id="add" action="component/<?=$c?>/p_<?=$c?>.php?p=<?=$t?>" method="POST">
 	<input type="hidden" name="keluarbarang_id" id="keluarbarang_id" value="<?=$keluarbarang_id?>">
+    <input type="hidden" id="tipePembayaran" name="tipePembayaran" value="1" />
 
   <table width="100%" border="0" cellspacing="0" cellpadding="4">
     <tr>
-      <td width="12%" align="right" valign="top">No. Invoice *</td>
+      <td width="14%" align="right" valign="top">No. Invoice *</td>
       <td width="1%" align="center" valign="top">:</td>
-      <td width="82%" valign="top"><label>
-        <input name="invoice" type="text" id="invoice" value="<?=$referensi?>" size="15" maxlength="15">
-      </label>
+      <td width="85%" valign="top">
+        <label>
+            <input name="invoice" type="text" id="invoice" value="<?=$referensi?>" size="15" maxlength="15">
+        </label>
         <?php if ($total_jkontak == 1) { ?>
             <input type="hidden" name="matauang" id="matauang" value="<?php echo $row_jkontak['kode']; ?>" />
         <?php } else { ?>
         <label>
             <select name="matauang" id="matauang">
-                <option value="">Pilih Mata Uang</option>
                 <?php if($total_jkontak > 0) { do { ?>
                 <option value="<?php echo $row_jkontak['kode'];?>" <?php if($row_jkontak['kode']=='IDR') { ?>selected="selected"<?php } ?>><?php echo $row_jkontak['matauang'];?></option>
                 <?php }while($row_jkontak = mysqli_fetch_assoc($jkontak)); } ?>
@@ -186,22 +183,7 @@ table ul li {
         <input name="tgl" type="text" class="calendar" id="tgl" value="<?=$tgl?>" size="10" maxlength="10"/>
       </label></td>
     </tr>
-    <input type="hidden" id="tipePembayaran" name="tipePembayaran" value="1" />
-    <!--
-    <tr>
-        <td align="right" valign="top">Pembayaran *</td>
-        <td align="center" valign="top">:</td>
-        <td valign="top">
-            <select id="tipePembayaran" name="tipePembayaran" onchange="setTipePembayaran(this.value);">
-                <option value="1">Cash</option>
-                <option value="2">Pembayaran DP</option>
-            </select>
-            <label>
-                <input name="jtempo" type="text" class="calendar" id="jtempo" value="<?php echo date("Y-m-d");?>" size="10" maxlength="10" disabled="disabled" />
-            </label>
-        </td>
-    </tr>
-    -->
+
     <tr valign="top">
       <td align="right">Customer *</td>
       <td align="center">:</td>
@@ -218,7 +200,12 @@ table ul li {
 				<select name="sales" id="sales">
                 	<option value="0">-</option>
 					<?php
-						$rs3 = $mysqli->query("SELECT a.user_id,a.kontak FROM kontak a , jeniskontak b WHERE a.jenis = b.kode AND b.klasifikasi LIKE 'sales' ORDER BY kontak ASC");
+						$rs3 = $mysqli->query("SELECT a.user_id,a.kontak 
+                            FROM kontak a 
+                            JOIN jeniskontak b ON a.jenis = b.kode 
+                            WHERE b.klasifikasi LIKE 'sales' 
+                            AND a.branch_id = $branch_id 
+                            ORDER BY kontak ASC ");
 						while ($data3 = mysqli_fetch_assoc($rs3))
 						{
 							?>
@@ -429,14 +416,14 @@ table ul li {
                 <tr>
                     <td>Right</td>
                     <td>
-                        <select name="rSph" id="rSph">
+                        <select name="rSph" id="rSph" onchange="getDetailLensa()">
                             <?php for ($r = 15; $r >= -20; $r = $r - 0.25) { ?>
                             <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
                             <?php } ?>
                         </select>
                     </td>
                     <td>
-                        <select name="rCyl" id="rCyl">
+                        <select name="rCyl" id="rCyl" onchange="getDetailLensa()">
                             <?php for ($r = 15; $r >= -20; $r = $r - 0.25) { ?>
                             <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
                             <?php } ?>
@@ -467,14 +454,14 @@ table ul li {
                 <tr>
                     <td>Left</td>
                     <td>
-                        <select name="lSph" id="lSph">
+                        <select name="lSph" id="lSph" onchange="getDetailLensa()">
                             <?php for ($r = 15; $r >= -20; $r = $r - 0.25) { ?>
                             <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
                             <?php } ?>
                         </select>
                     </td>
                     <td>
-                        <select name="lCyl" id="lCyl">
+                        <select name="lCyl" id="lCyl" onchange="getDetailLensa()">
                             <?php for ($r = 15; $r >= -20; $r = $r - 0.25) { ?>
                             <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
                             <?php } ?>
@@ -507,19 +494,24 @@ table ul li {
                         Lensa :
                     </td>
                     <td colspan="5">
-                        <input type="text" size="30" id="brandLensa" placeholder="Cari Kode / Brand / Nama" />
+                        <input type="text" size="30" id="searchLensa" placeholder="Cari Kode / Brand / Nama" autocomplete="false" onkeyup="refreshLensa()" />
                         <br />
-                        <select style="margin-top: 5px;">
-                            <option>-- Pilih Lensa --</option>
-                            <?php
-                                $rs2 = $mysqli->query("SELECT DISTINCT b.jenis, a.kode, a.barang FROM barang a JOIN jenisbarang b ON a.brand_id = b.brand_id WHERE a.tipe = 3 ORDER BY b.jenis, a.barang");
-                                while ($data2 = $rs2->fetch_assoc()) {
-                                    ?>
-                                        <option><?=$data2['kode']?> # <?=$data2['jenis']?> # <?=$data2['barang']?></option>
-                                    <?php
-                                }
-                            ?>
+                        <select id="lensa" style="margin-top: 5px;" onchange="getDetailLensa()">
                         </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Stock : 
+                    </td>
+                    <td colspan="5">
+                        <label id="labelStockLensaLeft">
+                            L : 
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label id="labelStockLensaRight">
+                            R : 
+                        </label>
                     </td>
                 </tr>
                 <tr>
@@ -628,6 +620,7 @@ table ul li {
 <script>
     refreshTipe();
     refreshBarang();
+    refreshLensa();
     refreshCustomer('');
 	
 	setTipePembayaran(1);

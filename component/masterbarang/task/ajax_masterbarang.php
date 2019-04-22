@@ -1,4 +1,5 @@
 <?php
+session_start();
 include('../../../include/config_db.php');
 $mode = $_GET['mode'];
 $query = '';
@@ -66,6 +67,44 @@ switch($mode) {
 			'price'			=> $row['price'],
 			'price2'		=> $row['price2']
         ));
+        echo json_encode($arr);
+        break;
+
+    case 'get_detail_lensa':
+        $kode = $_GET['kode'];
+        $jenis = $_GET['jenis'];
+        $barang = $_GET['barang'];
+        $rSph = $_GET['rSph'];
+        $rCyl = $_GET['rCyl'];
+        $lSph = $_GET['lSph'];
+        $lCyl = $_GET['lCyl'];
+        
+        $query = "SELECT * 
+            FROM barang a 
+            JOIN jenisbarang b ON a.brand_id = b.brand_id 
+            WHERE a.kode = '$kode' 
+            AND b.jenis = '$jenis' 
+            AND a.barang = '$barang' 
+            AND a.frame = '$rSph' 
+            AND a.color = '$rCyl' 
+            AND a.tipe = 3 
+            AND a.branch_id = $_SESSION[branch_id] ";
+        $res = $mysqli->query($query);
+        if ($row = mysqli_fetch_assoc($res)) {
+            array_push($arr, array(
+                'product_id'    => $row['product_id'],
+                'kode'          => $row['kode'],
+                'brand_id'      => $row['brand_id'],
+                'barang'        => $row['barang'],
+                'frame'         => $row['frame'],
+                'color'         => $row['color'],
+                'qty'           => $row['qty'],
+                'tipe'          => $row['tipe'],
+                'price'         => $row['price'],
+                'price2'        => $row['price2'],
+            ));
+        }
+        
         echo json_encode($arr);
         break;
 }

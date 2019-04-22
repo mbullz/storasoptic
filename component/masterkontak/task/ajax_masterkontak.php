@@ -1,4 +1,5 @@
 <?php
+session_start();
 include('../../../include/config_db.php');
 $mode = $_GET['mode'];
 $keyword = $_GET['q'] ?? '';
@@ -25,6 +26,7 @@ switch($mode) {
             JOIN jeniskontak b ON a.jenis = b.kode 
             WHERE b.klasifikasi = 'customer' 
             AND kontak LIKE '%$keyword%' 
+            AND a.branch_id = $_SESSION[branch_id] 
             ORDER BY b.jenis, a.kontak ";
 
         $res = $mysqli->query($query);

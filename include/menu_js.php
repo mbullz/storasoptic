@@ -19,11 +19,8 @@ menu1[5]='<a href="index-c-masterkontak-k-sales-q-.pos"><img src="images/invoice
 <?php } ?>
 
 <?php if($_SESSION['is_admin'] && strstr($_SESSION['akses'],'masterkontak')) { ?>
-menu1[6]='<a href="index-c-masterkontak-k-karyawan-q-.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Data Karyawan</a>'
-<?php } ?>
-
-<?php if(strstr($_SESSION['akses'],'masterkontak')) { ?>
-menu1[7]='<a href="index-c-masterkontak-k-cabang-q-.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Data Cabang</a>'
+menu1[6] = '<a href="index-c-masterkontak-k-karyawan-q-.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Data Karyawan</a>';
+menu1[7] = '<a href="index-c-masterkontak-k-cabang-q-.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Data Cabang</a>';
 <?php } ?>
 
 var menu2=new Array()

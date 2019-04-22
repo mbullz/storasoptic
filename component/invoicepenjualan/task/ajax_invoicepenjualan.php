@@ -1,4 +1,5 @@
 <?php
+	session_start();
 	include('../../../include/config_db.php');
 	$mode = $_GET['mode'];
 	
@@ -36,7 +37,8 @@
 					b.jenis LIKE '%$search%' OR 
 					a.kode LIKE '%$search%' OR 
 					a.barang LIKE '%$search%' 
-				)
+				) 
+				AND a.branch_id = $_SESSION[branch_id] 
 				ORDER BY b.jenis ASC, a.barang ASC ");
 			
 			while ($data = mysqli_fetch_assoc($rs))
@@ -51,6 +53,36 @@
 					'ukuran' => $data['ukuran'],
 					'type_brand' => $data['type_brand'],
 					'supplier' => $data['supplier']
+				));
+			}
+			
+			echo json_encode($arr);
+        break;
+
+        case "get_lensa":
+        	$search = $_GET['search'] ?? '';
+			
+			$arr = array();
+			$rs = $mysqli->query("
+				SELECT DISTINCT b.jenis, a.kode, a.barang 
+				FROM barang a 
+				JOIN jenisbarang b ON a.brand_id = b.brand_id 
+				WHERE a.tipe = 3 
+				AND 
+				(
+					b.jenis LIKE '%$search%' OR 
+					a.kode LIKE '%$search%' OR 
+					a.barang LIKE '%$search%' 
+				) 
+				AND a.branch_id = $_SESSION[branch_id] 
+				ORDER BY b.jenis ASC, a.barang ASC ");
+			
+			while ($data = mysqli_fetch_assoc($rs))
+			{
+				array_push($arr, array(
+					'kode'		=> $data['kode'], 
+					'barang'	=> $data['barang'],
+					'jenis'		=> $data['jenis'],
 				));
 			}
 			

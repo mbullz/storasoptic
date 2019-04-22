@@ -124,6 +124,10 @@
 				}
 			}
 		});
+
+		if ($('#branch_id').val() == 0) {
+			alert('Pilih cabang terlebih dahulu sebelum menambahkan data');
+		}
 	});
 </script>
 <link data-jsfiddle="common" rel="stylesheet" media="screen" href="css/jquery.handsontable.full.css">

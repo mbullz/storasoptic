@@ -1,15 +1,23 @@
 <?php
 
 	global $mysqli;
+	global $branch_id;
+
 	require('include/define.php');
 
 	$tipe = $_POST['tipe'] ?? 1;
+
+	$branch_filter = '';
+	if ($branch_id != 0) {
+	    $branch_filter = " AND a.branch_id = $branch_id ";
+	}
 
 $query_data  = "SELECT a.*, b.jenis 
 				FROM barang a 
 				JOIN jenisbarang b ON b.brand_id = a.brand_id 
 				WHERE a.tipe = $tipe 
 				AND qty > 0 
+				$branch_filter 
 				ORDER BY b.jenis ASC, a.barang ASC ";
 
 $data = $mysqli->query($query_data);

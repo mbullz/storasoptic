@@ -5,7 +5,11 @@ $nik    = $mysqli->real_escape_string($_POST['username']);
 $pass   = $mysqli->real_escape_string($_POST['password']);
 
 		$pass = md5($pass);
-		$rs2 = $mysqli->query("SELECT * FROM kontak WHERE kontak LIKE '$nik' AND pass LIKE '$pass'");
+		$rs2 = $mysqli->query("SELECT *, 
+				(SELECT kontak FROM kontak b WHERE b.user_id = a.branch_id) AS branch_name 
+			FROM kontak a 
+			WHERE kontak LIKE '$nik' 
+			AND pass LIKE '$pass' ");
 		if ($data2 = mysqli_fetch_assoc($rs2))
 		{
 			if ($data2['jabatan'] == 'Administrator') {
@@ -22,6 +26,7 @@ $pass   = $mysqli->real_escape_string($_POST['password']);
 			$_SESSION['akses'] = $data2['akses'];
 			$_SESSION['user_id'] = $data2['user_id'];
 			$_SESSION['branch_id'] = $data2['branch_id'];
+			$_SESSION['branch_name'] = $data2['branch_name'] ?? '';
 
 			?>
 				<script type="text/javascript">
