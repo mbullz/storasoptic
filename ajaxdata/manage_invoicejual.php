@@ -7,6 +7,7 @@ $rid = $_GET['rid'];
 $keluarbarang_id = $_GET['keluarbarang_id'] ?? 0;
 $ref = $mysqli->real_escape_string($_GET['ref']);
 $bar = $_GET['brg'] ?? 0;
+$bar = $bar == '' ? 0 : $bar;
 $qty = $_GET['qty'];
 $tdi = $_GET['tdisc'];
 $dis = $_GET['disc'];
@@ -15,7 +16,6 @@ $hsa = $_GET['hsat'];
 $sub = $_GET['subtot'];
 
 $sosoftlens = $_GET['sosoftlens'];
-$soinfo = $_GET['soinfo'];
 
 $lensa_product_id = 0;
 
@@ -31,13 +31,15 @@ $lAxis = $_GET['lAxis'];
 $lAdd = $_GET['lAdd'];
 $lPd = $_GET['lPd'];
 
-$brandLensa = strtoupper($_GET['brandLensa']);
-$hargaLensa = $_GET['hargaLensa'];
-$tipeLensa = strtoupper($_GET['tipeLensa']);
-$jenisLensa = strtoupper($_GET['jenisLensa']);
-$supplierLensa = strtoupper($_GET['supplierLensa']);
-$infoLensa = $_GET['infoLensa'];
+$lensaProductId = $_GET['lensaProductId'] ?? 0;
+$brandLensa = '';
+$hargaLensa = $_GET['hargaLensa'] ?? 0;
+$tipeLensa = '';
+$jenisLensa = '';
+$supplierLensa = '';
 $solensa = $_GET['solensa'];
+
+$info = $_GET['info'] ?? '';
 
 $frame2 = $_GET['frame2'] ?? '';
 $brand2 = $_GET['brand2'] ?? '';
@@ -47,13 +49,6 @@ $kode_harga2 = $mysqli->real_escape_string($kode_harga2);
 $tipe = $_GET['tipe'];
 
 if ($tipe != '3' && $tipe != '5') $hargaLensa = 0;
-if ($tipe == '3')
-{
-	$tdi = '0';
-	$dis = '0';
-	$hsa = '0';
-	$sub = '0';
-}
 
 // validasi data
 if($tsk =='add' || $tsk == "add2") {
@@ -65,7 +60,7 @@ if($tsk =='add' || $tsk == "add2") {
 	{
 		$valid = 'no';	
 	}
-	else if($tipe == '3' && ($brandLensa == ''))
+	else if($tipe == '3' && $lensaProductId == 0)
 	{
 		$valid = 'no';	
 	}
@@ -73,7 +68,7 @@ if($tsk =='add' || $tsk == "add2") {
 	{
 		$valid = 'no';	
 	}
-	else if($tipe == '5' && ($bar == '' || $qty <= 0 || $sat == '' || $hsa <= 0 || $sub <= 0 || $brandLensa == ''))
+	else if($tipe == '5' && ($bar == '' || $qty <= 0 || $sat == '' || $hsa <= 0 || $sub <= 0 || $lensaProductId == 0))
 	{
 		$valid = 'no';	
 	}
@@ -104,6 +99,8 @@ if($valid=='yes')
 	
 	if($tsk == 'add')
 	{
+		$data_dkeluarbarang = null;
+
 		// check if product is already exists in dkeluarbarang
 		if ($bar != 0)
 		{
@@ -116,39 +113,52 @@ if($valid=='yes')
 		if($data_dkeluarbarang == null)
 		{
 			$special_order = $tipe=='2'?$sosoftlens:$solensa;
-			$special_order_info = $tipe=='2'?$soinfo:$infoLensa;
 			
+			$lensa_product_id_left = 0;
 			// add lensa to table barang
 			if ($tipe == 3 || $tipe == 5)
 			{
-				// check lensa brand if exists or not
-				$rs2 = $mysqli->query("SELECT * FROM jenisbarang WHERE tipe = 3 AND jenis LIKE '$brandLensa'");
-				if ($data2 = mysqli_fetch_assoc($rs2))
-				{
-					$lensa_brand_id = $data2['brand_id'];
-				}
-				else
-				{
-					$mysqli->query("INSERT INTO jenisbarang VALUES(0, '', '$brandLensa', '', 3)");
-					$lensa_brand_id = $mysqli->insert_id;;
-				}
-				
+				$rs = $mysqli->query("SELECT * FROM barang WHERE product_id = $lensaProductId");
+				$data = $rs->fetch_assoc();
+				$lensaKode = $data['kode'];
+				$lensaBrandId = $data['brand_id'];
+				$lensaBarang = $data['barang'];
+				$lensaPrice = $data['price'];
+				$lensaPrice2 = $data['price2'];
+
 				if ($special_order == '0')
 				{	
 					// check lensa if already exists or not in table barang
-					$rs2 = $mysqli->query("SELECT * FROM barang WHERE tipe = 3 AND brand_id = $lensa_brand_id AND barang LIKE '$brandLensa'");
+					//left
+					$rs2 = $mysqli->query("SELECT * FROM barang WHERE tipe = 3 AND branch_id = $_SESSION[branch_id] AND kode = '$lensaKode' AND brand_id = $lensaBrandId AND barang = '$lensaBarang' AND frame = '$lSph' AND color = '$lCyl'");
 					if ($data2 = mysqli_fetch_assoc($rs2))
 					{
-						$lensa_product_id = $data2['product_id'];
+						$lensa_product_id_left = $data2['product_id'];
 					}
 					else
 					{
-						$mysqli->query("INSERT INTO barang VALUES(
-							0, '', $lensa_brand_id, '$brandLensa', '', '', 
-							0, 0, 0, '', '', '', 
-							3, NOW(), NULL, $_SESSION[user_id], NOW(), NULL, NULL)");
+						$mysqli->query("INSERT INTO barang(kode, brand_id, barang, frame, color, qty, price, price2, kode_harga, info, ukuran, tipe, tgl_masuk_akhir, branch_id, created_user_id, created_date) VALUES(
+							'$lensaKode', $lensaBrandId, '$lensaBarang', '$lSph', '$lCyl', 
+							0, $lensaPrice, $lensaPrice2, '', '', '', 
+							3, NOW(), $_SESSION[branch_id], $_SESSION[user_id], NOW())");
 
-						$lensa_product_id = $mysqli->insert_id;
+						$lensa_product_id_left = $mysqli->insert_id;
+					}
+
+					//right
+					$rs2 = $mysqli->query("SELECT * FROM barang WHERE tipe = 3 AND branch_id = $_SESSION[branch_id] AND kode = '$lensaKode' AND brand_id = $lensaBrandId AND barang = '$lensaBarang' AND frame = '$rSph' AND color = '$rCyl'");
+					if ($data2 = mysqli_fetch_assoc($rs2))
+					{
+						$lensa_product_id_right = $data2['product_id'];
+					}
+					else
+					{
+						$mysqli->query("INSERT INTO barang(kode, brand_id, barang, frame, color, qty, price, price2, kode_harga, info, ukuran, tipe, tgl_masuk_akhir, branch_id, created_user_id, created_date) VALUES(
+							'$lensaKode', $lensaBrandId, '$lensaBarang', '$rSph', '$rCyl', 
+							0, $lensaPrice, $lensaPrice2, '', '', '', 
+							3, NOW(), $_SESSION[branch_id], $_SESSION[user_id], NOW())");
+
+						$lensa_product_id_right = $mysqli->insert_id;
 					}
 				}
 				else // if special_order true
@@ -169,19 +179,19 @@ if($valid=='yes')
 				}
 			}
 			
-			$query_ajaxsave = "INSERT INTO dkeluarbarang VALUES(
-				0, $keluarbarang_id, $bar, $sat, $hsa, 
+			$query_ajaxsave = "INSERT INTO dkeluarbarang(keluarbarang_id, product_id, satuan_id, harga, qty, tdiskon, diskon, subtotal, lensa, rSph, rCyl, rAxis, rAdd, rPd, lSph, lCyl, lAxis, lAdd, lPd, tipe, harga_lensa, special_order, special_order_done, info) VALUES(
+				$keluarbarang_id, $bar, $sat, $hsa, 
 				$qty, '$tdi', $dis, $sub, 
-				'$lensa_product_id', 
+				'$lensa_product_id_left', 
 				$rSph, $rCyl, $rAxis, $rAdd, $rPd, 
 				$lSph, $lCyl, $lAxis, $lAdd, $lPd, 
-				$tipe, $hargaLensa, '$special_order', '0', '$special_order_info')";
+				$tipe, $hargaLensa, '$special_order', '0', '$info')";
 		}
 		else
 		{
 			$qty_now      = $row_cekbrg['qty'] + $qty;
 			$total_now    = $qty_now * $sub;
-			$query_ajaxsave = "update dkeluarbarang set "
+			$query_ajaxsave = "UPDATE dkeluarbarang set "
 					. "qty=$qty_now,"
 					. "subtotal='$total_now',"
 					. "harga=$hsa,"
@@ -218,7 +228,6 @@ $query_detbrg = "SELECT
 				WHERE a.keluarbarang_id = $keluarbarang_id 
 				ORDER BY a.id ASC ";
 $detbrg = $mysqli->query($query_detbrg);
-$row_detbrg = mysqli_fetch_assoc($detbrg);
 $total_detbrg = mysqli_num_rows($detbrg);
 ?>
 <table width="100%" border="0" cellspacing="0" cellpadding="2" class="datatable">
@@ -233,18 +242,20 @@ $total_detbrg = mysqli_num_rows($detbrg);
 	</tr>
     
 	<?php 
-		if($total_detbrg > 0)
-		{
-			$gtotal = 0;
-			do
+		$cart_is_valid = 0;
+		$gtotal = 0;
+		while($row_detbrg = mysqli_fetch_assoc($detbrg)) {
+			$cart_is_valid = 1;
+			$gtotal += $row_detbrg['subtotal'];
+
+			if ($row_detbrg['tipe'] == 3 || $row_detbrg['tipe'] == 5)
 			{
-				if ($row_detbrg['tipe'] == 3 || $row_detbrg['tipe'] == 5)
-				{
-					$rs2 = $mysqli->query("SELECT * FROM barang WHERE product_id = $row_detbrg[lensa]");
-					$data2 = mysqli_fetch_assoc($rs2);
-					$lensa = $data2['barang'];
-				}
-		?>
+				$rs2 = $mysqli->query("SELECT * FROM barang WHERE product_id = $row_detbrg[lensa]");
+				$data2 = mysqli_fetch_assoc($rs2);
+				$lensa = $data2['barang'];
+			}
+	?>
+
 	<tr valign="top">
 		<td>
 			<?php
@@ -313,32 +324,38 @@ $total_detbrg = mysqli_num_rows($detbrg);
 			
 			<br />
       </td>
-      <td align="center"><?=$row_detbrg['tipe']==3?'1':$row_detbrg['qty']?></td>
-      <td align="center"><?php echo $row_detbrg['satuan'];?></td>
-      <td align="right"><?=$row_detbrg['tipe']==3?number_format($row_detbrg['harga_lensa'],0,',','.'):number_format($row_detbrg['harga'],0,',','.')?></td>
-      <td align="right"><?php if($row_detbrg['tdiskon']=='1') { echo $row_detbrg['diskon']." %"; }else{ echo number_format($row_detbrg['diskon'],0,',','.');}?></td>
+      
+      <td align="center">
+      	<?=$row_detbrg['tipe'] == 3 ? '1' : $row_detbrg['qty']?>
+      </td>
+
+      <td align="center">
+      	<?php echo $row_detbrg['satuan'];?>
+      </td>
+
       <td align="right">
-	  	<?php
-        	if ($row_detbrg['tipe'] != 3) echo number_format($row_detbrg['subtotal'],0,',','.');
-			else echo number_format($row_detbrg['harga_lensa'],0,',','.');
+      	<?php
+        	if ($row_detbrg['tipe'] != 3) echo number_format($row_detbrg['harga'], 0, ',', '.');
+			else echo number_format($row_detbrg['harga_lensa'], 0, ',', '.');
 			
-			if ($row_detbrg['tipe'] == 5) echo "<br>+ " . number_format($row_detbrg['harga_lensa'],0,',','.');
-			$gtotal += $row_detbrg['subtotal'] + $row_detbrg['harga_lensa'];
+			if ($row_detbrg['tipe'] == 5) echo "<br>+ " . number_format($row_detbrg['harga_lensa']*2, 0, ',', '.');
 		?>
       </td>
+
+      <td align="right"><?php if($row_detbrg['tdiskon']=='1') { echo $row_detbrg['diskon']." %"; }else{ echo number_format($row_detbrg['diskon'],0,',','.');}?></td>
+      
+      <td align="right">
+	  	<?=number_format($row_detbrg['subtotal'], 0, ',', '.')?>
+      </td>
+
       <td align="center"><a href="javascript:void(0);" onclick="manageInvoiceJual('delete','<?php echo $row_detbrg['id'];?>');"><img src="images/close-icon.png" border="0" /> Hapus</a></td>
     </tr>
-    <?php } while($row_detbrg = mysqli_fetch_assoc($detbrg)); ?>
-    <tr valign="top">
-      <td>&nbsp;</td>
-      <td align="center">&nbsp;</td>
-      <td align="center">&nbsp;</td>
-      <td align="right">Grand Total :</td>
-      <td align="right">&nbsp;</td>
-      <td align="right"><?php echo number_format($gtotal,0,',','.');?></td>
-      <td align="center"><input type="hidden" name="total" id="total" value="<?php echo $gtotal;?>"></td>
-    </tr>
+    
     <?php } ?>
+
+    <input type="hidden" name="total" id="total" value="<?php echo $gtotal;?>">
+    <input type="hidden" name="cart_is_valid" id="cart_is_valid" value="<?=$cart_is_valid?>" />
+
     <?php if($valid=='no') { ?>
     <tr valign="top" bgcolor="#FFFFFF">
       <td colspan="7" style="color:#F00;"><img src="images/alert.gif" hspace="5" vspace="2" border="0" align="left" /> Lengkapi semua field/isian dengan benar !!!</td>

@@ -77,46 +77,7 @@ $row_satuan   = mysqli_fetch_assoc($satuan);
 $total_satuan = mysqli_num_rows($satuan);
 
 ?>
-<script type="text/javascript">
-	var lensa = [
-		<?php
-			$rs2 = $mysqli->query("SELECT DISTINCT frame FROM barang WHERE tipe = 3 ORDER BY frame ASC");
-			$i = 0;
-			while ($data2 = mysqli_fetch_assoc($rs2))
-			{
-				if ($i == 0) echo "'" . $data2['frame'] . "'";
-				else echo ",'" . $data2['frame'] . "'";
-				$i++;
-			}
-		?>
-    ];
-	
-	var brand = [
-		<?php
-			$rs2 = $mysqli->query("SELECT DISTINCT jenis FROM jenisbarang WHERE tipe = 3 ORDER BY jenis ASC");
-			$i = 0;
-			while ($data2 = mysqli_fetch_assoc($rs2))
-			{
-				if ($i == 0) echo "'" . $data2['jenis'] . "'";
-				else echo ",'" . $data2['jenis'] . "'";
-				$i++;
-			}
-		?>
-    ];
-	
-	var tipe = [
-		<?php
-			$rs2 = $mysqli->query("SELECT DISTINCT barang FROM barang WHERE tipe = 3 ORDER BY barang ASC");
-			$i = 0;
-			while ($data2 = mysqli_fetch_assoc($rs2))
-			{
-				if ($i == 0) echo "'" . $data2['barang'] . "'";
-				else echo ",'" . $data2['barang'] . "'";
-				$i++;
-			}
-		?>
-    ];
-</script>
+
 <script type="text/javascript" src="js/jquery.number.min.js"></script>
 <script type="text/javascript" language="javascript" src="js/apps/add_invoicepenjualan.js"></script>
 
@@ -367,43 +328,10 @@ table ul li {
                         <input type="text" name="hsatuan" id="hsatuan" value="0" disabled="disabled" />
                     </td>
                 </tr>
-                <tr class="tableDetail1">
-                    <td align="right">Diskon</td>
-                    <td>:</td>
-                    <td>
-                        <label>
-                            <input name="diskon" type="text" id="diskon" size="8" maxlength="8" value="30" onkeyup="calculate_subtotal2()" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'" autocomplete="off" disabled="disabled" />
-                        </label>
-                        <label>
-                            <select name="tdiskon" id="tdiskon" style="font-size:9px;" onchange="calculate_subtotal2()" disabled="disabled">
-                                <option value="1">%</option>
-                                <option value="0">Normal</option>
-                            </select>
-                        </label>
-                    </td>
-                </tr>
-                <tr class="tableDetail1">
-                    <td align="right">Subtotal</td>
-                    <td>:</td>
-                    <td>
-                        <label>
-                            <input name="subtotal" type="text" id="subtotal" value="0" disabled="disabled" />
-                        </label>
-                    </td>
-                </tr>
-                <tr class="tableDetail1">
-                    <td align="right">Keterangan</td>
-                    <td>:</td>
-                    <td>
-                        <textarea id="detailInfo" name="detailInfo" rows="3" cols="50"></textarea>
-                    </td>
-                </tr>
             </table>
         </div>
         
-        <div id="divLensa" style="width:49%;float:left;vertical-align:top;margin-left:5px">
-        	<u>DETAIL LENSA</u>
-            <br />
+        <div id="divLensa" style="width:49%;float:left;vertical-align:top;margin-left: 10px">
             <table border="0" cellspacing="0" cellpadding="2" class="datatable">
                 <tr>
                     <td>&nbsp;</td>
@@ -412,47 +340,10 @@ table ul li {
                     <td>Axis</td>
                     <td>Add</td>
                     <td>PD</td>
+                    <td>&nbsp;</td>
                 </tr>
                 <tr>
-                    <td>Right</td>
-                    <td>
-                        <select name="rSph" id="rSph" onchange="getDetailLensa()">
-                            <?php for ($r = 15; $r >= -20; $r = $r - 0.25) { ?>
-                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
-                            <?php } ?>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="rCyl" id="rCyl" onchange="getDetailLensa()">
-                            <?php for ($r = 15; $r >= -20; $r = $r - 0.25) { ?>
-                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
-                            <?php } ?>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="rAxis" id="rAxis">
-                            <?php for ($r = 0; $r <= 180; $r = $r + 5) { ?>
-                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
-                            <?php } ?>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="rAdd" id="rAdd">
-                            <?php for ($r = 15; $r >= 0; $r = $r - 0.25) { ?>
-                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
-                            <?php } ?>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="rPd" id="rPd">
-                            <?php for ($r = 40; $r <= 80; $r = $r + 2) { ?>
-                            <option value="<?php echo $r; ?>" <?php echo ($r == 56 ? 'selected' : ''); ?>><?php echo $r; ?></option>
-                            <?php } ?>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Left</td>
+                    <td align="right">Left : </td>
                     <td>
                         <select name="lSph" id="lSph" onchange="getDetailLensa()">
                             <?php for ($r = 15; $r >= -20; $r = $r - 0.25) { ?>
@@ -488,12 +379,56 @@ table ul li {
                             <?php } ?>
                         </select>
                     </td>
+                    <td id="labelStockLensaLeft">
+                        Stock : 
+                    </td>
                 </tr>
                 <tr>
+                    <td align="right">Right : </td>
                     <td>
+                        <select name="rSph" id="rSph" onchange="getDetailLensa()">
+                            <?php for ($r = 15; $r >= -20; $r = $r - 0.25) { ?>
+                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="rCyl" id="rCyl" onchange="getDetailLensa()">
+                            <?php for ($r = 15; $r >= -20; $r = $r - 0.25) { ?>
+                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="rAxis" id="rAxis">
+                            <?php for ($r = 0; $r <= 180; $r = $r + 5) { ?>
+                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="rAdd" id="rAdd">
+                            <?php for ($r = 15; $r >= 0; $r = $r - 0.25) { ?>
+                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="rPd" id="rPd">
+                            <?php for ($r = 40; $r <= 80; $r = $r + 2) { ?>
+                            <option value="<?php echo $r; ?>" <?php echo ($r == 56 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td id="labelStockLensaRight">
+                        Stock : 
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
                         Lensa :
                     </td>
-                    <td colspan="5">
+                    <td colspan="6">
                         <input type="text" size="30" id="searchLensa" placeholder="Cari Kode / Brand / Nama" autocomplete="false" onkeyup="refreshLensa()" />
                         <br />
                         <select id="lensa" style="margin-top: 5px;" onchange="getDetailLensa()">
@@ -501,25 +436,14 @@ table ul li {
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        Stock : 
-                    </td>
-                    <td colspan="5">
-                        <label id="labelStockLensaLeft">
-                            L : 
-                        </label>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <label id="labelStockLensaRight">
-                            R : 
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+                    <td align="right">
                         Harga : 
                     </td>
-                    <td colspan="5">
+                    <td colspan="6">
                         <input type="text" id="hargaLensa" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" disabled="disabled" />
+                        <input type="checkbox" id="checkSOLensa" value="1" onclick="specialOrderLensa()" />Special Order
+
+                        <input type="hidden" id="lensa_product_id" value="0" />
                     </td>
                 </tr>
                 <tr class="divSpecialOrderLensa">
@@ -530,15 +454,45 @@ table ul li {
                         </label>
                     </td>
                 </tr>
-                <tr>
-                    <td colspan="6">
-                        <input type="checkbox" id="checkSOLensa" value="1" onclick="specialOrderLensa()" />Special Order
-                    </td>
-                </tr>
             </table>
         </div>
         
         <div style="clear:both;padding-left:10px">
+            <br />
+            <table border="0" cellspacing="0" cellpadding="2">
+                <tr>
+                    <td align="right">Diskon</td>
+                    <td>:</td>
+                    <td>
+                        <label>
+                            <input name="diskon" type="text" id="diskon" size="8" maxlength="8" value="30" onkeyup="calculate_subtotal2()" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'" autocomplete="off" disabled="disabled" />
+                        </label>
+                        <label>
+                            <select name="tdiskon" id="tdiskon" style="font-size:9px;" onchange="calculate_subtotal2()" disabled="disabled">
+                                <option value="1">%</option>
+                                <option value="0">Normal</option>
+                            </select>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">Subtotal</td>
+                    <td>:</td>
+                    <td>
+                        <label>
+                            <input name="subtotal" type="text" id="subtotal" value="0" disabled="disabled" />
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">Keterangan</td>
+                    <td>:</td>
+                    <td>
+                        <textarea id="detailInfo" name="detailInfo" rows="3" cols="50"></textarea>
+                    </td>
+                </tr>
+            </table>
+            <br />
 			<a href="javascript:void(0);" onclick="manageInvoiceJual('add','');">
 				<img src="images/shopping_cart.png" border="0" height="24px" /> Add to Cart
 			</a>
@@ -559,7 +513,14 @@ table ul li {
         <td align="right">PPN</td>
         <td align="center">:</td>
         <td>
-            <input type="text" size="3" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" /> %
+            <input type="text" id="ppn" name="ppn" size="3" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" onkeyup="calculate_grandtotal()" /> %
+        </td>
+    </tr>
+    <tr>
+        <td align="right">Grand Total</td>
+        <td align="center">:</td>
+        <td>
+            <input type="text" name="grand_total" id="grand_total" value="0" readonly="readonly" />
         </td>
     </tr>
     <tr>

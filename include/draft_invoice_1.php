@@ -95,10 +95,15 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
             </td>
             
             <td align="center" valign="bottom" class="garisbawah" width="40%">
-            	<strong>No. Invoice / Tanggal</strong> : <?=$ref?> / <?=$tgl?>
+            	<strong>No. Invoice / Tanggal</strong>
+                <div style="margin-top: 5px;">
+                    <?=$ref?> / <?=$tgl?>
+                </div>
             </td>
         </tr>
     </table>
+
+    <br />
 
     <table width="100%" border="0" cellspacing="0" cellpadding="4" class="divInvoice">
         <tr>
@@ -113,19 +118,6 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
             </td>
             <td width="2%">&nbsp;</td>
             <td width="20%">&nbsp;</td>
-        </tr>
-        <tr>
-            <td><strong>Alamat</strong></td>
-            <td align="center"><strong>:</strong></td>
-            <td>
-                <?php if ($total_cust > 0) { ?>
-                <?php echo $row_cust['alamat']; ?>
-                <?php } else { ?>
-                &nbsp;
-                <?php } ?>
-            </td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
         </tr>
         <tr>
             <td><strong>No. Tlp / Handphone</strong></td>

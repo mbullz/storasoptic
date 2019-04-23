@@ -10,7 +10,8 @@ $tgl = $mysqli->real_escape_string($_POST['tgl']);
 $jte = $_POST['jtempo'] ?? null;
 //$matauang_id = $mysqli->real_escape_string($_POST['matauang']);
 $matauang_id = 1;
-$total = intval($_POST['total']);
+$ppn = intval($_POST['ppn']);
+$total = intval($_POST['grand_total']);
 $cus = $mysqli->real_escape_string($_POST['customer']);
 //$sal = $mysqli->real_escape_string($_POST['sales']);
 $sales = $_POST['sales'];
@@ -200,9 +201,11 @@ if (isset($error)) {
 					client = $cus, 
 					sales = $sales, 
 					matauang_id = $matauang_id, 
+					ppn = $ppn,
 					total = $total, 
 					info = '$inf', 
 					lunas = '$lunas', 
+					branch_id = $_SESSION[branch_id],
 					updated_by = $_SESSION[user_id], 
 					updated_at = NOW() 
 				WHERE keluarbarang_id = $keluarbarang_id 
@@ -210,7 +213,7 @@ if (isset($error)) {
 			$exe = $mysqli->query($query_exe);
 
 			$mysqli->query("DELETE FROM aruskas WHERE transaction_id = $keluarbarang_id AND tipe = 'piutang'");
-			$mysqli->query("INSERT INTO aruskas VALUES(0, $carabayar_id, $keluarbarang_id, 'piutang', '$tgl', $_SESSION[user_id], '$referensi', $uang_muka, $matauang_id, '$info_pembayaran')");
+			$mysqli->query("INSERT INTO aruskas(carabayar_id, transaction_id, tipe, tgl, opr, referensi, jumlah, matauang_id, info, branch_id) VALUES($carabayar_id, $keluarbarang_id, 'piutang', '$tgl', $_SESSION[user_id], '$referensi', $uang_muka, $matauang_id, '$info_pembayaran', $_SESSION[branch_id])");
 			
 			if ($new_transaction) {
 			// Otomatis Barang Keluar

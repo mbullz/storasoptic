@@ -78,7 +78,53 @@ switch($mode) {
         $rCyl = $_GET['rCyl'];
         $lSph = $_GET['lSph'];
         $lCyl = $_GET['lCyl'];
+
+        $data = array();
+
+        $data['product_id'] = 0;
+        $data['kode'] = '';
+        $data['brand_id'] = 0;
+        $data['barang'] = '';
+        $data['qtyL'] = 0;
+        $data['qtyR'] = 0;
+        $data['tipe'] = 3;
+        $data['price'] = 0;
+        $data['price2'] = 0;
+
+        $query = "SELECT * 
+            FROM barang a 
+            JOIN jenisbarang b ON a.brand_id = b.brand_id 
+            WHERE a.kode = '$kode' 
+            AND b.jenis = '$jenis' 
+            AND a.barang = '$barang' 
+            AND a.tipe = 3 
+            AND a.branch_id = $_SESSION[branch_id] ";
+        $res = $mysqli->query($query);
+        if ($row = mysqli_fetch_assoc($res)) {
+            $data['product_id'] = $row['product_id'];
+            $data['kode'] = $row['kode'];
+            $data['brand_id'] = $row['brand_id'];
+            $data['barang'] = $row['barang'];
+            $data['tipe'] = 3;
+            $data['price'] = $row['price'];
+            $data['price2'] = $row['price2'];
+        }
         
+        $query = "SELECT * 
+            FROM barang a 
+            JOIN jenisbarang b ON a.brand_id = b.brand_id 
+            WHERE a.kode = '$kode' 
+            AND b.jenis = '$jenis' 
+            AND a.barang = '$barang' 
+            AND a.frame = '$lSph' 
+            AND a.color = '$lCyl' 
+            AND a.tipe = 3 
+            AND a.branch_id = $_SESSION[branch_id] ";
+        $res = $mysqli->query($query);
+        if ($row = mysqli_fetch_assoc($res)) {
+            $data['qtyL'] = $row['qty'];
+        }
+
         $query = "SELECT * 
             FROM barang a 
             JOIN jenisbarang b ON a.brand_id = b.brand_id 
@@ -91,19 +137,10 @@ switch($mode) {
             AND a.branch_id = $_SESSION[branch_id] ";
         $res = $mysqli->query($query);
         if ($row = mysqli_fetch_assoc($res)) {
-            array_push($arr, array(
-                'product_id'    => $row['product_id'],
-                'kode'          => $row['kode'],
-                'brand_id'      => $row['brand_id'],
-                'barang'        => $row['barang'],
-                'frame'         => $row['frame'],
-                'color'         => $row['color'],
-                'qty'           => $row['qty'],
-                'tipe'          => $row['tipe'],
-                'price'         => $row['price'],
-                'price2'        => $row['price2'],
-            ));
+            $data['qtyR'] = $row['qty'];
         }
+
+        array_push($arr, $data);
         
         echo json_encode($arr);
         break;

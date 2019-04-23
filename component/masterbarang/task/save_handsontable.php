@@ -68,7 +68,9 @@
 					$jenis = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][1]));
 					$barang = strtoupper($_POST['data'][$i][2]);
 					$frame = $_POST['data'][$i][3] ?? 0; //minus
+					$frame = ($frame + 0) * 100;
 					$color = $_POST['data'][$i][4] ?? 0; //silinder
+					$color = ($color + 0) * 100;
 					$qty = $_POST['data'][$i][5]==""?0:$_POST['data'][$i][5];
 					$price = $_POST['data'][$i][6]==""?0:$_POST['data'][$i][6];
 					$price2 = $_POST['data'][$i][7]==""?0:$_POST['data'][$i][7];
