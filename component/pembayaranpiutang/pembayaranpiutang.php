@@ -2,12 +2,19 @@
 include('include/define.php');
 include('include/config_db.php');
 
+global $branch_id;
+
+$branch_filter = '';
+if ($branch_id != 0) {
+    $branch_filter = " AND a.branch_id = $branch_id ";
+}
+
 $query_data = "SELECT 
 					a.*, c.kontak AS customer 
 				FROM keluarbarang a 
 				JOIN kontak c ON a.client = c.user_id 
 				WHERE a.lunas LIKE '1' 
-				AND referensi NOT LIKE 'PCB%' 
+				$branch_filter 
 				ORDER BY a.tgl DESC, a.keluarbarang_id DESC ";
 //----
 $data = $mysqli->query($query_data);

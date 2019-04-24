@@ -113,7 +113,11 @@
 				header("location:" . $base_url ."index-c-piutangjtempo.pos");
 			break;
 			default:
-				$query_exe = "INSERT INTO aruskas VALUES (0, $bay, $keluarbarang_id, '$tipe', '$tgl', $opr, '$referensi', $jum, 1, '$inf')";
+				$rs = $mysqli->query("SELECT * FROM keluarbarang WHERE keluarbarang_id = $keluarbarang_id");
+				$data = $rs->fetch_assoc();
+				$branch_id = $data['branch_id'];
+
+				$query_exe = "INSERT INTO aruskas(carabayar_id, transaction_id, tipe, tgl, opr, referensi, jumlah, matauang_id, info, branch_id) VALUES ($bay, $keluarbarang_id, '$tipe', '$tgl', $opr, '$referensi', $jum, 1, '$inf', $branch_id)";
 				$exe = $mysqli->query($query_exe);
 
 				refreshLunas($keluarbarang_id);

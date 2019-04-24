@@ -19,6 +19,7 @@ if ($data = $rs->fetch_assoc()) {
     $c = $data['client'];
     $karyawan = $data['updated_by'];
     $tipe_pembayaran = $data['tipe_pembayaran'];
+    $ppn = $data['ppn'];
 }
 else {
     return;
@@ -147,9 +148,11 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
 						$no = 1;
 						while ($row_detbrg = mysqli_fetch_assoc($detbrg))
 						{
+                            $gTot += $row_detbrg['subtotal'];
+
 							if ($row_detbrg['tipe'] != '3')
 							{
-								$gTot += $row_detbrg['subtotal'];
+								
 								?>
 									<tr valign="top">
 										<td align="right" style="border-right:solid 1px #DDD;border-bottom:solid 1px #DDD;">
@@ -169,14 +172,24 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
 										</td>
 										<td align="center" style="border-right:solid 1px #DDD;border-bottom:solid 1px #DDD;">
 											<?php if ($row_detbrg['tdiskon'] == 0) {
-												echo number_format($row_detbrg['diskon'], 0, ',', '.');
+												    echo number_format($row_detbrg['diskon'], 0, ',', '.');
 												} else {
 													echo $row_detbrg['diskon'] . " %";
 												} 
 											?>
 										</td>
 										<td align="right" style="border-bottom:solid 1px #DDD;">
-											<?php echo number_format($row_detbrg['subtotal'], 0, ',', '.'); ?> Rupiah
+                                            <?php
+                                                $price = $row_detbrg['harga'] * $row_detbrg['qty'];
+
+                                                if ($row_detbrg['tdiskon'] == 0) {
+                                                    $price -= $row_detbrg['diskon'];
+                                                }
+                                                else {
+                                                    $price -= (($row_detbrg['diskon']/100) * $price);
+                                                } 
+                                            ?>
+											<?php echo number_format($price, 0, ',', '.'); ?> Rupiah
 										</td>
 									</tr>
 								<?php
@@ -184,7 +197,6 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
 							
 							if ($row_detbrg['tipe'] == '3' || $row_detbrg['tipe'] == '5')
 							{
-								$gTot += $row_detbrg['harga_lensa'];
 								?>
 									<tr valign="top">
 										<td align="right" style="border-right:solid 1px #DDD;border-bottom:solid 1px #DDD;">
@@ -198,16 +210,31 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
 											LENSA <?=$data2['barang']?>
 										</td>
 										<td align="center" style="border-right:solid 1px #DDD;border-bottom:solid 1px #DDD;">
-											1 pcs
+											2 PCS
 										</td>
 										<td align="right" style="border-right:solid 1px #DDD;border-bottom:solid 1px #DDD;">
 											<?php echo number_format($row_detbrg['harga_lensa'], 0, ',', '.'); ?>
 										</td>
 										<td align="center" style="border-right:solid 1px #DDD;border-bottom:solid 1px #DDD;">
-											-
+										  <?php if ($row_detbrg['tdiskon'] == 0) {
+                                                    echo number_format($row_detbrg['diskon'], 0, ',', '.');
+                                                } else {
+                                                    echo $row_detbrg['diskon'] . " %";
+                                                } 
+                                            ?>
 										</td>
 										<td align="right" style="border-bottom:solid 1px #DDD;">
-											<?php echo number_format($row_detbrg['harga_lensa'], 0, ',', '.'); ?> Rupiah
+                                            <?php
+                                                $price = $row_detbrg['harga_lensa'] * 2;
+
+                                                if ($row_detbrg['tdiskon'] == 0) {
+                                                    $price -= $row_detbrg['diskon'];
+                                                }
+                                                else {
+                                                    $price -= (($row_detbrg['diskon']/100) * $price);
+                                                } 
+                                            ?>
+											<?php echo number_format($price, 0, ',', '.'); ?> Rupiah
 										</td>
 									</tr>
 								<?php
@@ -226,9 +253,23 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
                       <?php }while($row_detbrg = mysqli_fetch_assoc($detbrg)); */ ?>
                     <tr>
                         <th>&nbsp;</th>
-                        <th colspan="4" align="right">Grand Total :</th>
+                        <th colspan="4" align="right">Total :</th>
                         <td align="right" style="border-bottom:solid 1px #DDD;"><?php echo number_format($gTot, 0, ',', '.'); ?> Rupiah</td>
                     </tr>
+
+                    <?php if ($ppn != 0): ?>
+                        <?php
+                            $ppn_value = (($ppn/100) * $gTot);
+                            $gTot += $ppn_value;
+                        ?>
+                        <tr>
+                            <th>&nbsp;</th>
+                            <th colspan="4" align="right">PPN <?=$ppn?>% :</th>
+                            <td align="right" style="border-bottom:solid 1px #DDD;">
+                                <?php echo number_format($ppn_value, 0, ',', '.'); ?> Rupiah
+                            </td>
+                        </tr>
+                    <?php endif; ?>
 
                     <tr>
                         <th>&nbsp;</th>

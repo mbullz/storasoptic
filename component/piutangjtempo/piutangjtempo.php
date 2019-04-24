@@ -1,6 +1,12 @@
 <?php
 
 global $mysqli;
+global $branch_id;
+
+$branch_filter = '';
+if ($branch_id != 0) {
+    $branch_filter = " AND a.branch_id = $branch_id ";
+}
 
 $query_data  = "SELECT a.keluarbarang_id, a.referensi, a.tgl, a.jtempo, a.total, a.info, b.kontak, c.matauang, 
                 		DATEDIFF(a.jtempo,CURRENT_DATE) AS 'sisa' 
@@ -8,6 +14,7 @@ $query_data  = "SELECT a.keluarbarang_id, a.referensi, a.tgl, a.jtempo, a.total,
                 JOIN kontak b ON b.user_id = a.client 
                 JOIN matauang c ON a.matauang_id = c.matauang_id 
                 WHERE a.lunas = '0' 
+                $branch_filter 
                 ORDER BY a.tgl DESC ";
 //----
 $query_all   = $query_data;
