@@ -43,24 +43,6 @@
         $stat = 'Kesalahan: ' . implode('\n', $error);
 	} else {
 		switch($p) {
-			case("mdelete"):
-			$where = " where ";
-			for($i=0;$i<$jdata;$i++) {
-				$where .="id='$data[$i]'";
-				if($i < $jdata-1) {
-					$where .=" OR ";	
-				}
-			}
-			$query_exe = "delete from aruskas".$where;
-			$exe = $mysqli->query($query_exe);
-			if($exe) {
-//					echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data telah dihapus ...</b></center>";
-                $stat = 'Data telah dihapus ...';
-				}else{
-//					echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data gagal dihapus, coba lagi !!!</b></center>";
-                    $stat = 'Data gagal dihapus, coba lagi !!!';
-				}
-			break;
 			case("edit"):
 			$query_exe = "update aruskas set carabayar='$bay', tgl='$tgl', jumlah='$jum', matauang='$mat', info='$inf' where id='$id'";
 			$exe = $mysqli->query($query_exe);
@@ -73,17 +55,17 @@
 				}
 			break;
 			case("delete"):
-			/*$query_exe = "delete from agen where kd='$kd'";
-			$exe = $mysqli->query($query_exe, $tiket) or die(mysql_error());
-			if($exe) {
-					echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data telah dihapus ...</b></center>";
-				}else{
-					echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data gagal dihapus, coba lagi !!!</b></center>";
-				}*/
-			$stat = "not used again ...";
+				$query_exe = "DELETE FROM aruskas WHERE id = $id";
+				$exe = $mysqli->query($query_exe);
+				if ($exe) {
+					$stat = 'Hapus data berhasil';
+				}
+				else {
+					$stat = 'Hapus data gagal';
+				}
 			break;
 			default:
-				$query_exe = "INSERT INTO aruskas VALUES(0, $bay, 0, 'operasional', '$tgl', $opr, '$referensi', $jum, $mat, '$jenis # $inf')";
+				$query_exe = "INSERT INTO aruskas(carabayar_id, transaction_id, tipe, tgl, opr, referensi, jumlah, matauang_id, info, branch_id) VALUES($bay, 0, 'operasional', '$tgl', $opr, '$referensi', $jum, $mat, '$jenis # $inf', $_SESSION[branch_id])";
 				$exe = $mysqli->query($query_exe);
 				
 				if ($exe) {
@@ -98,9 +80,5 @@
 
 <script type="text/javascript">
     alert('<?php echo $stat; ?>');
-    <?php if ($exe) { ?>
     location.href = '<?=$base_url?><?php echo $url; ?>';
-    <?php } else { ?>
-    location.href = '<?=$base_url?>index-c-biayaops-t-add.pos';
-    <?php } ?>
 </script>

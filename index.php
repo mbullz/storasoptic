@@ -213,6 +213,9 @@ include('include/function.php');
 			if ($c == 'profile') {
 				include('component/profile/profile.php');
 			}
+      else if ($c == 'config' && $_SESSION['is_admin']) {
+        include('component/config/config.php');
+      }
 			else {
 				getBody($_GET['component'] ?? '', $_GET['task'] ?? '', $_SESSION['i_sesadmin'] ?? '', $_SESSION['akses'] ?? '');
 			}

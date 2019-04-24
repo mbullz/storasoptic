@@ -50,6 +50,10 @@ menu2[5]='<a href="index-c-satuan.pos"><img src="images/invoices.png" align="lef
 <?php if(strstr($_SESSION['akses'],'targetpenjualan')) { ?>
 //menu2[8]='<a href="index-c-targetpenjualan.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Target Penjualan</a>'
 <?php } ?>
+
+<?php if($_SESSION['is_admin']) { ?>
+	menu2[20]='<a href="index-c-config.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Toko</a>'
+<?php } ?>
 /*menu2[7]='<a href="index.php?component=tindakan_medis"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Tindakan Medis</a>'
 menu2[7]='<a href="index.php?component=groupshift"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Grup Shift</a>'
 menu2[8]='<a href="index.php?component=bank"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Bank</a>'

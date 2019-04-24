@@ -96,6 +96,9 @@ $menu = array(
         'add'       => 'Cara Pembayaran Baru',
         'edit'      => 'Edit Cara Pembayaran',
     ),
+    'config'        => array(
+        '0'         => 'Toko',
+    ),
     'jenisbarang'       => array(
         '0'         => 'Jenis Brand',
         'add'       => 'Jenis Brand Baru',

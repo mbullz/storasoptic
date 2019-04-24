@@ -44,10 +44,14 @@ $(document).ready(function() {
   $(this).hide();
   });
 })
-$(function()
+
+  $(function()
   {
-      $('#keterangan').wysiwyg();
+    if ($('#branch_id').val() == 0) {
+      alert('Pilih cabang terlebih dahulu sebelum menambahkan data');
+    }
   });
+
 </script>
 <style type="text/css">
 #result{ 
@@ -97,13 +101,14 @@ table ul li {
       <td align="center">:</td>
       <td><label>
         <select name="jenis" id="jenis">
-          <option value="Biaya Operasional">Biaya Operasional</option>
-          <option value="Biaya Pengiriman">Biaya Pengiriman</option>
-          <option value="Biaya Listrik">Biaya Listrik</option>
-          <option value="Biaya Telephone">Biaya Telephone</option>
-          <option value="Biaya Internet">Biaya Internet</option>
-          <option value="Biaya Konsumsi">Biaya Konsumsi</option>
-          <option value="Biaya Lain-lain">Biaya Lain-lain</option>
+          <option value="BIAYA OPERASIONAL">BIAYA OPERASIONAL</option>
+          <option value="BIAYA LISTRIK">BIAYA LISTRIK</option>
+          <option value="BIAYA TELEPHONE">BIAYA TELEPHONE</option>
+          <option value="BIAYA INTERNET">BIAYA INTERNET</option>
+          <option value="BIAYA KONSUMSI">BIAYA KONSUMSI</option>
+          <option value="BIAYA TRANSPORT">BIAYA TRANSPORT</option>
+          <option value="BIAYA PENGIRIMAN">BIAYA PENGIRIMAN</option>
+          <option value="BIAYA LAIN-LAIN">BIAYA LAIN-LAIN</option>
         </select>
       </label></td>
     </tr>

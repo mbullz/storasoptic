@@ -2,6 +2,12 @@
 
 global $mysqli;
 global $c;
+global $branch_id;
+
+$branch_filter = '';
+if ($branch_id != 0) {
+    $branch_filter = " AND a.branch_id = $branch_id ";
+}
 
 $query_data = "SELECT 
 		a.id, a.tgl, a.referensi, a.jumlah, a.info, b.matauang, d.pembayaran 
@@ -9,6 +15,7 @@ $query_data = "SELECT
 	JOIN matauang b ON a.matauang_id = b.matauang_id 
 	JOIN carabayar d ON a.carabayar_id = d.carabayar_id 
 	WHERE a.tipe='operasional' 
+	$branch_filter 
 	ORDER BY a.tgl DESC ";
 
 $data = $mysqli->query($query_data);
@@ -61,6 +68,22 @@ $(document).ready(function()
   $(this).hide();
   });
 })
+
+	function deleteData(id) {
+		var c = confirm('Apakah anda yakin ingin menghapus data ini ?');
+
+		if (c) {
+			$.ajax({
+				type: 'POST',
+				url: 'component/biayaops/p_biayaops.php?p=delete',
+				data: 'id=' + id,
+				success: function(data) {
+					$('#result').html(data);
+				},
+			});
+		}
+	}
+
 </script>
 
 <style>
@@ -85,13 +108,10 @@ $(document).ready(function()
 	<table id="example" class="display" cellspacing="0" cellpadding="0" width="100%">
 		<thead>
       <tr>
-        <th width="2%" align="center"><label><input type="checkbox" name="checkbox" value="checkbox" onclick="if(this.checked) { for (i=0;i<<?php echo $totalRows_data;?>;i++){document.getElementById('data'+i).checked=true;}}else{ for (i=0;i<<?php echo $totalRows_data;?>;i++){document.getElementById('data'+i).checked=false;}}"/></label></th>
-        <th width="12%" align="center"><font color="#0000CC">TANGGAL</font></th>
-        <th width="16%" align="center"><font color="#0000CC">PEMBAYARAN</font></th>
-        <th width="18%" align="center"><font color="#0000CC">NO. REF</font></th>
-        <th width="15%" align="center"><font color="#0000CC">JUMLAH</font></th>
+        <th align="center"><font color="#0000CC">TANGGAL</font></th>
+        <th align="center"><font color="#0000CC">JUMLAH</font></th>
         <th align="center"><font color="#0000CC">INFO</font></th>
-        <th width="8%" align="center"><font color="#0000CC">PENGATURAN</font></th>
+        <th align="center"><font color="#0000CC">&nbsp;</font></th>
       </tr>
 		</thead>
         
@@ -99,14 +119,20 @@ $(document).ready(function()
       <?php $no=0; 
 	  while ($row_data = mysqli_fetch_assoc($data)) { ?>
       <tr valign="top">
-        <td align="center"><input name="data[]" type="checkbox" id="data<?php echo $no;$no++;?>" value="<?php echo $row_data['id'];?>" /></td>
-        <td align="center"><?php genDate($row_data['tgl']);?></td>
-        <td align="center"><?php echo $row_data['pembayaran'];?></td>
-        <td align="center"><?php echo $row_data['referensi'];?></td>
-        <td align="right"><?php echo number_format($row_data['jumlah'],0,',','.');?> <?php echo $row_data['matauang'];?></td>
+        <td align="center"><?=$row_data['tgl']?></td>
+        <td align="right"><?php echo number_format($row_data['jumlah'],0,',','.');?></td>
         <td align="left"><?php echo $row_data['info'];?></td>
-        <td align="center"><?php if(strstr($_SESSION['akses'],"edit_".$c)) { ?><a href="index.php?component=<?php echo $c;?>&amp;task=edit&amp;id=<?php echo $row_data['id'];?>" title="Edit Data"><img src="images/edit-icon.png" border="0" />Edit</a><?php } ?></td>
-        </tr>
+        <td align="center">
+        	<?php if(strstr($_SESSION['akses'],"edit_".$c)) { ?>
+        		<!--
+        		<a href="index.php?component=<?=$c?>&task=add&id=<?=$row_data['id']?>" title="Edit Data"><img src="images/edit_icon.png" border="0" width="16px" height="16px" /></a>
+        		-->
+        	<?php } ?>
+        	<?php if(strstr($_SESSION['akses'],"delete_".$c)) { ?>
+        		<img src="images/delete_icon.png" width="16px" height="16px" style="cursor: pointer;" onclick="deleteData(<?=$row_data['id']?>)" />
+        	<?php } ?>
+        </td>
+      </tr>
       <?php } ?>
 		</tbody>
 	</table>
