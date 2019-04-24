@@ -1,5 +1,7 @@
 <?php
 
+    if (!$_SESSION['is_admin']) return;
+
     global $mysqli;
 
     $periode = isset($_POST['periode']) ? $_POST['periode'] : date("Y-m-d");

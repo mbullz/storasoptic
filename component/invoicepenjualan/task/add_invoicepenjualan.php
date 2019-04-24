@@ -222,6 +222,8 @@ table ul li {
                         <label id="frame"></label>
                     </td>
                 </tr>
+                
+                <!--
                 <tr id="divDetailSoftlens">
                     <td align="right">&nbsp;
                        	
@@ -236,6 +238,8 @@ table ul li {
                         <textarea cols="30" id="textSOSoftlens"></textarea>
                     </td>
                 </tr>
+                -->
+
                 <!--
                 <tr class="divSpecialOrderSoftlens">
                     <td align="right">
@@ -251,56 +255,7 @@ table ul li {
                     </td>
 				</tr>
                 -->
-				<tr class="divSpecialOrderSoftlens">
-                    <td align="right">
-						Jenis
-                    </td>
-                    
-                    <td>
-                    	:
-                    </td>
-                    
-                    <td align="left">
-                    	<input type="text" size="15" id="jenisSoftlens" />
-                    </td>
-                </tr>
-                <tr class="divSpecialOrderSoftlens">
-                    <td align="right">
-						Price List
-                    </td>
-                    
-                    <td>
-                    	:
-                    </td>
-                    
-                    <td align="left">
-                    	<input type="text" size="15" id="hargaModalSoftlens" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" />
-                    </td>
-                </tr>
-                <tr class="divSpecialOrderSoftlens">
-                    <td align="right">
-						Supplier
-                    </td>
-                    
-                    <td>
-                    	:
-                    </td>
-                    
-                    <td align="left">
-                    	<select id="supplierSoftlens">
-                            <option value="">-- Choose Supplier --</option>
-                            <?php
-                                $rs2 = $mysqli->query("SELECT a.user_id,a.kontak FROM kontak a , jeniskontak b WHERE a.jenis = b.kode AND b.klasifikasi LIKE 'supplier' ORDER BY kontak ASC");
-                                while ($data2 = mysqli_fetch_assoc($rs2))
-                                {
-                                    ?>
-                                        <option value="<?=$data2['kontak']?>"><?=$data2['kontak']?></option>
-                                    <?php
-                                }
-                            ?>
-                        </select>
-                    </td>
-                </tr>
+				
                 <tr class="tableDetail1">
                     <td align="right">Qty</td>
                     <td>:</td>
@@ -441,7 +396,9 @@ table ul li {
                     </td>
                     <td colspan="6">
                         <input type="text" id="hargaLensa" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" disabled="disabled" />
+                        <!--
                         <input type="checkbox" id="checkSOLensa" value="1" onclick="specialOrderLensa()" />Special Order
+                        -->
 
                         <input type="hidden" id="lensa_product_id" value="0" />
                     </td>

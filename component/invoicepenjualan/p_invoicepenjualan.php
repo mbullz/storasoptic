@@ -170,8 +170,13 @@ if (isset($error)) {
 			}
 			break;
 		default:
-			if ($total > $uang_muka) $lunas = 0;
-			else $lunas = 1;
+			if ($total > $uang_muka) {
+				$lunas = 0;
+			}
+			else {
+				$lunas = 1;
+				$uang_muka = $total;
+			}
 
 			$new_transaction = true;
 
@@ -179,13 +184,13 @@ if (isset($error)) {
 			$data = $rs->fetch_assoc();
 
 			if ($data['referensi'] == '') {
-				$referensi = "INV-" . date("ymd");
-				$rs = $mysqli->query("SELECT referensi FROM keluarbarang WHERE referensi like '$referensi%' ORDER BY referensi DESC LIMIT 0,1");
+				$referensi = "INV-";
+				$rs = $mysqli->query("SELECT referensi FROM keluarbarang WHERE referensi LIKE '$referensi%' AND branch_id = $_SESSION[branch_id] ORDER BY referensi DESC LIMIT 0,1");
 				$data = $rs->fetch_assoc();
 
-				if ($data == null) $referensi .= '001';
+				if ($data == null) $referensi .= '000001';
 				else {
-					$lastreferensi = substr('00' . (substr($data['referensi'], -3) + 1), -3);
+					$lastreferensi = substr('00000' . (substr($data['referensi'], -6) + 1), -6);
 					$referensi .= $lastreferensi;
 				}
 			}

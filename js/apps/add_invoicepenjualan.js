@@ -56,6 +56,7 @@ function refreshTipe() {
 		break
 	}
 	
+	/*
 	tipe = (tipe=="5")?"1":tipe;
 	
 	$.ajax({
@@ -75,6 +76,9 @@ function refreshTipe() {
 			$("#qbrg").html(html);
 		}
 	});
+	*/
+
+	refreshBarang();
 }
 
 function refreshBarang() {
