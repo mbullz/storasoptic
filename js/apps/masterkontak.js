@@ -46,6 +46,20 @@ function generateReport()
     NewWindow(url + data,'name','900','600','yes');
 }
 
+function generateReport2(klas, mode, id)
+{
+    var url = "component/masterkontak/task/report_masterkontak.php";
+    var data = "";
+
+    switch (klas) {
+    	case 'customer':
+    		data = '?mode=customer1&user_id=' + id;
+    	break;
+    }
+    
+    NewWindow(url + data, 'name', '900', '600', 'yes');
+}
+
 $(document).ready(function()
 {
 	$("#example").dataTable(

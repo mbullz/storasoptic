@@ -422,7 +422,7 @@ table ul li {
                     <td>:</td>
                     <td>
                         <label>
-                            <input name="diskon" type="text" id="diskon" size="8" maxlength="8" value="30" onkeyup="calculate_subtotal2()" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'" autocomplete="off" disabled="disabled" />
+                            <input name="diskon" type="text" id="diskon" size="8" maxlength="8" value="<?=($_SESSION['global_discount'] ?? 0)?>" onkeyup="calculate_subtotal2()" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'" autocomplete="off" disabled="disabled" />
                         </label>
                         <label>
                             <select name="tdiskon" id="tdiskon" style="font-size:9px;" onchange="calculate_subtotal2()" disabled="disabled">

@@ -58,7 +58,9 @@ $totalRows_data = mysqli_num_rows($data);
         <tbody>
       		<?php
 	  			$no=0;
-	   			while ($row_data = mysqli_fetch_assoc($data)) { ?>
+	   			while ($row_data = mysqli_fetch_assoc($data)) { 
+                        $user_id = $row_data['user_id'];
+                    ?>
         <td align="left"><?php echo $row_data['kontak'];?></td>
         <td align="left"><?php echo $row_data['alamat'];?></td>
         <td align="center"><?php echo $row_data['notlp'];?></td>
@@ -92,31 +94,28 @@ $totalRows_data = mysqli_num_rows($data);
 			{
 				?>
                 	<tr>
-                        <td align="right" valign="top"><strong>Data Pembelian :</strong></td>
-                        <td valign="top">
+                        <td colspan="2">
+                            <!--
+                            <input type="button" value="General" onclick="generateReport2('customer', 'general', '<?=$user_id?>')" />
+                            -->
+                            <table width="100%" border="1" cellspacing="0">
                             <?php
-                                $rs2 = $mysqli->query("SELECT a.referensi , a.tgl , c.frame , b.lensa , b.rSph , b.rCyl , rAxis , b.rAdd , b.rPd , b.lSph , b.lCyl , b.lAxis , b.lAdd , b.lPd , c.barang , d.jenis FROM keluarbarang a , dkeluarbarang b , barang c , jenisbarang d WHERE a.referensi = b.noreferensi AND b.product_id = c.product_id AND c.brand_id = d.brand_id AND a.client = $row_data[user_id] ORDER BY a.tgl DESC LIMIT 0,3");
-                                
-                                while ($data2 = mysqli_fetch_assoc($rs2))
-                                {
+                                $rs2 = $mysqli->query("SELECT * FROM keluarbarang WHERE client = $user_id AND referensi != '' ORDER BY tgl DESC");
+                                while ($data2 = $rs2->fetch_assoc()) {
                                     ?>
-                                        <?=$data2['tgl']?>
-                                        <br />
-                                        <?=$data2['barang']?> - <?=$data2['jenis']?>
-                                        <br />
-                                        <?=$data2['frame']?> - <?=$data2['lensa']?>
-                                        <br />
-                                        rSph : <?=$data2['rSph']?> , rCyl : <?=$data2['rCyl']?> , rAxis : <?=$data2['rAxis']?>
-                                        <br />
-                                        rAdd : <?=$data2['rAdd']?> , rPd : <?=$data2['rPd']?>
-                                        <br />
-                                        lSph : <?=$data2['lSph']?> , lCyl : <?=$data2['lCyl']?> , lAxis : <?=$data2['lAxis']?>
-                                        <br />
-                                        lAdd : <?=$data2['lAdd']?> , lPd : <?=$data2['lPd']?>
-                                        <hr />
+                                        <tr>
+                                            <td><?=$data2['tgl']?></td>
+                                            <td>
+                                                <a href="include/draft_invoice_1.php?keluarbarang_id=<?=$data2['keluarbarang_id']?>" onclick="NewWindow(this.href,'name','720','520','yes'); return false;" style="color: blue;">
+                                                    <?=$data2['referensi']?>
+                                                </a>
+                                            </td>
+                                            <td><?=number_format($data2['total'], 0)?></td>
+                                        </tr>
                                     <?php
                                 }
                             ?>
+                            </table>
                         </td>
                       </tr>
                 <?php

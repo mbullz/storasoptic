@@ -7,10 +7,12 @@ include('config.php');
 $keluarbarang_id = $_GET['keluarbarang_id'] ?? 0;
 
 $rs = $mysqli->query("SELECT 
-    a.*, b.kontak AS customer_name, c.kontak AS karyawan_name 
+    a.*, b.kontak AS customer_name, c.kontak AS karyawan_name, 
+    d.kontak AS branch_name, d.alamat AS branch_address, d.notlp AS branch_phone1, d.notlp2 AS branch_phone2 
     FROM keluarbarang a 
     JOIN kontak b ON a.client = b.user_id 
     JOIN kontak c ON a.updated_by = c.user_id 
+    JOIN kontak d ON a.branch_id = d.user_id 
     WHERE keluarbarang_id = $keluarbarang_id ");
 
 if ($data = $rs->fetch_assoc()) {
@@ -20,6 +22,11 @@ if ($data = $rs->fetch_assoc()) {
     $karyawan = $data['updated_by'];
     $tipe_pembayaran = $data['tipe_pembayaran'];
     $ppn = $data['ppn'];
+
+    $branch_name = $data['branch_name'];
+    $branch_address = $data['branch_address'];
+    $branch_phone1 = $data['branch_phone1'];
+    $branch_phone2 = $data['branch_phone2'];
 }
 else {
     return;
@@ -91,7 +98,14 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
             <td align="left">
                 <h2><?=$GLOBALS['company_name']?></h2>
                 <p>
+                    <!--
                    	<?=$GLOBALS['company_address']?>
+                    -->
+                    <?=$branch_name?>
+                    <br />
+                    <?=$branch_address?>
+                    <br />
+                    Phone: <?=$branch_phone1?>
                 </p>
             </td>
             

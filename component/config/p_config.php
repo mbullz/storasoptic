@@ -3,46 +3,32 @@
 	include('../../include/config_db.php');
 
 	$url = "index-c-config.pos";
-	$p   = $_GET['p'];
+	$p = $_GET['p'];
 	$user_id  = $_SESSION['user_id'] ?? 0;
-	$currentPassword = $_POST['currentPassword'] ?? '';
-	$newPassword = $_POST['newPassword'] ?? '';
-	$confirmPassword = $_POST['confirmPassword'] ?? '';
-	
-	if($p == 'change_password') {
-		if ($currentPassword == '' || $newPassword == '' || $confirmPassword == '') {
-			$error[] = '- Semua field harus diisi';
-		}
-		if ($newPassword != $confirmPassword) {
-			$error[] = '- Confirm Password salah';
-		}
-	}
 
 	if (isset($error)) {
 		$stat = 'Kesalahan:\n' . implode('\n', $error);
 	}
 	else {
 		switch ($p) {
-			case 'change_password':
-				$currentPassword = md5($currentPassword);
-				$newPassword = md5($newPassword);
+			case 'global_discount':
+				$value = '';
 
-				$rs = $mysqli->query("SELECT * FROM kontak WHERE user_id = $user_id AND pass = '$currentPassword'");
-				if ($rs->fetch_assoc()) {
+				$rs = $mysqli->query("SELECT * FROM kontak WHERE jenis = 'B001' ORDER BY user_id ASC");
+				while ($data = $rs->fetch_assoc()) {
+					$id = $data['user_id'];
+					$discount = $_POST[$id] ?? 0;
 
-				}
-				else {
-					$stat = 'Current Password salah';
-					continue;
+					$value .= $id . '_' . $discount . '#';
 				}
 				
-				$exe = $mysqli->query("UPDATE kontak SET pass = '$newPassword' WHERE user_id = $user_id");
+				$exe = $mysqli->query("UPDATE config SET value = '$value' WHERE config = 'global_discount'");
 
 				if ($exe) {
-					$stat = 'Change Password berhasil';
+					$stat = 'Edit global discount berhasil';
 				}
 				else{
-					$stat = 'Change Password gagal';
+					$stat = 'Edit global discount gagal';
 				}
 			break;
 		}
