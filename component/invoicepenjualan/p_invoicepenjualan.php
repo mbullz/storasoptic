@@ -1,6 +1,47 @@
 <?php
 session_start();
 include('../../include/config_db.php');
+
+	function penjualanLensa($dkeluarbarang_id) {
+		global $mysqli;
+
+		$rs = $mysqli->query("SELECT * FROM dkeluarbarang WHERE id = $dkeluarbarang_id");
+		$data = $rs->fetch_assoc();
+
+		$keluarbarang_id = $data['keluarbarang_id'];
+		$lensa_id = $data['lensa'];
+		$lSph = $data['lSph'];
+		$lCyl = $data['lCyl'];
+		$rSph = $data['rSph'];
+		$rCyl = $data['rCyl'];
+
+		$rs = $mysqli->query("SELECT * FROM barang WHERE product_id = $lensa_id");
+		$data = $rs->fetch_assoc();
+
+		$kode = $data['kode'];
+		$brand_id = $data['brand_id'];
+		$barang = $data['barang'];
+		$branch_id = $data['branch_id'];
+
+		$rs = $mysqli->query("SELECT * FROM barang WHERE kode = '$kode' AND brand_id = $brand_id AND barang = '$barang' AND frame = '$lSph' AND color = '$lCyl' AND tipe = 3 AND branch_id = $branch_id");
+		$data = $rs->fetch_assoc();
+
+		$lensa_id_left = $data['product_id'] ?? 0;
+
+		$rs = $mysqli->query("SELECT * FROM barang WHERE kode = '$kode' AND brand_id = $brand_id AND barang = '$barang' AND frame = '$rSph' AND color = '$rCyl' AND tipe = 3 AND branch_id = $branch_id");
+		$data = $rs->fetch_assoc();
+
+		$lensa_id_right = $data['product_id'] ?? 0;
+
+		// product sent
+		$mysqli->query("INSERT INTO kirimbarang(keluarbarang_id, tgl, product_id, satuan_id, qty, gudang_id, info) VALUES($keluarbarang_id, NOW(), $lensa_id_left, 1, 1, 1, 'SENT')");
+		$mysqli->query("INSERT INTO kirimbarang(keluarbarang_id, tgl, product_id, satuan_id, qty, gudang_id, info) VALUES($keluarbarang_id, NOW(), $lensa_id_right, 1, 1, 1, 'SENT')");
+
+		// update qty in barang
+		$mysqli->query("UPDATE barang SET qty = qty - 1, tgl_keluar_akhir = NOW() where product_id = $lensa_id_left");
+		$mysqli->query("UPDATE barang SET qty = qty - 1, tgl_keluar_akhir = NOW() where product_id = $lensa_id_right");
+	}
+
 //Define variable
 $url = "index-c-invoicepenjualan.pos";
 $p = $_GET['p'];
@@ -225,17 +266,27 @@ if (isset($error)) {
 			$rs2 = $mysqli->query("SELECT * FROM dkeluarbarang WHERE keluarbarang_id = $keluarbarang_id ORDER BY id ASC");
 			while ($data2 = mysqli_fetch_assoc($rs2))
 			{
-				$product_id = $data2['product_id'];
-				$satuan_id = $data2['satuan_id'];
-				$qty = $data2['qty'];
+				$dkeluarbarang_id = $data2['id'];
+				$tipe = $data2['tipe'];
 
-				// product sent
-				$mysqli->query("INSERT INTO kirimbarang VALUES(0, $keluarbarang_id, NOW(), $product_id, $satuan_id, $qty, 1, 'SENT')");
+				if ($tipe == 3 || $tipe == 5) {
+					penjualanLensa($dkeluarbarang_id);
+				}
+				
+				if ($tipe != 3) {
+					$product_id = $data2['product_id'];
+					$satuan_id = $data2['satuan_id'];
+					$qty = $data2['qty'];
 
-				// update qty in barang
-				$mysqli->query("UPDATE barang SET qty = qty - $qty, tgl_keluar_akhir = NOW() where product_id = $product_id");
+					// product sent
+					$mysqli->query("INSERT INTO kirimbarang(keluarbarang_id, tgl, product_id, satuan_id, qty, gudang_id, info) VALUES($keluarbarang_id, NOW(), $product_id, $satuan_id, $qty, 1, 'SENT')");
+
+					// update qty in barang
+					$mysqli->query("UPDATE barang SET qty = qty - $qty, tgl_keluar_akhir = NOW() where product_id = $product_id");
+				}
 
 				// cek stok
+				/*
 				$query_cstok = "SELECT * FROM stokbarang WHERE product_id = $product_id AND satuan_id = $satuan_id AND gudang_id = 1";
 				$cstok = $mysqli->query($query_cstok);
 				$row_cstok = mysqli_fetch_assoc($cstok);
@@ -251,11 +302,12 @@ if (isset($error)) {
 					$query_upstok = "INSERT INTO stokbarang VALUES(0, 1, $product_id, $satuan_id, 0)";
 				}
 				$upstok = $mysqli->query($query_upstok);
+				*/
 			}
 			}
 
 			if ($exe) {
-				$stat = 'Data telah disimpan ...';
+				$stat = 'Data berhasil disimpan';
 			} else {
 				$stat = 'Data gagal disimpan, coba lagi !!!';
 			}

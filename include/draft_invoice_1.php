@@ -65,6 +65,7 @@ $query_gkary = "SELECT kontak FROM kontak WHERE user_id = $karyawan";
 $gkary       = $mysqli->query($query_gkary);
 $row_gkary   = mysqli_fetch_assoc($gkary);
 ?>
+
 <style type="text/css" media="all">
     body {
         margin:1px;
@@ -91,8 +92,24 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
         font-weight:bold;
        	background:#CCC;
     }
+
+    .button-print {
+        margin: 10px;
+        text-align: center;
+    }
+
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+    }
+    
 </style>
 <body>
+    <div class="button-print no-print">
+        <input type="button" value="Print" onclick="javascript:window.print()" />
+    </div>
+
     <table width="100%" border="0" cellspacing="0" cellpadding="4" class="divInvoice">
         <tr>
             <td align="left">
