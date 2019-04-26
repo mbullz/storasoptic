@@ -376,16 +376,16 @@ function deleteProduct()
 	var list = '';
 	var i = '';
 			
-	if (prompt('Kode Hapus :') == '1234')
+	if (prompt('Kode Hapus :') == '0000')
 	{
 		oTable.$('input:checked').each(function()
 		{
-			i = oTable.$("#hiddenNo" + $(this).val()).val();
+			i = oTable.$("#" + $(this).val()).find('td').eq(3).html();
 
-			list += '       ' + $.trim(oTable.$("#tdBrand" + i).html()) + ' # ' + $.trim(oTable.$("#tdKode" + i).html()) + ' # ' + $.trim(oTable.$("#tdColor" + i).html()) + "\n\n";
+			list += ' - ' + $.trim(i) + "\n";
 		});
 		
-		if (confirm("Daftar Barang yang Akan Dihapus : \n\n" + list + "Lanjutkan Proses ... ?"))
+		if (confirm("Daftar Barang yang Akan Dihapus : \n\n" + list + "\nLanjutkan Proses ... ?"))
 		{
 			data = '';
 
@@ -643,7 +643,7 @@ $(document).ready(function()
 
 	table.$('input:checkbox').click(function()
 	{
-		countChecked();
+		//countChecked();
 	});
 
 	$('#example tbody').on('click', 'td.details-control', function () {

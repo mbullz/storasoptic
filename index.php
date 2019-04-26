@@ -22,8 +22,6 @@ include('include/function.php');
 	
 <link rel="shortcut icon" href="images/favicon.png" />
 
-<link href="css/style.css" rel="stylesheet" type="text/css" />
-
 <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css" />
 <link rel="stylesheet" type="text/css" href="css/jquery-ui.structure.min.css" />
 <link rel="stylesheet" type="text/css" href="css/jquery-ui.theme.min.css" />
@@ -32,6 +30,10 @@ include('include/function.php');
 
 <link rel="stylesheet" type="text/css" href="assets/DataTables/datatables.min.css">
 <link rel="stylesheet" type="text/css" href="css/tooltipster.css" />
+
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+
+<link href="css/style.css" rel="stylesheet" type="text/css" />
 
 <style type="text/css" media="print">
   
@@ -60,6 +62,8 @@ include('include/function.php');
 
   <script type="text/javascript" language="javascript" src="assets/DataTables/datatables.min.js"></script>
   <script type="text/javascript" language="javascript" src="js/jquery.tooltipster.min.js"></script>
+
+  <script type="text/javascript" language="javascript" src="js/bootstrap.min.js"></script>
 
   <script type="text/javascript" language="javascript">
 
@@ -237,7 +241,9 @@ include('include/function.php');
 /*if(isset($_SESSION['i_sesadmin']) AND $_SESSION['i_sesadmin']<>'') { 
 	include('include/notification_user.php');
 }*/ ?>
-<div id="footer">Copyright &copy; <a href="index.php?component=copyright">Imperium Technology</a>.  All Rights Reserved.</div>
+<div id="footer">
+  Copyright &copy; <a href="index.php?component=copyright">Imperium Technology</a>.  All Rights Reserved.
+</div>
 </body>
 
 </html>

@@ -118,34 +118,31 @@ table ul li {
 
   <table width="100%" border="0" cellspacing="0" cellpadding="4">
     <tr>
-      <td width="14%" align="right" valign="top">No. Invoice *</td>
-      <td width="1%" align="center" valign="top">:</td>
-      <td width="85%" valign="top">
-        <label>
+      <td width="14%" align="right">No. Invoice *</td>
+      <td width="1%" align="center">:</td>
+      <td width="85%">
             <input name="invoice" type="text" id="invoice" value="<?=$referensi?>" size="15" maxlength="15">
-        </label>
+
         <?php if ($total_jkontak == 1) { ?>
             <input type="hidden" name="matauang" id="matauang" value="<?php echo $row_jkontak['kode']; ?>" />
         <?php } else { ?>
-        <label>
             <select name="matauang" id="matauang">
                 <?php if($total_jkontak > 0) { do { ?>
                 <option value="<?php echo $row_jkontak['kode'];?>" <?php if($row_jkontak['kode']=='IDR') { ?>selected="selected"<?php } ?>><?php echo $row_jkontak['matauang'];?></option>
                 <?php }while($row_jkontak = mysqli_fetch_assoc($jkontak)); } ?>
             </select>
-        </label>
         <?php } ?>
       </td>
     </tr>
-    <tr valign="top">
-      <td align="right" valign="top">Tanggal *</td>
-      <td align="center" valign="top">:</td>
-      <td valign="top"><label>
+    <tr>
+      <td align="right">Tanggal *</td>
+      <td align="center">:</td>
+      <td>
         <input name="tgl" type="text" class="calendar" id="tgl" value="<?=$tgl?>" size="10" maxlength="10"/>
-      </label></td>
+      </td>
     </tr>
 
-    <tr valign="top">
+    <tr>
       <td align="right">Customer *</td>
       <td align="center">:</td>
 		<td>
@@ -153,11 +150,10 @@ table ul li {
         	<select name="customer" id="customer"></select>
 		</td>
     </tr>
-	<tr valign="top">
+	<tr>
 		<td align="right">Sales</td>
 		<td align="center">:</td>
 		<td>
-			<label>
 				<select name="sales" id="sales">
                 	<option value="0">-</option>
 					<?php
@@ -175,7 +171,6 @@ table ul li {
 						}
                     ?>
 				</select>
-			</label>
 		</td>
 	</tr>
   </table>
@@ -199,12 +194,10 @@ table ul li {
                     <td align="right" width="20%">Barang</td>
                     <td>:</td>
                     <td align="left">
-                        <label>
-							<input type="text" name="qbrg" id="qbrg" onkeyup="refreshBarang()" autocomplete="off" placeholder="Cari Kode / Brand / Nama" size="50" />
-                        </label>
+							<input type="text" name="qbrg" id="qbrg" onkeyup="refreshBarang()" autocomplete="off" placeholder="Cari Kode / Brand / Nama" size="50" style="margin-top: 5px;" />
                         <br />
                         <label id="divMBarang">
-                            <select name="barang" id="barang" onchange="getDetailBarang(this.value);" style="margin-top: 5px;margin-bottom: 5px;">
+                            <select name="barang" id="barang" onchange="getDetailBarang(this.value);" style="margin-top: 5px;">
                             </select>
                         </label>
                     </td>
@@ -218,8 +211,7 @@ table ul li {
                         :
                     </td>
         
-                    <td align="left">
-                        <label id="frame"></label>
+                    <td align="left" id="frame">
                     </td>
                 </tr>
                 
@@ -261,7 +253,7 @@ table ul li {
                     <td>:</td>
                     <td>
                         <input name="qty" type="text" id="qty" size="4" maxlength="8" value="0" onkeyup="calculate_subtotal2()" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'" autocomplete="off" />
-                        <label>
+
                             <?php if ($total_satuan == 1) { ?>
                             <input type="hidden" name="satuan" id="satuan" value="<?=$row_satuan['satuan_id']?>" />
                             <?php echo $row_satuan['satuan']; ?>
@@ -273,7 +265,6 @@ table ul li {
                                 <?php }while($row_satuan = mysqli_fetch_assoc($satuan)); } ?>
                             </select>
                             <?php } ?>
-                        </label>
                     </td>
                 </tr>
                 <tr class="tableDetail1">
@@ -405,10 +396,8 @@ table ul li {
                 </tr>
                 <tr class="divSpecialOrderLensa">
                     <td colspan="6">
-                        <label>
                             Price List : 
                             <input type="text" size="15" id="hargaModalLensa" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" />
-                        </label>
                     </td>
                 </tr>
             </table>
@@ -421,24 +410,19 @@ table ul li {
                     <td align="right">Diskon</td>
                     <td>:</td>
                     <td>
-                        <label>
                             <input name="diskon" type="text" id="diskon" size="8" maxlength="8" value="<?=($_SESSION['global_discount'] ?? 0)?>" onkeyup="calculate_subtotal2()" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'" autocomplete="off" disabled="disabled" />
-                        </label>
-                        <label>
+
                             <select name="tdiskon" id="tdiskon" style="font-size:9px;" onchange="calculate_subtotal2()" disabled="disabled">
                                 <option value="1">%</option>
                                 <option value="0">Normal</option>
                             </select>
-                        </label>
                     </td>
                 </tr>
                 <tr>
                     <td align="right">Subtotal</td>
                     <td>:</td>
                     <td>
-                        <label>
                             <input name="subtotal" type="text" id="subtotal" value="0" disabled="disabled" />
-                        </label>
                     </td>
                 </tr>
                 <tr>
@@ -453,6 +437,7 @@ table ul li {
 			<a href="javascript:void(0);" onclick="manageInvoiceJual('add','');">
 				<img src="images/shopping_cart.png" border="0" height="24px" /> Add to Cart
 			</a>
+            <br /><br />
         </div>
     </div>
     </fieldset>

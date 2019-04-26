@@ -6,6 +6,15 @@
 	require('include/define.php');
 
 	$tipe = $_POST['tipe'] ?? 1;
+	$emptyStock = $_POST['emptyStock'] ?? 0;
+
+	$stock_filter = '';
+	if ($emptyStock == 1) {
+		$stock_filter = ' AND a.qty <= 0 ';
+	}
+	else {
+		$stock_filter = ' AND a.qty > 0 ';
+	}
 
 	$branch_filter = '';
 	if ($branch_id != 0) {
@@ -16,7 +25,7 @@ $query_data  = "SELECT a.*, b.jenis
 				FROM barang a 
 				JOIN jenisbarang b ON b.brand_id = a.brand_id 
 				WHERE a.tipe = $tipe 
-				AND qty > 0 
+				$stock_filter 
 				$branch_filter 
 				ORDER BY b.jenis ASC, a.barang ASC ";
 
@@ -46,6 +55,11 @@ $row_header = array(
 			$frame = htmlspecialchars($data['frame'], ENT_QUOTES);
 			$color = htmlspecialchars($data['color'], ENT_QUOTES);
 			$qty = $data['qty'];
+
+			if ($tipe == 3) {
+				$frame = $frame / 100;
+				$color = $color / 100;
+			}
 
 			$checkbox = '<input name="data[]" type="checkbox" value="'.$product_id.'" />';
 
@@ -91,12 +105,13 @@ $row_header = array(
 <input type="hidden" id="totalRows_data" value="<?=$totalRows_data?>" />
 
 <h1>Master Barang</h1>
+
 <div>
 	<?php
 		if(strstr($_SESSION['akses'],"add_".$c))
 		{
 			?>
-				<img src="images/add2.png" height="64px" title="Input Barang Baru" class="tooltip" style="cursor:pointer;" onclick="javascript:window.location='index-c-masterbarang-t-add-k-importcsv.pos';" />
+				<img src="images/add2.png" height="64px" title="Input Barang Baru" style="cursor:pointer;" onclick="javascript:window.location='index-c-masterbarang-t-add-k-importcsv.pos';" />
 			<?php
 		}
 	?>
@@ -105,6 +120,17 @@ $row_header = array(
 
 <div style="clear:both;margin-top:10px;">
 	<form method="post" id="formTipe">
+		<div class="btn-group btn-group-toggle">
+			<label class="btn btn-primary btn-sm <?=($emptyStock == 0 ? 'active' : '')?>">
+				<input type="radio" name="emptyStock" autocomplete="off" value="0" <?=($emptyStock == 0 ? 'checked' : '')?> onclick="javascript:document.forms['formTipe'].submit();"> Stok Tersedia
+			</label>
+			
+			<label class="btn btn-primary btn-sm <?=($emptyStock == 1 ? 'active' : '')?>">
+				<input type="radio" name="emptyStock" autocomplete="off" value="1" <?=($emptyStock == 1 ? 'checked' : '')?> onclick="javascript:document.forms['formTipe'].submit();"> Stok Kosong
+			</label>
+		</div>
+		<br /><br />
+
 		Tipe : 
 		<select name="tipe" id="tipe" onchange="document.forms['formTipe'].submit();">
 			<option value="1" <?php echo ($tipe == 1) ? 'selected' : '' ?>>Frame</option>
@@ -166,9 +192,12 @@ $row_header = array(
 			<?php
 		}
 	?>
+
+	<!--
 	<input type="button" value="Pindah Cabang" style="background:#609;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="pindahCabang()" />
 	<input type="button" value="Retur" style="background:#609;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="returSome()" />
 	<input type="button" value="Print Label" style="background:#609;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="openDialogPrintInvoice()" />
+	-->
 
   </div>
 </form>

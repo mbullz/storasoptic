@@ -87,19 +87,19 @@ table ul li {
 <form action="component/<?php echo $c;?>/p_<?php echo $c;?>.php?p=<?php echo $t;?>" method="post" name="add" id="add">
   <table width="100%" border="0" cellspacing="0" cellpadding="4">
     <tr>
-      <td width="12%" align="right" valign="top">No. Ref *</td>
-      <td width="1%" align="center" valign="top">:</td>
-      <td width="82%" valign="top"><label>
+      <td width="12%" align="right">No. Ref *</td>
+      <td width="1%" align="center">:</td>
+      <td width="82%"><label>
         <input name="referensi" type="text" id="referensi" value="BO-<?php echo date("His");?>" size="10" maxlength="10" readonly="readonly">
       </label>
       Tanggal * : <label>
         <input name="tgl" type="text" class="calendar" id="tgl" value="<?php echo date("Y-m-d");?>" size="10" maxlength="10"/>
       </label></td>
     </tr>
-    <tr valign="top">
+    <tr>
       <td align="right">Jenis *</td>
       <td align="center">:</td>
-      <td><label>
+      <td>
         <select name="jenis" id="jenis">
           <option value="BIAYA OPERASIONAL">BIAYA OPERASIONAL</option>
           <option value="BIAYA LISTRIK">BIAYA LISTRIK</option>
@@ -110,7 +110,7 @@ table ul li {
           <option value="BIAYA PENGIRIMAN">BIAYA PENGIRIMAN</option>
           <option value="BIAYA LAIN-LAIN">BIAYA LAIN-LAIN</option>
         </select>
-      </label></td>
+      </td>
     </tr>
     <tr valign="top">
       <td align="right">Cara Pembayaran *</td>

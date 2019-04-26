@@ -147,6 +147,8 @@ table ul li {
     <tr>
         <td align="right">
             <?php
+                $frame = $row_edit['frame'];
+
                 switch ($row_edit['tipe']) {
                     case 1:
                         echo 'Frame';
@@ -158,19 +160,22 @@ table ul li {
 
                     case 3:
                         echo 'Minus';
+                        $frame = $frame / 100;
                     break;
                 }
             ?>
         </td>
         <td align="center">:</td>
         <td>
-            <input type="text" name="frame" id="frame" value="<?=$row_edit['frame']?>" />
+            <input type="text" name="frame" id="frame" value="<?=$frame?>" />
         </td>
     </tr>
 
     <tr>
         <td align="right">
             <?php
+                $color = $row_edit['color'];
+
                 switch ($row_edit['tipe']) {
                     case 1:
                         echo 'Color';
@@ -182,13 +187,14 @@ table ul li {
 
                     case 3:
                         echo 'Silinder';
+                        $color = $color / 100;
                     break;
                 }
             ?>
         </td>
         <td align="center">:</td>
         <td>
-            <input type="text" name="color" id="color" value="<?=$row_edit['color']?>" />
+            <input type="text" name="color" id="color" value="<?=$color?>" />
         </td>
     </tr>
 

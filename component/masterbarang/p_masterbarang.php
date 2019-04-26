@@ -26,6 +26,7 @@
 	$inf = $mysqli->real_escape_string($_POST['info']);
 	$masuk = $mysqli->real_escape_string($_POST['tgl_masuk']);
 	$keluar = $mysqli->real_escape_string($_POST['tgl_keluar']);
+
 	if (empty($masuk) || !isset($masuk)) {
 		$masuk = "NULL";
 	} else {
@@ -37,6 +38,12 @@
 	} else {
 		$keluar = "'$keluar'";
 	}
+
+	if ($tipe == 3) {
+		$fra *= 100;
+		$col *= 100;
+	}
+
 	//------
 	$data = $_POST['data'];
 	$jdata = count($data);
