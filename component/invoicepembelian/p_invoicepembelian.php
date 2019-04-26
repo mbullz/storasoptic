@@ -5,18 +5,29 @@ include('../../include/config_db.php');
 $stat = '';
 $url = "index-c-invoicepembelian.pos";
 $p = $_GET['p'];
-$inv = $mysqli->real_escape_string($_POST['invoice']);
-$tgl = $mysqli->real_escape_string($_POST['tgl']);
-$jte = $mysqli->real_escape_string($_POST['jtempo']);
-$mat = $mysqli->real_escape_string($_POST['matauang']);
-$tot = intval($_POST['total']);
-$gud = $mysqli->real_escape_string($_POST['gudang']);
-$sup = $mysqli->real_escape_string($_POST['supplier']);
-$inf = $mysqli->real_escape_string($_POST['info']);
-$lun = intval($_POST['lunas']);
-$tipe = intval($_POST['tipePembayaran']);
+$inv = $_POST['invoice'] ?? '';
+$inv = $mysqli->real_escape_string($inv);
+$tgl = $_POST['tgl'] ?? date('Y-m-d');
+$tgl = $mysqli->real_escape_string($tgl);
+$jte = $_POST['jtempo'] ?? null;
+$jte = $mysqli->real_escape_string($jte);
+$mat = $_POST['matauang'] ?? 1;
+$mat = $mysqli->real_escape_string($mat);
+$tot = $_POST['total'] ?? 0;
+$tot = intval($tot);
+$gud = $_POST['gudang'] ?? 1;
+$gud = $mysqli->real_escape_string($gud);
+$sup = $_POST['supplier'] ?? 0;
+$sup = $mysqli->real_escape_string($sup);
+$inf = $_POST['info'] ?? '';
+$inf = $mysqli->real_escape_string($inf);
+$lun = $_POST['lunas'] ?? 0;
+$lun = intval($lun);
+$tipe = $_POST['tipePembayaran'] ?? 1;
+$tipe = intval($tipe);
+
 if (empty($tipe) || !isset($tipe)) {$tipe = 1;}
-$tipe_pembayaran = $tipe == "1" ? "Cash" : "Jatuh Tempo";
+$tipe_pembayaran = $tipe == 1 ? "Cash" : "Jatuh Tempo";
 //------
 $data = $_POST['data'];
 $jdata = count($data);
@@ -66,23 +77,21 @@ if (isset($error)) {
 } else {
     switch ($p) {
         case("mdelete"):
-            $where = " where ";
+            $where = " WHERE ";
             for ($i = 0; $i < $jdata; $i++) {
-                $where .="referensi='$data[$i]'";
+                $where .=" masukbarang_id = $data[$i] ";
                 if ($i < $jdata - 1) {
                     $where .=" OR ";
                 }
             }
-            $query_exe = "delete from masukbarang" . $where;
+            $query_exe = "DELETE FROM masukbarang " . $where;
             $exe = $mysqli->query($query_exe);
             if ($exe) {
                 // delete dmasukbarang
-                $query_delx = "delete from dmasukbarang" . str_replace("referensi", "noreferensi", $where);
+                $query_delx = " delete from dmasukbarang " . $where;
                 $delx = $mysqli->query($query_delx);
-//					echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data telah dihapus ...</b></center>";
                 $stat = 'Data telah dihapus ...';
             } else {
-//					echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data gagal dihapus, coba lagi !!!</b></center>";
                 $stat = 'Data gagal dihapus, coba lagi !!!';
             }
             break;
@@ -209,13 +218,8 @@ if (isset($error)) {
     }
 }
 
-echo mysql_error();
 ?>
 <script type="text/javascript">
     alert('<?php echo $stat; ?>');
-<?php if ($exe) { ?>
-        location.href = '<?=$base_url?><?php echo $url; ?>';
-<?php } else { ?>
-        history.go(-1);
-<?php } ?>
+    location.href = '<?=$base_url?><?php echo $url; ?>';
 </script>

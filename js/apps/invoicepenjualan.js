@@ -212,10 +212,12 @@ $(document).ready(function()
 	$('#formdata').submit(function() {
 		$.ajax({
 			type: 'POST',
+			dataType: 'json',
 			url: $(this).attr('action'),
 			data: $(this).serialize(),
 			success: function(data) {
-				$('#result').html(data);
+				alert(data.message);
+				location.reload();
 			}
 		})
 		return false;

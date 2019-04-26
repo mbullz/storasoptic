@@ -1,8 +1,6 @@
 <?php
 
-	global $mysqli;
-
-	$branch_id = $_SESSION['branch_id'] ?? 0;
+	global $mysqli, $c, $branch_id;
 
 	$branch_filter = '';
 	if ($branch_id != 0) {
@@ -42,16 +40,20 @@ $totalRows_data = mysqli_num_rows($data);
 
 <div id="loading" style="display:none;"><img src="images/loading.gif" alt="loading..." /></div>
 <div id="result" style="display:none;"></div>
+
 <form id="formdata" name="formdata" method="post" action="component/<?php echo $c;?>/p_<?php echo $c;?>.php?p=mdelete">
   <div class="tablebg">
 	<h1>Data Penjualan</h1>
 	
-	<?php if(strstr($_SESSION['akses'],"add_".$c)) { ?><a href="index-c-<?php echo $c;?>-t-add.pos"><img src="images/add.png" border="0"/>&nbsp;Tambah Data</a><?php } ?>
+	<?php if(strstr($_SESSION['akses'],"add_".$c)) { ?>
+		<a href="index-c-<?php echo $c;?>-t-add.pos"><img src="images/add.png" border="0"/>&nbsp;Tambah Data</a>
+		<br /><br />
+	<?php } ?>
 		  
 	<table id="example" class="display" cellspacing="0" cellpadding="0" width="100%">
 		<thead>
 	  <tr>
-		<th width="2%" align="center"><label><input type="checkbox" name="checkbox" value="checkbox" onclick="if(this.checked) { for (i=0;i<<?php echo $totalRows_data;?>;i++){document.getElementById('data'+i).checked=true;}}else{ for (i=0;i<<?php echo $totalRows_data;?>;i++){document.getElementById('data'+i).checked=false;}}"/></label></th>
+		<th width="2%" align="center"></th>
 		<th width="12%" align="center"><font color="#0000CC">TANGGAL</font></th>
 		<th width="12%" align="center"><font color="#0000CC">NO. INV</font></th>
 		<th width="16%" align="center"><font color="#0000CC">CUSTOMER</font></th>
@@ -78,9 +80,9 @@ $totalRows_data = mysqli_num_rows($data);
 		$row_detbrg   = mysqli_fetch_assoc($detbrg);
 		$total_detbrg = mysqli_num_rows($detbrg);
 	  ?>
-	  <tr valign="top">
+	  <tr>
 		<td align="center">
-			<input name="data[]" type="checkbox" id="data<?php echo $no;$no++;?>" value="<?php echo $row_data['referensi'];?>" />
+			<input name="data[]" type="checkbox" id="data<?php echo $no;$no++;?>" value="<?=$row_data['keluarbarang_id']?>" />
 		</td>
 		<td align="center">
 			<?php genDate($row_data['tgl']);?>
@@ -185,7 +187,7 @@ $totalRows_data = mysqli_num_rows($data);
 	  <?php if(strstr($_SESSION['akses'],"delete_".$c)) { ?>
 		  <img src="images/arrow_ltr.png" />&nbsp;&nbsp;
 		  <label>
-		  <input name="D_ALL" type="submit" id="D_ALL" value="Hapus Sekaligus" title="Hapus Sekaligus Data ( Cek )" style="background:#006699;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="javascript:if(prompt('Kode Hapus :') == '1234') return confirm('Lanjutkan Proses ... ?'); else return false;"/>
+		  <input name="D_ALL" type="submit" id="D_ALL" value="Hapus Sekaligus" title="Hapus Sekaligus Data ( Cek )" style="background:#006699;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="javascript:if(prompt('Kode Hapus :') == '0000') return confirm('Lanjutkan Proses ... ?'); else return false;"/>
 		</label>
 		<!--<a href="export_xls.php?tabel=keluarbarang" title="Export Data XLS"><img src="images/_xls.png" width="20" height="20" border="0" align="right" /></a>-->
 	  <?php } ?>

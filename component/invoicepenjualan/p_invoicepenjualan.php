@@ -46,16 +46,21 @@ include('../../include/config_db.php');
 $url = "index-c-invoicepenjualan.pos";
 $p = $_GET['p'];
 $keluarbarang_id = $_POST['keluarbarang_id'] ?? 0;
-$inv = $mysqli->real_escape_string($_POST['invoice']);
-$tgl = $mysqli->real_escape_string($_POST['tgl']);
+$inv = $_POST['invoice'] ?? '';
+$inv = $mysqli->real_escape_string($inv);
+$tgl = $_POST['tgl'] ?? date('Y-m-d');
+$tgl = $mysqli->real_escape_string($tgl);
 $jte = $_POST['jtempo'] ?? null;
 //$matauang_id = $mysqli->real_escape_string($_POST['matauang']);
 $matauang_id = 1;
-$ppn = intval($_POST['ppn']);
-$total = intval($_POST['grand_total']);
-$cus = $mysqli->real_escape_string($_POST['customer']);
+$ppn = $_POST['ppn'] ?? 0;
+$ppn = intval($ppn);
+$total = $_POST['grand_total'] ?? 0;
+$total = intval($total);
+$cus = $_POST['customer'] ?? 0;
+$cus = $mysqli->real_escape_string($cus);
 //$sal = $mysqli->real_escape_string($_POST['sales']);
-$sales = $_POST['sales'];
+$sales = $_POST['sales'] ?? 0;
 $sal = 0;
 $gud = $_POST['gudang'] ?? 1;
 $inf = $_POST['info'] ?? '';
@@ -65,9 +70,9 @@ $kode = $_SESSION['i_sesadmin'];
 $tipe = $_POST['tipePembayaran'] ?? 1;
 $tipe_pembayaran = $tipe == "1" ? "Cash" : "Jatuh Tempo";
 
-$carabayar_id = $_POST['carabayar_id'];
+$carabayar_id = $_POST['carabayar_id'] ?? 1;
 $uang_muka = $_POST['uangMuka'] ?? 0;
-$info_pembayaran = $_POST['textInfoPembayaran'];
+$info_pembayaran = $_POST['textInfoPembayaran'] ?? '';
 
 //------
 $data = $_POST['data'] ?? [];
@@ -101,37 +106,38 @@ if ($p <> 'mdelete' AND $p <> 'delete') {
 	if (trim($total) == 0) {
 		$error[] = '- Detail Transaksi harus diisi !!!';
 	}
-} else if ($p == 'mdelete') {
-	if ($jdata <= 0) {
-		$error[] = "- Proses gagal, Pilih min 1 data yang ingin dihapus !!!";
-	}
 }
 // End Validasi
+
 if (isset($error)) {
 	//echo "<img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Kesalahan : </b><br />".implode("<br />", $error);
 	$stat = 'Kesalahan: ' . implode('\n', $error);
 } else {
 	switch ($p) {
 		case("mdelete"):
-			$where = " where ";
+			$where = " WHERE ";
 			for ($i = 0; $i < $jdata; $i++) {
-				$where .="referensi='$data[$i]'";
+				$where .=" keluarbarang_id = $data[$i] ";
 				if ($i < $jdata - 1) {
 					$where .=" OR ";
 				}
 			}
-			$query_exe = "delete from keluarbarang " . $where;
+			$query_exe = "DELETE FROM keluarbarang " . $where;
 			$exe = $mysqli->query($query_exe);
 			if ($exe) {
 				// delete dmasukbarang
-				$query_delx = "delete from dkeluarbarang " . str_replace("referensi", "noreferensi", $where);
+				$query_delx = "DELETE FROM dkeluarbarang " . $where;
 				$delx = $mysqli->query($query_delx);
-				//echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data telah dihapus ...</b></center>";
 				$stat = 'Data telah dihapus...';
 			} else {
 				$stat = 'Data gagal dihapus, coba lagi !!!';
-				//echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data gagal dihapus, coba lagi !!!</b></center>";
 			}
+
+				echo json_encode(array(
+					'status'	=> 'success',
+					'message'	=> 'Success',
+				));
+
 			break;
 		case("edit"):
 			$query_exe = "update keluarbarang set client='$cus', sales='$sal', tgl='$tgl', jtempo='$jte', total=$total, info='$inf', matauang='$matauang_id', lunas='$lun' where keluarbarang_id = $keluarbarang_id ";

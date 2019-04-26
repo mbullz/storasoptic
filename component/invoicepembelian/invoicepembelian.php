@@ -1,11 +1,20 @@
 <?php
 
 global $mysqli;
+global $c;
+global $branch_id;
+
+$branch_filter = '';
+if ($branch_id != 0) {
+    $branch_filter = " AND a.branch_id = $branch_id ";
+}
 
 $query_data  = "SELECT a.masukbarang_id, a.referensi, a.tgl, (SELECT SUM(subtotal) FROM dmasukbarang WHERE masukbarang_id LIKE a.masukbarang_id) AS total, a.info, b.kontak, c.matauang, a.lunas 
 				FROM masukbarang a 
 				JOIN kontak b ON a.supplier = b.user_id 
 				JOIN matauang c ON a.matauang_id = c.matauang_id 
+				WHERE 1=1 
+				$branch_filter 
 				ORDER BY a.tgl DESC , a.masukbarang_id DESC ";
 
 $data = $mysqli->query($query_data);
@@ -98,7 +107,7 @@ function viewInfo(infoID) {
 	<table id="example" class="display" cellspacing="0" cellpadding="0" width="100%">
 		<thead>
       <tr>
-        <th width="2%" align="center"><label><input type="checkbox" name="checkbox" value="checkbox" onclick="if(this.checked) { for (i=0;i<<?php echo $totalRows_data;?>;i++){document.getElementById('data'+i).checked=true;}}else{ for (i=0;i<<?php echo $totalRows_data;?>;i++){document.getElementById('data'+i).checked=false;}}"/></label></th>
+        <th width="2%" align="center">&nbsp;</th>
         <th width="12%" align="center"><font color="#0000CC">TANGGAL</font></th>
         <!--<th width="12%" align="center"><font color="#0000CC">NO. PO</font></th>-->
         <th width="20%" align="center"><font color="#0000CC">SUPPLIER</font></th>
@@ -119,7 +128,9 @@ function viewInfo(infoID) {
 		$total_detbrg = mysqli_num_rows($detbrg);
 	  ?>
       <tr valign="top">
-        <td align="center"><input name="data[]" type="checkbox" id="data<?php echo $no;$no++;?>" value="<?php echo $row_data['referensi'];?>" /></td>
+        <td align="center">
+        	<input name="data[]" type="checkbox" id="data<?php echo $no;$no++;?>" value="<?=$row_data['masukbarang_id']?>" />
+        </td>
         <td align="center"><?php genDate($row_data['tgl']);?></td>
         <!--<td align="center"><a href="include/draft_po.php?referensi=<?php echo $row_data['referensi'];?>" onclick="NewWindow(this.href,'name','720','520','yes');return false" title="Draft PO <?php echo $row_data['referensi'];?>"><?php echo $row_data['referensi'];?></a></td>-->
         <td align="left"><?php echo $row_data['kontak'];?></td>
@@ -214,15 +225,14 @@ function viewInfo(infoID) {
 		</tbody>
 	</table>
 
-      <?php if(strstr($_SESSION['akses'],"delete_".$c)) { ?>
-          <img src="images/arrow_ltr.png" />&nbsp;&nbsp;
-          <label>
-          <input name="D_ALL" type="submit" id="D_ALL" value="Hapus Sekaligus" title="Hapus Sekaligus Data ( Cek )" style="background:#006699;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="javascript:if(prompt('Kode Hapus :') == '1234') return confirm('Lanjutkan Proses ... ?'); else return false;"/>
-        </label>
-        <!--<a href="export_xls.php?tabel=masukbarang" title="Export Data XLS"><img src="images/_xls.png" width="20" height="20" border="0" align="right" /></a>-->
-      <?php } ?>
+	<br />
+
+	  <?php if (strstr($_SESSION['akses'], "delete_".$c)) { ?>
+	      <img src="images/arrow_ltr.png" />&nbsp;&nbsp;
+	      <input name="D_ALL" type="submit" id="D_ALL" value="Hapus Sekaligus" title="Hapus Sekaligus Data ( Cek )" style="background:#006699;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="javascript:if(prompt('Kode Hapus :') == '0000') return confirm('Lanjutkan Proses ... ?'); else return false;"/>
+	  <?php } ?>
       
-	<br /><br />
+	<br /><br /><br />
 
 </div>
 </form>

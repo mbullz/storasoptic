@@ -92,16 +92,16 @@ var menu4=new Array()
 menu4[0]='<a href="index-c-invoicepembelian.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Data Pembelian</a>'
 <?php } ?>
 <?php if(strstr($_SESSION['akses'],'hutangjtempo')) { ?>
-menu4[1]='<a href="index-c-hutangjtempo.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Pembayaran Hutang</a>'
+//menu4[1]='<a href="index-c-hutangjtempo.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Pembayaran Hutang</a>'
 <?php } ?>
 <?php if(strstr($_SESSION['akses'],'pembayaranhutang')) { ?>
-menu4[2]='<a href="index-c-pembayaranhutang.pos" style="border-bottom:solid 2px #FFF;"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Hutang Lunas</a>'
+//menu4[2]='<a href="index-c-pembayaranhutang.pos" style="border-bottom:solid 2px #FFF;"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Hutang Lunas</a>'
 <?php } ?>
 <?php /* if(strstr($_SESSION['akses'],'barangmasuk')) { ?>
 menu4[3]='<a href="index-c-barangmasuk.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Penerimaan Barang</a>'
 <?php } */ ?>
 <?php if(strstr($_SESSION['akses'],'barangreturmasuk')) { ?>
-menu4[4]='<a href="index-c-barangreturmasuk.pos" style="border-bottom:solid 2px #FFF;"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Retur Penerimaan Barang</a>'
+//menu4[4]='<a href="index-c-barangreturmasuk.pos" style="border-bottom:solid 2px #FFF;"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Retur Penerimaan Barang</a>'
 <?php } ?>
 <?php if(strstr($_SESSION['akses'],'add_invoicepembelian')) { ?>
 //menu4[5]='<a href="index-c-invoicepembelian-t-add.pos"><img src="images/add.png" align="left" hspace="1" vspace="4"> Pembelian Baru</a>'
