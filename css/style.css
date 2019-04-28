@@ -7,12 +7,31 @@
 	src: url('fonts/3OF9_NEW.TTF');
 }
 
+/* roboto-regular - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  /*font-weight: 400;*/
+  src: url('fonts/roboto-v19-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local('Roboto'), local('Roboto-Regular'),
+       url('fonts/roboto-v19-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('fonts/roboto-v19-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('fonts/roboto-v19-latin-regular.woff') format('woff'), /* Modern Browsers */
+       url('fonts/roboto-v19-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('fonts/roboto-v19-latin-regular.svg#Roboto') format('svg'); /* Legacy iOS */
+}
+
 body, td, th {
-	font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+	/*font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;*/
+	font-family: 'Roboto';
 	font-size: 12px;
-        font-weight: bold;
 	color:#000000;
 }
+
+td {
+	font-size: 11px;
+}
+
 body {
 	background: #FFF url(../images/body_top_bg.gif) repeat-x;
 	margin: 0;
@@ -26,7 +45,8 @@ form {
 	padding: 0;
 }
 input, select, textarea {
-	font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
+	/*font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;*/
+	font-family: 'Roboto';
 	font-size: 11px;
 	color: #000;
 }
@@ -223,11 +243,9 @@ h1 {
 -------------------------------------------------------------- */
 
 a, a:visited {
-	color: #333;
 	text-decoration: none;
 }
 a:hover {
-	color: #000;
 	text-decoration: underline;
 }
 a img {
@@ -430,7 +448,7 @@ table.form {
 	border: 1px solid #CCC;
 }
 table.form td {
-	font-size: 12px;
+	font-size: 11px;
 }
 table.form td.fieldlabel {
 	background-color: #efefef;
@@ -444,7 +462,6 @@ table.datatable {
 }
 table.datatable th {
 	background-color: #1A4D80;
-	font-weight: bold;
 	text-align: center;
 }
 table.datatable td {

@@ -8,7 +8,7 @@
 	}
 
 $query_data = "SELECT a.keluarbarang_id, a.referensi, a.tgl, a.total, a.info, 
-					b.kontak, b.user_id as customer, c.matauang, 
+					b.kontak AS customer_name, b.user_id as customer_id, c.matauang, 
 					(SELECT SUM(jumlah) FROM aruskas d WHERE a.keluarbarang_id = d.transaction_id AND d.tipe = 'piutang') AS 'uang_muka', 
 					a.tipe_pembayaran , a.lunas, 
 					a.updated_by, 
@@ -26,15 +26,61 @@ $totalRows_data = mysqli_num_rows($data);
 
 ?>
 
+<script type="text/javascript">
+	var data = [];
+
+	<?php
+		$rs = $mysqli->query($query_data);
+		while ($data = $rs->fetch_assoc()) {
+			$keluarbarang_id = $data['keluarbarang_id'];
+			$referensi = $data['referensi'];
+			$tgl = $data['tgl'];
+			$customer_name = htmlspecialchars($data['customer_name'], ENT_QUOTES);
+			$total = number_format($data['total'], 0, ',', '.');
+			$lunas = $data['lunas'];
+
+			$checkbox = '<input name="data[]" type="checkbox" value="'.$keluarbarang_id.'" />';
+
+			$link_referensi = '<a href="include/draft_invoice_1.php?keluarbarang_id='.$keluarbarang_id.'" target="_blank">'.$referensi.'</a>';
+
+			$edit = '';
+			if (strstr($_SESSION['akses'], "edit_".$c)) {
+				$edit = '<a href="index.php?component='.$c.'&task=edit&id='.$keluarbarang_id.'" title="Edit Data"><img src="images/edit_icon.png" width="16px" height="16px" /></a>';
+			}
+
+			if ($lunas == '1') $lunas = 'Lunas';
+			else $lunas = 'Piutang';
+
+			?>
+				data.push([
+					<?=$keluarbarang_id?>,
+					'<?=$checkbox?>',
+					'',
+					'<?=$tgl?>',
+					'<?=$link_referensi?>',
+					'<?=$customer_name?>',
+					'<?=$total?>',
+					'<?=$lunas?>',
+					//'<?=$edit?>',
+				]);
+			<?php
+		}
+	?>
+</script>
 <script type="text/javascript" language="javascript" src="js/apps/invoicepenjualan.js"></script>
 
 <style>
 	td.details-control {
-		background: url('media/images/details_open.png') no-repeat center center;
-		cursor: pointer;
+	    background: url('media/images/details_open.png') no-repeat center center;
+	    cursor: pointer;
 	}
 	tr.shown td.details-control {
-		background: url('media/images/details_close.png') no-repeat center center;
+	    background: url('media/images/details_close.png') no-repeat center center;
+	}
+
+	.th {
+		color: #660099;
+		/*text-align: center;*/
 	}
 </style>
 
@@ -46,150 +92,43 @@ $totalRows_data = mysqli_num_rows($data);
 	<h1>Data Penjualan</h1>
 	
 	<?php if(strstr($_SESSION['akses'],"add_".$c)) { ?>
-		<a href="index-c-<?php echo $c;?>-t-add.pos"><img src="images/add.png" border="0"/>&nbsp;Tambah Data</a>
+		<a href="index-c-<?php echo $c;?>-t-add.pos" class="btn btn-success btn-sm">Tambah Data</a>
 		<br /><br />
 	<?php } ?>
 		  
 	<table id="example" class="display" cellspacing="0" cellpadding="0" width="100%">
 		<thead>
-	  <tr>
-		<th width="2%" align="center"></th>
-		<th width="12%" align="center"><font color="#0000CC">TANGGAL</font></th>
-		<th width="12%" align="center"><font color="#0000CC">NO. INV</font></th>
-		<th width="16%" align="center"><font color="#0000CC">CUSTOMER</font></th>
-		<th width="12%" align="center"><font color="#0000CC">TOTAL</font></th>
-		<th align="center"><font color="#0000CC">INFO</font></th>
-		<!--<th width="8%">Pengaturan</th>-->
-	  </tr>
-	  </thead>
-		<tbody>
-	  <?php $doneList = array(); $no=0; 
-	  while ($row_data = mysqli_fetch_assoc($data)) { ?>
-	  <?php
-		// list detail barang
-		$query_detbrg = "SELECT 
-				a.id, a.qty, b.product_id, b.kode, b.barang, b.color, a.subtotal, a.harga, c.satuan_id as sid, c.satuan, d.jenis 
-			FROM dkeluarbarang a 
-			JOIN barang b on b.product_id = a.product_id 
-			JOIN satuan c on c.satuan_id = a.satuan_id 
-			JOIN jenisbarang d on d.brand_id = b.brand_id 
-			WHERE a.keluarbarang_id = $row_data[keluarbarang_id] 
-			ORDER BY a.id DESC ";
-
-		$detbrg       = $mysqli->query($query_detbrg);
-		$row_detbrg   = mysqli_fetch_assoc($detbrg);
-		$total_detbrg = mysqli_num_rows($detbrg);
-	  ?>
-	  <tr>
-		<td align="center">
-			<input name="data[]" type="checkbox" id="data<?php echo $no;$no++;?>" value="<?=$row_data['keluarbarang_id']?>" />
-		</td>
-		<td align="center">
-			<?php genDate($row_data['tgl']);?>
-		</td>
-		<td align="center">
-			<a href="include/draft_invoice_1.php?keluarbarang_id=<?=$row_data['keluarbarang_id']?>" onclick="NewWindow(this.href,'name','720','520','yes'); return false;" title="Invoice <?=$row_data['referensi']?>">
-				<?=$row_data['referensi']?>
-			</a>
-		</td>
-		<td align="left">
-			<?php echo $row_data['kontak'];?>
-		</td>
-		<td align="right">
-			<?php if ($row_data['lunas'] == "1") echo "<img src='images/done.png' /> "; ?><?php echo number_format($row_data['total'],0,',','.');?> <?php echo $row_data['matauang'];?>
-		</td>
-		<td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=$row_data['info']?>
-		<small style="float:right;"><img id="stat-<?php echo $row_data['referensi']; ?>" src="images/done.png" style="display:none" /> [ <a href="javascript:void(0);" onclick="viewInfo('info_<?php echo $row_data['referensi'];?>');">Lihat Info</a> ]</small>
-		<table width="100%" border="0" cellpadding="2" cellspacing="0" id="info_<?php echo $row_data['referensi'];?>" style="display:none;">
-		  <tr>
-			<th width="185">Barang</th>
-			<th valign="top" width="75">Qty</th>
-			<th valign="top" width="100">Terkirim</th>
-		  </tr>
-		  <?php $done = true; do { ?>
-		  <?php
-		  //kirim barang
-		$query_terbrg = "SELECT sum(qty) as kirim FROM kirimbarang WHERE keluarbarang_id = $row_data[keluarbarang_id] AND product_id = $row_detbrg[product_id] AND satuan_id = $row_detbrg[sid]";
-		$terbrg       = $mysqli->query($query_terbrg);
-		$row_terbrg   = mysqli_fetch_assoc($terbrg);
-		//retur barang
-		$query_retur  = "SELECT SUM(qty) AS retur FROM kirimbarang_r WHERE keluarbarang_id = $row_data[keluarbarang_id] AND product_id = $row_detbrg[product_id] AND satuan_id = $row_detbrg[sid]";
-		$retur        = $mysqli->query($query_retur);
-		$row_retur    = mysqli_fetch_assoc($retur);
-		// ---
-		$kirim        = intval($row_terbrg['kirim'] - $row_retur['retur']);
-		  ?>
-		  <tr>
-			<td valign="top">
-				<?php
-					if ($row_detbrg['kode'] != "") echo $row_detbrg['kode'] . " # ";
-				?><?php echo $row_detbrg['jenis']; ?> # <?php echo $row_detbrg['barang'];?> # <?=$row_detbrg['color']?>
-				<?php if($row_detbrg['qty'] > $kirim) { $done = false; ?>
-				<a href="index.php?component=<?php echo $c;?>&task=barangkeluar&id=<?php echo $row_detbrg['id'];?>" title="Input Barang Keluar">
-					<img src="images/delivery.png" border="0" />
-				</a>
-				<?php }else{ ?>
-				<img src="images/done.png" />
-				<?php } ?>
-				<?php if($kirim > 0) { ?>
-				<a href="index-c-<?php echo $c;?>-t-barangreturkeluar-<?php echo $row_detbrg['id'];?>.pos" title="Retur Pengiriman Barang">
-					<img src="images/trash.png" width="16" height="16" border="0" />
-				</a>
-				<?php } ?>
-				<?php
-					$rs3 = $mysqli->query("SELECT * FROM kirimbarang_r WHERE keluarbarang_id = $row_data[keluarbarang_id] AND product_id=$row_detbrg[product_id] ORDER BY id ASC");
-					$r = 1;
-					while ($data3 = mysqli_fetch_assoc($rs3))
-					{
-						?>
-							<br />
-							Retur <?=$r?> 
-							<?php
-								if ($data3['processed'] == "true")
-								{
-									?>
-										<img src="images/done.png" />
-									<?php
-								}
-								else
-								{
-									?>
-										<img src="images/alert.gif" />
-									<?php
-								}
-							?>
-						<?php
-						$r++;
-					}
-				?>
-			</td>
-			<td align="center" valign="top"><?php echo $row_detbrg['qty'];?> <?php echo $row_detbrg['satuan'];?></td>
-			<td align="right" valign="top"><?php echo number_format($kirim,0,',','.');?> <?php echo $row_detbrg['satuan'];?></td>
-			</tr>
-		  <?php 
-			}while($row_detbrg = mysqli_fetch_assoc($detbrg)); 
-			if ($done) {
-				array_push($doneList, $row_data['referensi']);
-			}
-		  ?>
 			<tr>
-				<td colspan="3" bgcolor="#DDDDDD">
-					Karyawan : <?=$row_data['nama_karyawan']?>
-				</td>
+				<th width="1%"></th>
+				<th width="1%" class="th">INFO</th>
+				<th class="th">TANGGAL</th>
+				<th class="th">NO. INV</th>
+				<th class="th">CUSTOMER</th>
+				<th class="th">TOTAL</th>
+				<th class="th">STATUS</th>
+				<!--<th width="8%">Pengaturan</th>-->
 			</tr>
-		</table></td>
-		<!--<td align="center"><?php if(strstr($_SESSION['akses'],"edit_".$c)) { ?><a href="index.php?component=<?php echo $c;?>&amp;task=edit&amp;id=<?php echo $row_data['referensi'];?>" title="Edit Data"><img src="images/edit-icon.png" border="0" />Edit</a><?php } ?></td>-->
-		</tr>
-	  <?php } ?>
+		</thead>
+		
+		<tbody>
 		</tbody>
+
+		<tfoot>
+			<tr>
+				<th></th>
+				<th></th>
+				<th>TANGGAL</th>
+				<th>NO. INV</th>
+				<th>CUSTOMER</th>
+				<th></th>
+				<th>STATUS</th>
+			</tr>
+		</tfoot>
 	</table>
 	
 	  <?php if(strstr($_SESSION['akses'],"delete_".$c)) { ?>
 		  <img src="images/arrow_ltr.png" />&nbsp;&nbsp;
-		  <label>
-		  <input name="D_ALL" type="submit" id="D_ALL" value="Hapus Sekaligus" title="Hapus Sekaligus Data ( Cek )" style="background:#006699;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="javascript:if(prompt('Kode Hapus :') == '0000') return confirm('Lanjutkan Proses ... ?'); else return false;"/>
-		</label>
-		<!--<a href="export_xls.php?tabel=keluarbarang" title="Export Data XLS"><img src="images/_xls.png" width="20" height="20" border="0" align="right" /></a>-->
+		  <input name="D_ALL" type="submit" id="D_ALL" value="Hapus Sekaligus" class="btn btn-danger btn-sm" onclick="javascript:if(prompt('Kode Hapus :') == '0000') return confirm('Lanjutkan Proses ... ?'); else return false;" />
 	  <?php } ?>
 	  
 	  <br /><br />
@@ -235,11 +174,3 @@ $totalRows_data = mysqli_num_rows($data);
 		  </div>
   </div>
 </form>
-
-<?php if (count($doneList) > 0) { ?>
-<script type="text/javascript">
-	<?php foreach($doneList as $lst) { ?>
-	$("#stat-<?php echo $lst; ?>").show();
-	<?php } ?>
-</script>
-<?php } ?>

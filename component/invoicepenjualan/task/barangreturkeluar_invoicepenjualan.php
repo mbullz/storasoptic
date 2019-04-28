@@ -1,4 +1,6 @@
-<?php include('include/define.php');?>
+<?php 
+global $mysqli;
+include('include/define.php');?>
 <?php
 $id = $_GET['id'];
 // query edit

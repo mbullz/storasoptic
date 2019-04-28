@@ -152,19 +152,33 @@ function getInfo(row, tr, keluarbarang_id) {
 
 $(document).ready(function()
 {
-	$("#example").dataTable(
+	var table = $("#example").DataTable(
 	{
 		dom: 'B<"clear">lfrtip',
 		buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
         ],
+        columns: [
+			{ data: [1], orderable: false },
+			{ className: 'details-control', data: [2], orderable: false },
+			{ data: [3] },
+			{ data: [4] },
+			{ data: [5] },
+			{ className: ' text-right td-nowrap ', data: [6] },
+			{ className: ' text-center ', data: [7] },
+		],
+		data: data,
+		deferRender: true,
+		order: [
+			//[2, 'desc']
+		],
+		rowId: [0],
 	});
 
-	/*
 	$('#example tbody').on('click', 'td.details-control', function () {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
-        var keluarbarang_id = $(tr).attr("keluarbarangid");
+        var keluarbarang_id = $(tr).attr("id");
  
         if ( row.child.isShown() ) {
             // This row is already open - close it
@@ -184,7 +198,7 @@ $(document).ready(function()
 	{
 		var title = $('#example tfoot th').eq( $(this).index() ).text();
 		title = $.trim(title);
-		if (title != "" && $(this).index() != 0)
+		if (title != "")
 			$(this).html( '<input type="text" placeholder="' + title + '" style="width:100%;padding:3px;box-sizing:border-box;" />' );
 	} );
 	
@@ -199,7 +213,6 @@ $(document).ready(function()
 				.draw();
 		} );
 	} );
-	*/
 
 	$().ajaxStart(function() {
 		$('#loading').show();
