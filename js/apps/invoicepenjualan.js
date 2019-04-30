@@ -40,9 +40,9 @@ function getInfo(row, tr, keluarbarang_id) {
 		success: function(result) {
 			html += '<table width="100%" class="table table-bordered">';
 
-			if (Object.keys(result[0].dkeluarbarang).length > 0)
+			if (Object.keys(result.dkeluarbarang).length > 0)
 			{
-				var keluarbarang = result[0].keluarbarang;
+				var keluarbarang = result.keluarbarang;
 				var lunas = keluarbarang.lunas == '1' ? '<font class="text-success">Lunas</font>' : '<font class="text-danger">Belum Lunas</font>';
 				// keluarbarang
 				html += '<tr>';
@@ -50,55 +50,153 @@ function getInfo(row, tr, keluarbarang_id) {
 				html += '<td class="text-left">' + lunas + '</td>';
 				html += '</tr>';
 
+				/*
 				if (keluarbarang.lunas == '0') {
 					html += '<tr>';
 					html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Piutang</td>';
 					html += '<td class="text-left"><font class="text-danger">Rp ' + print_number(keluarbarang.round) + '</font>&nbsp;&nbsp;&nbsp;(Jatuh Tempo : ' + keluarbarang.ship_date + ')</td>';
 					html += '</tr>';
 				}
+				*/
 
 				// dkeluarbarang
 				html += '<tr>';
 				html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Detail</td>';
 				html += '<td>';
 
-				html += '<table border="0" width="100%" class="table">';
+				html += '<table width="100%" class="table table-bordered">';
 				html += '<thead>';
 				html += '<tr>';
-				html += '<th class="text-left">Kode</th>';
 				html += '<th class="text-left">Barang</th>';
-				html += '<th class="text-left">Edisi</th>';
 				html += '<th class="text-right">Qty</th>';
 				html += '<th class="text-right">Harga</th>';
 				html += '<th class="text-right">Diskon</th>';
-				html += '<th class="text-right">Total</th>';
+				html += '<th class="text-right">Subtotal</th>';
 				html += '</tr>';
 				html += '</thead>';
 
 				html += '<tbody>';
 
-				for (i=0;i<Object.keys(result[0].dkeluarbarang).length;i++) {
-					var data = result[0].dkeluarbarang[i];
+				for (i=0;i<Object.keys(result.dkeluarbarang).length;i++) {
+					var data = result.dkeluarbarang[i];
 
-					if (data.info != '') {
-						html += '<tr class="warning"><td>&nbsp;</td><td colspan="6" class="text-left">' + data.info + '</td></tr>';
+					if (data.tipe != 3) {
+						var subtotal = data.harga * data.qty;
+						if (data.tdiskon == '1') subtotal -= (subtotal * (data.diskon / 100));
+						else subtotal -= data.diskon;
+
+						var product = '';
+						if (data.tipe == 1 || data.tipe == 5) {
+							product += '<span class="badge badge-primary" style="font-size:11px;">Frame</span><br />';
+							product += data.kode + ' # ' + data.brand_name + ' # ' + data.barang + '<br />';
+							product += 'Frame: ' + data.frame + '<br />';
+							product += 'Color: ' + data.color;
+						}
+						else if (data.tipe == 2) {
+							product += '<span class="badge badge-primary" style="font-size:11px;">Softlens</span><br />';
+							product += data.kode + ' # ' + data.brand_name + ' # ' + data.barang + '<br />';
+							product += 'Minus: ' + data.frame + '<br />';
+							product += 'Color: ' + data.color;
+						}
+						else if (data.tipe == 4) {
+							product += '<span class="badge badge-primary" style="font-size:11px;">Accessories</span><br />';
+							product += data.kode + ' # ' + data.brand_name + ' # ' + data.barang + '<br />';
+							product += 'Keterangan 1: ' + data.frame + '<br />';
+							product += 'Keterangan 2: ' + data.color;
+						}
+
+						html += '<tr>';
+						html += '<td class="text-left">' + product + '</td>';
+						html += '<td class="text-right">' + print_number(data.qty) + '</td>';
+						html += '<td align="right">' + print_number(data.harga) + '</td>';
+						
+						html += '<td align="right">';
+						if (data.tdiskon == '1') html += print_number(data.diskon) + ' %';
+						else html += print_number(data.diskon);
+						html += '</td>';
+
+						html += '<td align="right">' + print_number(subtotal) + '</td>';
+
+						html += '</tr>';
 					}
 
-					html += '<tr>';
-					html += '<td class="text-left">' + data.kode + '</td>';
-					html += '<td class="text-left">' + data.barang + '</td>';
-					html += '<td class="text-left">' + data.spec3 + '</td>';
-					html += '<td class="text-right">' + print_number(data.qty) + '</td>';
-					html += '<td align="right">' + print_number(data.harga) + '</td>';
-					
-					html += '<td align="right">';
-					if (data.tdiskon == '1') html += print_number(data.diskon) + ' %';
-					else html += print_number(data.diskon);
-					html += '</td>';
+					if (data.tipe == 3 || data.tipe == 5) {
+						var subtotal = data.harga_lensa * 2;
+						if (data.tdiskon == '1') subtotal -= (subtotal * (data.diskon / 100));
+						else subtotal -= data.diskon;
 
-					html += '<td align="right">' + print_number(data['subtotal']) + '</td>';
+						var product = '';
+						product += '<span class="badge badge-primary" style="font-size:11px;">Lensa</span><br />';
+						product += data.lensa_kode + ' # ' + data.lensa_brand_name + ' # ' + data.lensa_barang + '<br />';
+						product += '<table width="100%" class="table table-bordered">';
+						product += '<thead>';
+						product += '<tr>';
+						product += '<th class="text-left"></th>';
+						product += '<th class="text-center">SPH</th>';
+						product += '<th class="text-center">CYL</th>';
+						product += '<th class="text-center">AXIS</th>';
+						product += '<th class="text-center">ADD</th>';
+						product += '<th class="text-center">PD</th>';
+						product += '</tr>';
+						product += '</thead>';
+
+						product += '<tbody>';
+
+						product += '<tr>';
+						product += '<td>Left</td>';
+						product += '<td class="text-center">' + data.lSph + '</td>';
+						product += '<td class="text-center">' + data.lCyl + '</td>';
+						product += '<td class="text-center">' + data.lAxis + '</td>';
+						product += '<td class="text-center">' + data.lAdd + '</td>';
+						product += '<td class="text-center">' + data.lPd + '</td>';
+						product += '</tr>';
+
+						product += '<tr>';
+						product += '<td>Right</td>';
+						product += '<td class="text-center">' + data.rSph + '</td>';
+						product += '<td class="text-center">' + data.rCyl + '</td>';
+						product += '<td class="text-center">' + data.rAxis + '</td>';
+						product += '<td class="text-center">' + data.rAdd + '</td>';
+						product += '<td class="text-center">' + data.rPd + '</td>';
+						product += '</tr>';
+
+						product += '</tbody>';
+						product += '</table>';
+
+						product += '<button type="button">Gagal Potong Kiri</button>&nbsp;';
+						product += '<button type="button">Gagal Potong Kanan</button>';
+
+						html += '<tr>';
+						html += '<td class="text-left">' + product + '</td>';
+						html += '<td class="text-right">2</td>';
+						html += '<td align="right">' + print_number(data.harga_lensa) + '</td>';
+						
+						html += '<td align="right">';
+						if (data.tdiskon == '1') html += print_number(data.diskon) + ' %';
+						else html += print_number(data.diskon);
+						html += '</td>';
+
+						html += '<td align="right">' + print_number(subtotal) + '</td>';
+
+						html += '</tr>';
+					}
+				}
+
+				// ppn
+				var ppn = parseInt(keluarbarang.ppn);
+				var total = parseInt(keluarbarang.total);
+				if (ppn > 0) {
+					html += '<tr>';
+					html += '<td colspan="4" class="text-right">PPN ' + ppn + '%</td>';
+					html += '<td class="text-right">' + print_number(Math.round(total/((100+ppn)/100))) + '</td>';
 					html += '</tr>';
 				}
+
+				// Grand Total
+				html += '<tr>';
+				html += '<td colspan="4" class="text-right"><strong>Grand Total</strong></td>';
+				html += '<td class="text-right"><strong>' + print_number(keluarbarang.total) + '</strong></td>';
+				html += '</tr>';
 
 				html += '</tbody>';
 				html += '</table>';
@@ -111,10 +209,10 @@ function getInfo(row, tr, keluarbarang_id) {
 				html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Pembayaran</td>';
 				html += '<td>';
 
-				html += '<table border="0" width="100%" class="table">';
+				html += '<table width="50%" class="table table-bordered">';
 				html += '<thead>';
 				html += '<tr>';
-				html += '<th class="text-left">Tanggal</th>';
+				html += '<th class="text-center">Tanggal</th>';
 				html += '<th class="text-right">Jumlah</th>';
 				html += '<th class="text-left">Keterangan</th>';
 				html += '</tr>';
@@ -122,13 +220,16 @@ function getInfo(row, tr, keluarbarang_id) {
 
 				html += '<tbody>';
 
-				for (i=0;i<Object.keys(result[0].payment).length;i++) {
-					var data = result[0].payment[i];
+				for (i=0;i<Object.keys(result.payments).length;i++) {
+					var data = result.payments[i];
 
 					html += '<tr>';
-					html += '<td class="text-left">' + data.date + '</td>';
-					html += '<td class="text-right">' + print_number(data.amount) + '</td>';
-					html += '<td class="text-left">' + data.info + '</td>';
+					html += '<td class="text-center">' + data.tgl + '</td>';
+					html += '<td class="text-right">' + print_number(data.jumlah) + '</td>';
+					html += '<td class="text-left">';
+					html += '<span class="badge badge-primary" style="font-size:11px;">' + data.pembayaran + '</span> ';
+					html += data.info
+					html += '</td>';
 					html += '</tr>';
 				}
 

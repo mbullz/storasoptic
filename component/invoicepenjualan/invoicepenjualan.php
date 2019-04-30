@@ -67,6 +67,7 @@ $totalRows_data = mysqli_num_rows($data);
 		}
 	?>
 </script>
+<script type="text/javascript" language="javascript" src="js/number_format.js"></script>
 <script type="text/javascript" language="javascript" src="js/apps/invoicepenjualan.js"></script>
 
 <style>
