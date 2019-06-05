@@ -4,6 +4,7 @@ session_start();
 if (!isset($_SESSION['akses'])) $_SESSION['akses'] = '';
 
 $_SESSION['is_logged_in'] = $_SESSION['is_logged_in'] ?? false;
+$_SESSION['is_admin'] = $_SESSION['is_admin'] ?? false;
 
 require('include/config_db.php');
 
