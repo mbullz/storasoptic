@@ -247,23 +247,15 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
 											<?php echo number_format($row_detbrg['harga_lensa'], 0, ',', '.'); ?>
 										</td>
 										<td align="center" style="border-right:solid 1px #DDD;border-bottom:solid 1px #DDD;">
-										  <?php if ($row_detbrg['tdiskon'] == 0) {
-                                                    echo number_format($row_detbrg['diskon'], 0, ',', '.');
-                                                } else {
-                                                    echo $row_detbrg['diskon'] . " %";
-                                                } 
+                                            <?php 
+                                                echo $row_detbrg['diskon_lensa'] . " %";
                                             ?>
 										</td>
 										<td align="right" style="border-bottom:solid 1px #DDD;">
                                             <?php
                                                 $price = $row_detbrg['harga_lensa'] * 2;
 
-                                                if ($row_detbrg['tdiskon'] == 0) {
-                                                    $price -= $row_detbrg['diskon'];
-                                                }
-                                                else {
-                                                    $price -= (($row_detbrg['diskon']/100) * $price);
-                                                } 
+                                                $price -= (($row_detbrg['diskon_lensa']/100) * $price);
                                             ?>
 											<?php echo number_format($price, 0, ',', '.'); ?> Rupiah
 										</td>

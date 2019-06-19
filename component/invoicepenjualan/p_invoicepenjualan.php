@@ -275,7 +275,7 @@ if (isset($error)) {
 				$dkeluarbarang_id = $data2['id'];
 				$tipe = $data2['tipe'];
 
-				if ($tipe == 3 || $tipe == 5) {
+				if ($data2['special_order'] == '0' && ($tipe == 3 || $tipe == 5)) {
 					penjualanLensa($dkeluarbarang_id);
 				}
 				

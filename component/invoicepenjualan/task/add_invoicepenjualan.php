@@ -112,6 +112,11 @@ table ul li {
 
 <h1> Penjualan Baru</h1> 
 
+<input type="hidden" id="global_discount" value="<?=($_SESSION['global_discount'] ?? 0)?>" />
+<input type="hidden" id="global_discount_lensa" value="<?=($_SESSION['global_discount_lensa'] ?? 0)?>" />
+<input type="hidden" id="global_discount_softlens" value="<?=($_SESSION['global_discount_softlens'] ?? 0)?>" />
+<input type="hidden" id="global_discount_accessories" value="<?=($_SESSION['global_discount_accessories'] ?? 0)?>" />
+
 <form name="add" id="add" action="component/<?=$c?>/p_<?=$c?>.php?p=<?=$t?>" method="POST">
 	<input type="hidden" name="keluarbarang_id" id="keluarbarang_id" value="<?=$keluarbarang_id?>">
     <input type="hidden" id="tipePembayaran" name="tipePembayaran" value="1" />
@@ -215,22 +220,35 @@ table ul li {
                     </td>
                 </tr>
                 
-                <!--
                 <tr id="divDetailSoftlens">
-                    <td align="right">&nbsp;
-                       	
+                    <td align="right">
+                        Minus
                     </td>
         
                     <td>
                     </td>
-        
+                    
                     <td align="left">
+                        <input type="hidden" id="softlens_product_id" value="0" />
+
+                        <select name="softlensMinus" id="softlensMinus" onchange="getDetailSoftlens()">
+                            <?php for ($r = 15; $r >= -20; $r = $r - 0.25) { ?>
+                                <option value="<?=$r?>" <?=($r == 0 ? 'selected' : '')?> >
+                                    <?=$r?>
+                                </option>
+                            <?php } ?>
+                        </select>
+
+                        <label id="labelStockSoftlens">
+                            Stock : 
+                        </label>
+                        <!--
                        	<input type="checkbox" id="checkSOSoftlens" onclick="specialOrderSoftlens()" value="1" />Special Order
                         <br />
                         <textarea cols="30" id="textSOSoftlens"></textarea>
+                        -->
                     </td>
                 </tr>
-                -->
 
                 <!--
                 <tr class="divSpecialOrderSoftlens">
@@ -387,17 +405,40 @@ table ul li {
                     </td>
                     <td colspan="6">
                         <input type="text" id="hargaLensa" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" disabled="disabled" />
-                        <!--
-                        <input type="checkbox" id="checkSOLensa" value="1" onclick="specialOrderLensa()" />Special Order
-                        -->
 
                         <input type="hidden" id="lensa_product_id" value="0" />
                     </td>
                 </tr>
-                <tr class="divSpecialOrderLensa">
+                <tr>
+                    <td align="right">
+                        Diskon : 
+                    </td>
                     <td colspan="6">
-                            Price List : 
-                            <input type="text" size="15" id="hargaModalLensa" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" />
+                        <input type="text" name="diskonlensa" id="diskonlensa" size="8" maxlength="8" value="<?=($_SESSION['global_discount_lensa'] ?? 0)?>" onkeyup="calculate_subtotal2()" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'" autocomplete="off" disabled="disabled" />
+
+                        <select name="tdiskonlensa" id="tdiskonlensa" style="font-size:9px;" onchange="calculate_subtotal2()" disabled="disabled">
+                            <option value="1">%</option>
+                            <option value="0">Normal</option>
+                        </select>
+
+                        <br />
+                        <input type="checkbox" id="checkSOLensa" class="form-check-input" value="1" onclick="specialOrderLensa()" />Special Order
+                    </td>
+                </tr>
+                <tr class="divSpecialOrderLensa">
+                    <td align="right">
+                        Harga SO :
+                    </td>
+                    <td colspan="6">
+                        <input type="text" size="15" id="hargaLensaSO" value="0" onkeyup="calculate_subtotal2()" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" />
+                    </td>
+                </tr>
+                <tr class="divSpecialOrderLensa">
+                    <td align="right">
+                        Keterangan SO :
+                    </td>
+                    <td colspan="6">
+                        <textarea id="infoSOLensa" name="infoSOLensa" rows="3" cols="30"></textarea>
                     </td>
                 </tr>
             </table>
@@ -406,16 +447,16 @@ table ul li {
         <div style="clear:both;padding-left:10px">
             <br />
             <table border="0" cellspacing="0" cellpadding="2">
-                <tr>
+                <tr id="trDiskon">
                     <td align="right">Diskon</td>
                     <td>:</td>
                     <td>
-                            <input name="diskon" type="text" id="diskon" size="8" maxlength="8" value="<?=($_SESSION['global_discount'] ?? 0)?>" onkeyup="calculate_subtotal2()" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'" autocomplete="off" disabled="disabled" />
+                        <input name="diskon" type="text" id="diskon" size="8" maxlength="8" value="<?=($_SESSION['global_discount'] ?? 0)?>" onkeyup="calculate_subtotal2()" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'" autocomplete="off" disabled="disabled" />
 
-                            <select name="tdiskon" id="tdiskon" style="font-size:9px;" onchange="calculate_subtotal2()" disabled="disabled">
-                                <option value="1">%</option>
-                                <option value="0">Normal</option>
-                            </select>
+                        <select name="tdiskon" id="tdiskon" style="font-size:9px;" onchange="calculate_subtotal2()" disabled="disabled">
+                            <option value="1">%</option>
+                            <option value="0">Normal</option>
+                        </select>
                     </td>
                 </tr>
                 <tr>

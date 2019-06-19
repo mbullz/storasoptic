@@ -34,10 +34,13 @@ $lPd = $_GET['lPd'];
 $lensaProductId = $_GET['lensaProductId'] ?? 0;
 $brandLensa = '';
 $hargaLensa = $_GET['hargaLensa'] ?? 0;
+$diskonLensa = $_GET['diskonLensa'] ?? 0;
 $tipeLensa = '';
 $jenisLensa = '';
 $supplierLensa = '';
 $solensa = $_GET['solensa'];
+$hargaLensaSO = $_GET['hargaLensaSO'] ?? 0;
+$infoLensaSO = $_GET['infoLensaSO'] ?? '';
 
 $info = $_GET['info'] ?? '';
 
@@ -48,7 +51,12 @@ $kode_harga2 = $_GET['kode_harga2'] ?? '';
 $kode_harga2 = $mysqli->real_escape_string($kode_harga2);
 $tipe = $_GET['tipe'];
 
-if ($tipe != '3' && $tipe != '5') $hargaLensa = 0;
+if ($tipe != '3' && $tipe != '5') {
+	$hargaLensa = 0;
+	$diskonLensa = 0;
+	$hargaLensaSO = 0;
+	$infoLensaSO = '';
+}
 
 // validasi data
 if($tsk =='add' || $tsk == "add2") {
@@ -60,7 +68,7 @@ if($tsk =='add' || $tsk == "add2") {
 	{
 		$valid = 'no';	
 	}
-	else if($tipe == '3' && $lensaProductId == 0)
+	else if($tipe == '3' && $lensaProductId == 0 && $solensa == '0')
 	{
 		$valid = 'no';	
 	}
@@ -68,10 +76,12 @@ if($tsk =='add' || $tsk == "add2") {
 	{
 		$valid = 'no';	
 	}
-	else if($tipe == '5' && ($bar == '' || $qty <= 0 || $sat == '' || $hsa <= 0 || $sub <= 0 || $lensaProductId == 0))
+	else if($tipe == '5' && ($bar == '' || $qty <= 0 || $sat == '' || $hsa <= 0 || $sub <= 0))
 	{
-		$valid = 'no';	
+		$valid = 'no';
 	}
+	else if($tipe =='5' && $lensaProductId == 0 && $solensa == '0')
+		$valid = 'no';
 	else
 	{
 		$valid = 'yes';
@@ -118,13 +128,15 @@ if($valid=='yes')
 			// add lensa to table barang
 			if ($tipe == 3 || $tipe == 5)
 			{
-				$rs = $mysqli->query("SELECT * FROM barang WHERE product_id = $lensaProductId");
-				$data = $rs->fetch_assoc();
-				$lensaKode = $data['kode'];
-				$lensaBrandId = $data['brand_id'];
-				$lensaBarang = $data['barang'];
-				$lensaPrice = $data['price'];
-				$lensaPrice2 = $data['price2'];
+				if ($special_order == '0') {
+					$rs = $mysqli->query("SELECT * FROM barang WHERE product_id = $lensaProductId");
+					$data = $rs->fetch_assoc();
+					$lensaKode = $data['kode'];
+					$lensaBrandId = $data['brand_id'];
+					$lensaBarang = $data['barang'];
+					$lensaPrice = $data['price'];
+					$lensaPrice2 = $data['price2'];
+				}
 
 				if ($special_order == '0')
 				{	
@@ -163,29 +175,20 @@ if($valid=='yes')
 				}
 				else // if special_order true
 				{
-					// check lensa if already exists or not in table barang
-					$rs2 = $mysqli->query("SELECT * FROM barang WHERE tipe = 3 AND brand_id = $lensa_brand_id AND barang LIKE '$tipeLensa' AND frame LIKE '$jenisLensa' AND info LIKE '$supplierLensa'");
-					if ($data2 = mysqli_fetch_assoc($rs2))
-					{
-						$lensa_product_id = $data2['product_id'];
-					}
-					else
-					{
-						$mysqli->query("INSERT INTO barang VALUES(0,'',$lensa_brand_id,'$tipeLensa','$jenisLensa','',0,0,0,'','$supplierLensa','',3,NOW(),NULL,$_SESSION[user_id],NOW(),NULL,NULL)");
-						$rs2 = $mysqli->query("SELECT LAST_INSERT_ID()");
-						$data2 = mysqli_fetch_assoc($rs2);
-						$lensa_product_id = $data2[0];
-					}
+					$lensa_product_id_left = 0;
+					$hargaLensa = $hargaLensaSO;
+					$diskonLensa = 0;
+					$info = $infoLensaSO;
 				}
 			}
 			
-			$query_ajaxsave = "INSERT INTO dkeluarbarang(keluarbarang_id, product_id, satuan_id, harga, qty, tdiskon, diskon, subtotal, lensa, rSph, rCyl, rAxis, rAdd, rPd, lSph, lCyl, lAxis, lAdd, lPd, tipe, harga_lensa, special_order, special_order_done, info) VALUES(
+			$query_ajaxsave = "INSERT INTO dkeluarbarang(keluarbarang_id, product_id, satuan_id, harga, qty, tdiskon, diskon, subtotal, lensa, rSph, rCyl, rAxis, rAdd, rPd, lSph, lCyl, lAxis, lAdd, lPd, tipe, harga_lensa, diskon_lensa, special_order, special_order_done, info) VALUES(
 				$keluarbarang_id, $bar, $sat, $hsa, 
 				$qty, '$tdi', $dis, $sub, 
 				'$lensa_product_id_left', 
 				$rSph, $rCyl, $rAxis, $rAdd, $rPd, 
 				$lSph, $lCyl, $lAxis, $lAdd, $lPd, 
-				$tipe, $hargaLensa, '$special_order', '0', '$info')";
+				$tipe, $hargaLensa, $diskonLensa, '$special_order', '0', '$info')";
 		}
 		else
 		{
@@ -250,9 +253,14 @@ $total_detbrg = mysqli_num_rows($detbrg);
 
 			if ($row_detbrg['tipe'] == 3 || $row_detbrg['tipe'] == 5)
 			{
-				$rs2 = $mysqli->query("SELECT * FROM barang WHERE product_id = $row_detbrg[lensa]");
-				$data2 = mysqli_fetch_assoc($rs2);
-				$lensa = $data2['barang'];
+				if ($row_detbrg['special_order'] == '0') {
+					$rs2 = $mysqli->query("SELECT * FROM barang WHERE product_id = $row_detbrg[lensa]");
+					$data2 = mysqli_fetch_assoc($rs2);
+					$lensa = $data2['barang'];
+				}
+				else if ($row_detbrg['special_order'] == '1') {
+					$lensa = 'SO';
+				}
 			}
 	?>
 
@@ -279,6 +287,10 @@ $total_detbrg = mysqli_num_rows($detbrg);
 			<?php
 				if ($row_detbrg['tipe'] == 3 || $row_detbrg['tipe'] == 5)
 				{
+					if ($row_detbrg['special_order'] == '1') {
+						echo $row_detbrg['info'];
+					}
+
 					?>
 						<table rules="all" border="1">
 							<tr>
@@ -338,11 +350,28 @@ $total_detbrg = mysqli_num_rows($detbrg);
         	if ($row_detbrg['tipe'] != 3) echo number_format($row_detbrg['harga'], 0, ',', '.');
 			else echo number_format($row_detbrg['harga_lensa'], 0, ',', '.');
 			
-			if ($row_detbrg['tipe'] == 5) echo "<br>+ " . number_format($row_detbrg['harga_lensa']*2, 0, ',', '.');
+			if ($row_detbrg['tipe'] == 5) {
+				if ($row_detbrg['special_order'] == '0')
+					echo '<br>+ ' . number_format($row_detbrg['harga_lensa']*2, 0, ',', '.') . '(' . $row_detbrg['diskon_lensa'] . ' %)';
+				else if ($row_detbrg['special_order'] == '1')
+					echo '<br>+ ' . number_format($row_detbrg['harga_lensa']*2, 0, ',', '.') . '(' . $row_detbrg['diskon_lensa'] . ' %)';
+			}
 		?>
       </td>
 
-      <td align="right"><?php if($row_detbrg['tdiskon']=='1') { echo $row_detbrg['diskon']." %"; }else{ echo number_format($row_detbrg['diskon'],0,',','.');}?></td>
+	<td align="right">
+		<?php
+			if ($row_detbrg['tipe'] != 3) {
+				if ($row_detbrg['tdiskon'] == '1')
+					echo $row_detbrg['diskon']." %";
+				else
+					echo number_format($row_detbrg['diskon'],0,',','.');
+			}
+			else
+				echo $row_detbrg['diskon_lensa'] . " %";
+			
+		?>
+	</td>
       
       <td align="right">
 	  	<?=number_format($row_detbrg['subtotal'], 0, ',', '.')?>

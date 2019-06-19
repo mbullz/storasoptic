@@ -25,6 +25,7 @@ function refreshTipe() {
 			$("#divLensa").hide();
 			$("#divDetailFrame").show();
 			$("#divDetailSoftlens").hide();
+			$('#trDiskon').show();
 		break;
 		
 		case "2":
@@ -32,6 +33,7 @@ function refreshTipe() {
 			$("#divLensa").hide();
 			$("#divDetailFrame").hide();
 			$("#divDetailSoftlens").show();
+			$('#trDiskon').show();
 		break;
 		
 		case "3":
@@ -39,6 +41,7 @@ function refreshTipe() {
 			$("#divLensa").show();
 			$("#divDetailFrame").hide();
 			$("#divDetailSoftlens").hide();
+			$('#trDiskon').hide();
 		break;
 		
 		case "4":
@@ -46,6 +49,7 @@ function refreshTipe() {
 			$("#divLensa").hide();
 			$("#divDetailFrame").hide();
 			$("#divDetailSoftlens").hide();
+			$('#trDiskon').show();
 		break;
 
 		case "5":
@@ -53,6 +57,7 @@ function refreshTipe() {
 			$("#divLensa").show();
 			$("#divDetailFrame").show();
 			$("#divDetailSoftlens").hide();
+			$('#trDiskon').show();
 		break
 	}
 	
@@ -79,26 +84,34 @@ function refreshTipe() {
 	*/
 
 	refreshBarang();
+
+	// global discount
+	if (tipe == '1' || tipe == '5') $('#diskon').val($('#global_discount').val());
+	else if (tipe == '2') $('#diskon').val($('#global_discount_softlens').val());
+	else if (tipe == '4') $('#diskon').val($('#global_discount_accessories').val());
+
+	calculate_subtotal2();
 }
 
 function refreshBarang() {
 	var tipe = $("#tipe").val();
 	var search = $('#qbrg').val();
+	var mode = 'get_barang';
 
 	tipe = (tipe == '5') ? '1' : tipe;
+	mode = (tipe == '2') ? 'get_softlens' : mode;
 
 	$.ajax({
 		url: 'component/invoicepenjualan/task/ajax_invoicepenjualan.php',
 		type: 'GET',
 		dataType: 'json',
-		data: 'mode=get_barang&tipe=' + tipe + '&search=' + search,
+		data: 'mode=' + mode + '&tipe=' + tipe + '&search=' + search,
 		success: function(result)
 		{
 			var html = '<option value="">-- Choose Product --</option>';
 			for (i=0; i<result.length; i++) {
 				html += '<option value="' + result[i].product_id + '">';
-				if (result [i].kode != '') html += result[i].kode + ' # ';
-				html += result[i].type_brand + ' # ' + result[i].barang + ' # ' + result[i].color;
+				html += result[i].kode + ' # ' + result[i].type_brand + ' # ' + result[i].barang + ' # ' + result[i].color;
 				html += '</option>';
 			}
 			$("#barang").html(html);
@@ -108,6 +121,12 @@ function refreshBarang() {
 
 function getDetailBarang(product_id)
 {
+	var tipe = $("#tipe").val();
+	if (tipe == '2') {
+		getDetailSoftlens();
+		return;
+	}
+
 	$.ajax({
 		url: 'component/masterbarang/task/ajax_masterbarang.php',
 		type: 'GET',
@@ -189,6 +208,40 @@ function getDetailLensa()
 	});
 }
 
+function getDetailSoftlens()
+{
+	var value = $('#barang option:selected').text();
+	value = value.split(' # ');
+	var kode = value[0];
+	var jenis = value[1];
+	var barang = value[2];
+	var color = value[3];
+	var minus = $("#softlensMinus").val();
+
+	$.ajax({
+		url: 'component/masterbarang/task/ajax_masterbarang.php',
+		type: 'GET',
+		dataType: 'json',
+		data: 'mode=get_detail_softlens&kode=' + kode + '&jenis=' + jenis + '&barang=' + barang + '&color=' + color + '&minus=' + minus,
+		success: function(result)
+		{
+			if (result.length > 0) {
+				$("#labelStockSoftlens").html('Stock : ' + result[0].qty);
+				$("#hsatuan").val(result[0].price2);
+				$('#softlens_product_id').val(result[0].product_id);
+			}
+			else {
+				$("#labelStockSoftlens").html('Stock : 0');
+				$("#hsatuan").val("0");
+				$('#softlens_product_id').val('0');
+			}
+		},
+		complete: function() {
+			calculate_subtotal2();
+		},
+	});
+}
+
 function setTipePembayaran(val) {
 	if (val == 1) { //cash
 		$("#jtempo").attr('disabled', 'disabled');
@@ -234,6 +287,7 @@ $(function() {
 	$('#hsatuan').number(true, 0);
 	$('#subtotal').number(true, 0);
 	$('#hargaLensa').number(true, 0);
+	$('#hargaLensaSO').number(true, 0);
 	$('#uangMuka').number(true, 0);
 
 	if ($('#branch_id').val() == 0) {
@@ -254,24 +308,38 @@ function printKwitansi()
 
 function calculate_subtotal2()
 {
-	var subtotal, diskon;
+	var subtotal = 0;
+	var subtotal_lensa = 0;
+	var diskon = 0;
+	var diskon_lensa = 0;
 	var tipe = $('#tipe').val();
 
-	if (tipe == 3) {
-		subtotal = $("#hargaLensa").val() * 2;
-	}
-	else {
+	if (tipe != '3') {
 		subtotal = $("#qty").val() * $("#hsatuan").val();
 
-		if (tipe == 5) subtotal += ($("#hargaLensa").val() * 2);
+		if ( $("#tdiskon").val() == 1) diskon = ($("#diskon").val()/100)*subtotal;
+		else diskon = $("#diskon").val();
+
+		subtotal -= diskon;
+	}
+
+	if (tipe == '3' || tipe == '5') {
+		if ( $("#checkSOLensa").is(":checked") == true)
+		{
+			subtotal_lensa += ($("#hargaLensaSO").val() * 2);
+		}
+		else
+		{
+			subtotal_lensa += ($("#hargaLensa").val() * 2);
+
+			if ( $("#tdiskonlensa").val() == 1) diskonlensa = ($("#diskonlensa").val()/100) * subtotal_lensa;
+			else diskonlensa = $("#diskonlensa").val();
+
+			subtotal_lensa -= diskonlensa;
+		}
 	}
 	
-	if ( $("#tdiskon").val() == 1) diskon = ($("#diskon").val()/100)*subtotal;
-	else diskon = $("#diskon").val();
-	
-	subtotal -= diskon;
-	
-	$("#subtotal").val(subtotal);
+	$("#subtotal").val(parseInt(subtotal) + parseInt(subtotal_lensa));
 }
 
 function calculate_grandtotal()
@@ -402,8 +470,14 @@ function manageInvoiceJual(t, v)
 	
 	var lensa_product_id = $('#lensa_product_id').val();
 	var hargaLensa = $("#hargaLensa").val();
+	var diskonLensa = $('#diskonlensa').val();
 	var info = $("#detailInfo").val();
-	var solensa = $("#checkSOLensa").is(":checked")==true?'1':'0';
+
+	var solensa = $("#checkSOLensa").is(":checked") == true ? '1' : '0';
+	var hargaLensaSO = $("#hargaLensaSO").val();
+	var infoLensaSO = $("#infoSOLensa").val();
+
+	if (tipe == '2') bar = $('#softlens_product_id').val();
 		
 	var queryString = "task=" + tsk + 
 				"&rid=" + xid + 
@@ -434,8 +508,11 @@ function manageInvoiceJual(t, v)
 
 				"&lensaProductId=" + lensa_product_id +
 				"&hargaLensa=" + hargaLensa +
+				"&diskonLensa=" + diskonLensa +
 				"&info=" + info +
-				"&solensa=" + solensa;
+				"&solensa=" + solensa +
+				"&hargaLensaSO=" + hargaLensaSO +
+				"&infoLensaSO=" + infoLensaSO;
 
 	$.ajax(
 	{
@@ -463,6 +540,8 @@ function specialOrderLensa()
 	{
 		$(".divSpecialOrderLensa").hide();
 	}
+
+	calculate_subtotal2();
 }
 
 function specialOrderSoftlens()
@@ -489,6 +568,7 @@ function resetField()
 	$('#subtotal').val('0');
 
 	$('#hargaLensa').val('0');
+	$('#hargaLensaSO').val('0');
 	$('#searchLensa').val('');
 	refreshLensa();
 }
