@@ -29,16 +29,21 @@ $pass   = $mysqli->real_escape_string($_POST['password']);
 			$_SESSION['branch_id'] = $data2['branch_id'];
 			$_SESSION['branch_name'] = $data2['branch_name'] ?? '';
 
-			$_SESSION['global_discount'] = 0;
-			$rs3 = $mysqli->query("SELECT * FROM config WHERE config = 'global_discount'");
-			$data3 = $rs3->fetch_assoc();
-			$temp = $data3['value'];
-			$temp = explode('#', $temp);
-			foreach ($temp AS $r) {
-				$r = explode('_', $r);
-				if (sizeof($r) <= 1) continue;
+			$global_discounts = array('global_discount', 'global_discount_lensa', 'global_discount_softlens', 'global_discount_accessories');
 
-				if ($r[0] == $data2['branch_id']) $_SESSION['global_discount'] = $r[1];
+			foreach ($global_discounts AS $value) {
+				$_SESSION[$value] = 0;
+
+				$rs3 = $mysqli->query("SELECT * FROM config WHERE config = '$value'");
+				$data3 = $rs3->fetch_assoc();
+				$temp = $data3['value'];
+				$temp = explode('#', $temp);
+				foreach ($temp AS $r) {
+					$r = explode('_', $r);
+					if (sizeof($r) <= 1) continue;
+
+					if ($r[0] == $data2['branch_id']) $_SESSION[$value] = $r[1];
+				}
 			}
 
 			?>

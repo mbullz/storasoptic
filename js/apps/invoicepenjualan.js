@@ -122,12 +122,16 @@ function getInfo(row, tr, keluarbarang_id) {
 
 					if (data.tipe == 3 || data.tipe == 5) {
 						var subtotal = data.harga_lensa * 2;
-						if (data.tdiskon == '1') subtotal -= (subtotal * (data.diskon / 100));
-						else subtotal -= data.diskon;
+						subtotal -= (subtotal * (data.diskon_lensa / 100));
 
 						var product = '';
+
 						product += '<span class="badge badge-primary" style="font-size:11px;">Lensa</span><br />';
 						product += data.lensa_kode + ' # ' + data.lensa_brand_name + ' # ' + data.lensa_barang + '<br />';
+
+						if (data.special_order == '1')
+							product += data.info + '<br />';
+
 						product += '<table width="100%" class="table table-bordered">';
 						product += '<thead>';
 						product += '<tr>';
@@ -172,8 +176,7 @@ function getInfo(row, tr, keluarbarang_id) {
 						html += '<td align="right">' + print_number(data.harga_lensa) + '</td>';
 						
 						html += '<td align="right">';
-						if (data.tdiskon == '1') html += print_number(data.diskon) + ' %';
-						else html += print_number(data.diskon);
+						html += print_number(data.diskon_lensa) + ' %';
 						html += '</td>';
 
 						html += '<td align="right">' + print_number(subtotal) + '</td>';

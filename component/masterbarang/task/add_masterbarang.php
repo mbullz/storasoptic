@@ -167,6 +167,11 @@ if(isset($_POST['import'])) {  ?>
 	<li><em>Apabila sudah terlanjur mengisi brand/supplier kemudian ingin melakukan pembatalan maka dapat dilakukan dengan cara : <br />menekan tombol mouse sebelah kanan pada baris yang ingin dihapus kemudian pilih 'remove row'</em></li>
 </ul>
 
+<div class="form-group form-check">
+	<input type="checkbox" class="form-check-input" id="checkConsignee">
+	<label class="form-check-label" for="checkConsignee">Barang Konsinyasi</label>
+</div>
+
 <div id="example"></div>
 
 <br />
@@ -378,10 +383,12 @@ if(isset($_POST['import'])) {  ?>
 	
 	$("#save").click(function()
 	{
+		var checkConsignee = $("#checkConsignee").is(":checked") == true ? '1' : '0';
+
 		$.ajax(
 		{
 			url: "component/masterbarang/task/save_handsontable.php",
-			data: {"data": $("#example").data('handsontable').getData(), "tipe":<?=$tipe?>},
+			data: {"data": $("#example").data('handsontable').getData(), "tipe":<?=$tipe?>, "checkConsignee":checkConsignee},
 			dataType: 'json',
 			type: 'POST',
 			success: function (res)

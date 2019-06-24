@@ -1,29 +1,26 @@
 <?php
+	session_start();
 	include('../../include/config_db.php');
-	//Define variable
+	
     $stat = '';
-	$url = "index-c-barangkeluar.pos";
+	$url = "index-c-specialorder.pos";
 	$p   = $_GET['p'];
 	$id  = $_POST['id'];
-	$tgl = $_POST['tgl'];
-	$qty = $_POST['qty'];
-	$inf = $mysqli->real_escape_string($_POST['info']);
+	$tgl = $_POST['tgl'] ?? '';
+	$qty = $_POST['qty'] ?? 0;
+	$inf = $_POST['info'] ?? '';
+	$inf = $mysqli->real_escape_string($inf);
 	//------
-	$data = $_POST['data'];
+	$data = $_POST['data'] ?? [];
 	$jdata = count($data);
+	
 	//Validasi
-	if($p <>'mdelete' AND $p <>'delete') {
-		if (trim($tgl) == '') {
-			$error[] = '- Tanggal harus diisi !!!';
-		}
-		if (!is_numeric($qty)) {
-			$error[] = '- Jumlah Barang harus angka !!!';
-		}
-	}else if($p =='mdelete'){
+	if($p =='mdelete'){
 		if($jdata <= 0) {
 			$error[] ="- Proses gagal, Pilih min 1 data yang ingin dihapus !!!";	
 		}
 	}
+
 	// End Validasi
 	if (isset($error)) {
 		// echo "<img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Kesalahan : </b><br />".implode("<br />", $error);
@@ -74,6 +71,16 @@
 					echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data gagal dihapus, coba lagi !!!</b></center>";
 				}*/
 			$stat = "not used again ...";
+			break;
+			case 'special_order_done':
+				$exe = $mysqli->query("UPDATE dkeluarbarang SET special_order_done = '1' WHERE id = $id");
+
+				if ($exe) {
+					$stat = 'Special Order Done';
+				}
+				else{
+					$stat = 'Failed!';
+				}
 			break;
 			default:
 				// not used

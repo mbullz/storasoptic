@@ -2,13 +2,11 @@
 
 global $mysqli;
 
-$tipe = $_POST['tipe'] ?? 1;
+$tipe = $_POST['tipe'] ?? 5;
 
-$query_data  = "SELECT a.*, b.tgl, barang, frame, c.info AS supplier, d.jenis AS brand, e.kontak AS customer 
+$query_data  = "SELECT a.*, a.info AS info_so, b.*, e.kontak AS customer 
 				FROM dkeluarbarang a 
 				JOIN keluarbarang b ON b.keluarbarang_id = a.keluarbarang_id 
-				JOIN barang c ON c.product_id = a.lensa 
-				JOIN jenisbarang d ON d.brand_id = c.brand_id 
 				JOIN kontak e ON e.user_id = b.client 
 				WHERE a.special_order = '1' 
 				AND a.special_order_done = '0' ";
@@ -50,7 +48,18 @@ $(document).ready(function()
   $('#result').click(function(){
   $(this).hide();
   });
-})
+});
+
+    function soDone(dkeluarbarang_id = 0) {
+        $.ajax({
+            type: 'POST',
+            url: 'component/specialorder/p_specialorder.php?p=special_order_done',
+            data: 'id=' + dkeluarbarang_id,
+            success: function(data) {
+                $('#result').html(data);
+            }
+        });
+    }
 </script>
 <div id="loading" style="display:none;"><img src="images/loading.gif" alt="loading..." /></div>
 <div id="result" style="display:none;"></div>
@@ -72,9 +81,7 @@ $(document).ready(function()
         <th width="2%" align="center"><label><input type="checkbox" name="checkbox" value="checkbox" onclick="if(this.checked) { for (i=0;i<<?php echo $totalRows_data;?>;i++){document.getElementById('data'+i).checked=true;}}else{ for (i=0;i<<?php echo $totalRows_data;?>;i++){document.getElementById('data'+i).checked=false;}}"/></label></th>
         <th align="center"><font color="#0000CC">TANGGAL</font></th>
         <th align="center"><font color="#0000CC">NO. INV</font></th>
-        <th align="center"><font color="#0000CC">SUPPLIER</font></th>
         <th align="center"><font color="#0000CC">CUSTOMER</font></th>
-        <th align="center"><font color="#0000CC">PRODUCT</font></th>
         <th width="20%" align="center"><font color="#0000CC">INFO</font></th>
         <th align="center">&nbsp;</th>
       </tr>
@@ -86,12 +93,19 @@ $(document).ready(function()
       <tr valign="top">
         <td align="center"><input name="data[]" type="checkbox" id="data<?php echo $no;$no++;?>" value="<?php echo $row_data['id'];?>" /></td>
         <td align="center"><?php genDate($row_data['tgl']);?></td>
-        <td align="center"><?php echo $row_data['noreferensi'];?></td>
-        <td align="left"><?=$row_data['supplier']?></td>
+        <td align="center"><?php echo $row_data['referensi'];?></td>
         <td align="center"><?=$row_data['customer']?></td>
-        <td align="center"><?=$row_data['brand']?> # <?=$row_data['barang']?> # <?=$row_data['frame']?></td>
-        <td align="left">&nbsp;</td>
-        <td align="center"><input type="button" value="Done" /></td>
+        <td align="left"><?=$row_data['info_so']?></td>
+        <td align="center">
+            <?php
+                if ($row_data['special_order_done'] == '1') echo 'Done';
+                else {
+                    ?>
+                        <input type="button" value="Done" onclick="soDone(<?=$row_data['id']?>)" />
+                    <?php
+                }
+            ?>
+        </td>
         </tr>
       <?php } ?>
 		</tbody>

@@ -144,6 +144,51 @@ switch($mode) {
         
         echo json_encode($arr);
         break;
+
+    case 'get_detail_softlens':
+        $kode = $_GET['kode'];
+        $jenis = $_GET['jenis'];
+        $barang = $_GET['barang'];
+        $color = $_GET['color'];
+        $minus = $_GET['minus'];
+
+        $data = array();
+
+        $data['product_id'] = 0;
+        $data['kode'] = '';
+        $data['brand_id'] = 0;
+        $data['barang'] = '';
+        $data['qty'] = 0;
+        $data['tipe'] = 2;
+        $data['price'] = 0;
+        $data['price2'] = 0;
+
+        $query = "SELECT * 
+            FROM barang a 
+            JOIN jenisbarang b ON a.brand_id = b.brand_id 
+            WHERE a.kode = '$kode' 
+            AND b.jenis = '$jenis' 
+            AND a.barang = '$barang' 
+            AND a.frame = '$minus' 
+            AND a.color = '$color' 
+            AND a.tipe = 2 
+            AND a.branch_id = $_SESSION[branch_id] ";
+        $res = $mysqli->query($query);
+        if ($row = mysqli_fetch_assoc($res)) {
+            $data['product_id'] = $row['product_id'];
+            $data['kode'] = $row['kode'];
+            $data['brand_id'] = $row['brand_id'];
+            $data['barang'] = $row['barang'];
+            $data['tipe'] = 2;
+            $data['qty'] = $row['qty'];
+            $data['price'] = $row['price'];
+            $data['price2'] = $row['price2'];
+        }
+
+        array_push($arr, $data);
+        
+        echo json_encode($arr);
+        break;
 }
 
 //echo json_encode($result);

@@ -89,6 +89,38 @@
 			echo json_encode($arr);
         break;
 
+        case "get_softlens":
+        	$search = $_GET['search'] ?? '';
+			
+			$arr = array();
+			$rs = $mysqli->query("
+				SELECT DISTINCT a.kode, a.barang, a.color, b.jenis AS type_brand 
+				FROM barang a 
+				JOIN jenisbarang b ON a.brand_id = b.brand_id 
+				WHERE a.tipe = 2 
+				AND 
+				(
+					b.jenis LIKE '%$search%' OR 
+					a.kode LIKE '%$search%' OR 
+					a.barang LIKE '%$search%' 
+				) 
+				AND a.branch_id = $_SESSION[branch_id] 
+				ORDER BY b.jenis ASC, a.barang ASC ");
+			
+			while ($data = mysqli_fetch_assoc($rs))
+			{
+				array_push($arr, array(
+					'product_id'	=> 0,
+					'kode' 			=> $data['kode'], 
+					'barang' 		=> $data['barang'],
+					'color' 		=> $data['color'],
+					'type_brand' 	=> $data['type_brand'],
+				));
+			}
+			
+			echo json_encode($arr);
+        break;
+
         case 'get_info':
 	        $keluarbarang_id = $_GET['keluarbarang_id'];
 
@@ -130,23 +162,36 @@
 					$rAdd = $data['rAdd'];
 					$rPd = $data['rPd'];
 
-					$rs2 = $mysqli->query("SELECT a.*, b.jenis AS brand_name FROM barang a JOIN jenisbarang b ON a.brand_id = b.brand_id WHERE product_id = $lensa_id");
-					$data2 = $rs2->fetch_assoc();
+					$kode = '';
+					$brand_id = 0;
+					$brand_name = '';
+					$barang = '';
+					$lensa_id_left = 0;
+					$lensa_id_right = 0;
 
-					$kode = $data2['kode'];
-					$brand_id = $data2['brand_id'];
-					$brand_name = $data2['brand_name'];
-					$barang = $data2['barang'];
+					if ($data['special_order'] == '0') {
+						$rs2 = $mysqli->query("SELECT a.*, b.jenis AS brand_name FROM barang a JOIN jenisbarang b ON a.brand_id = b.brand_id WHERE product_id = $lensa_id");
+						$data2 = $rs2->fetch_assoc();
 
-					$rs2 = $mysqli->query("SELECT * FROM barang WHERE kode = '$kode' AND brand_id = $brand_id AND barang = '$barang' AND frame = '$lSph' AND color = '$lCyl' AND tipe = 3 AND branch_id = $branch_id");
-					$data2 = $rs2->fetch_assoc();
+						$kode = $data2['kode'];
+						$brand_id = $data2['brand_id'];
+						$brand_name = $data2['brand_name'];
+						$barang = $data2['barang'];
 
-					$lensa_id_left = $data2['product_id'] ?? 0;
+						$rs2 = $mysqli->query("SELECT * FROM barang WHERE kode = '$kode' AND brand_id = $brand_id AND barang = '$barang' AND frame = '$lSph' AND color = '$lCyl' AND tipe = 3 AND branch_id = $branch_id");
+						$data2 = $rs2->fetch_assoc();
 
-					$rs2 = $mysqli->query("SELECT * FROM barang WHERE kode = '$kode' AND brand_id = $brand_id AND barang = '$barang' AND frame = '$rSph' AND color = '$rCyl' AND tipe = 3 AND branch_id = $branch_id");
-					$data2 = $rs2->fetch_assoc();
+						$lensa_id_left = $data2['product_id'] ?? 0;
 
-					$lensa_id_right = $data2['product_id'] ?? 0;
+						$rs2 = $mysqli->query("SELECT * FROM barang WHERE kode = '$kode' AND brand_id = $brand_id AND barang = '$barang' AND frame = '$rSph' AND color = '$rCyl' AND tipe = 3 AND branch_id = $branch_id");
+						$data2 = $rs2->fetch_assoc();
+
+						$lensa_id_right = $data2['product_id'] ?? 0;
+					}
+					else if ($data['special_order'] == '1') {
+						$brand_name = 'LENSA SO';
+					}
+					
 
 					$temp['lensa_kode'] = $kode;
 					$temp['lensa_brand_name'] = $brand_name;
@@ -190,8 +235,10 @@
 	        	$temp['dkeluarbarang_id'] = $data['id'];
 	        	$temp['tdiskon'] = $data['tdiskon'];
 	        	$temp['diskon'] = $data['diskon'];
+	        	$temp['diskon_lensa'] = $data['diskon_lensa'];
 	        	$temp['subtotal'] = $data['subtotal'];
 	        	$temp['info'] = $data['info'];
+	        	$temp['special_order'] = $data['special_order'];
 
 	        	array_push($dkeluarbarang, $temp);
 	        }
