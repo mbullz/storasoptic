@@ -53,6 +53,17 @@
 				if ($r[0] == $branch_id) $_SESSION['global_discount_accessories'] = $r[1];
 			}
 
+			$rs3 = $mysqli->query("SELECT * FROM config WHERE config = 'editable_price'");
+			$data3 = $rs3->fetch_assoc();
+			$temp = $data3['value'];
+			$temp = explode('#', $temp);
+			foreach ($temp AS $r) {
+				$r = explode('_', $r);
+				if (sizeof($r) <= 1) continue;
+
+				if ($r[0] == $branch_id) $_SESSION['editable_price'] = $r[1];
+			}
+
 			echo json_encode(array(
 				'status'	=> 'success',
 				'message'	=> 'Success',

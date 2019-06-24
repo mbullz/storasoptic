@@ -116,6 +116,7 @@ table ul li {
 <input type="hidden" id="global_discount_lensa" value="<?=($_SESSION['global_discount_lensa'] ?? 0)?>" />
 <input type="hidden" id="global_discount_softlens" value="<?=($_SESSION['global_discount_softlens'] ?? 0)?>" />
 <input type="hidden" id="global_discount_accessories" value="<?=($_SESSION['global_discount_accessories'] ?? 0)?>" />
+<input type="hidden" id="editable_price" value="<?=($_SESSION['editable_price'] ?? 0)?>" />
 
 <form name="add" id="add" action="component/<?=$c?>/p_<?=$c?>.php?p=<?=$t?>" method="POST">
 	<input type="hidden" name="keluarbarang_id" id="keluarbarang_id" value="<?=$keluarbarang_id?>">
@@ -289,7 +290,7 @@ table ul li {
                     <td align="right">Harga Satuan</td>
                     <td>:</td>
                     <td>
-                        <input type="text" name="hsatuan" id="hsatuan" value="0" disabled="disabled" />
+                        <input type="text" name="hsatuan" id="hsatuan" value="0" onkeyup="calculate_subtotal2()" <?=($_SESSION['editable_price'] != 1 ? 'disabled="disabled"' : '')?> />
                     </td>
                 </tr>
             </table>
@@ -310,15 +311,24 @@ table ul li {
                     <td align="right">Left : </td>
                     <td>
                         <select name="lSph" id="lSph" onchange="getDetailLensa()">
-                            <?php for ($r = 15; $r >= -20; $r = $r - 0.25) { ?>
-                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
-                            <?php } ?>
+                            <?php for ($r = 1500; $r >= -2000; $r = $r - 25) {
+                                if ($r == 0) $r = '000';
+                                else if ($r < 100 && $r > 0) $r = '0' . $r;
+                                else if ($r < 0 && $r > -100) $r = '-0' . $r*-1;
+                                ?>
+                                    <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                                <?php
+                            } ?>
                         </select>
                     </td>
                     <td>
                         <select name="lCyl" id="lCyl" onchange="getDetailLensa()">
-                            <?php for ($r = 15; $r >= -20; $r = $r - 0.25) { ?>
-                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php for ($r = 1500; $r >= -2000; $r = $r - 25) {
+                                if ($r == 0) $r = '000';
+                                else if ($r < 100 && $r > 0) $r = '0' . $r;
+                                else if ($r < 0 && $r > -100) $r = '-0' . $r*-1;
+                                ?>
+                                    <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
                             <?php } ?>
                         </select>
                     </td>
@@ -351,15 +361,23 @@ table ul li {
                     <td align="right">Right : </td>
                     <td>
                         <select name="rSph" id="rSph" onchange="getDetailLensa()">
-                            <?php for ($r = 15; $r >= -20; $r = $r - 0.25) { ?>
-                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php for ($r = 1500; $r >= -2000; $r = $r - 25) {
+                                if ($r == 0) $r = '000';
+                                else if ($r < 100 && $r > 0) $r = '0' . $r;
+                                else if ($r < 0 && $r > -100) $r = '-0' . $r*-1;
+                                ?>
+                                    <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
                             <?php } ?>
                         </select>
                     </td>
                     <td>
                         <select name="rCyl" id="rCyl" onchange="getDetailLensa()">
-                            <?php for ($r = 15; $r >= -20; $r = $r - 0.25) { ?>
-                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php for ($r = 1500; $r >= -2000; $r = $r - 25) {
+                                if ($r == 0) $r = '000';
+                                else if ($r < 100 && $r > 0) $r = '0' . $r;
+                                else if ($r < 0 && $r > -100) $r = '-0' . $r*-1;
+                                ?>
+                                    <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
                             <?php } ?>
                         </select>
                     </td>
@@ -404,7 +422,7 @@ table ul li {
                         Harga : 
                     </td>
                     <td colspan="6">
-                        <input type="text" id="hargaLensa" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" disabled="disabled" />
+                        <input type="text" id="hargaLensa" value="0" onkeyup="calculate_subtotal2()" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" <?=($_SESSION['editable_price'] != 1 ? 'disabled="disabled"' : '')?> />
 
                         <input type="hidden" id="lensa_product_id" value="0" />
                     </td>

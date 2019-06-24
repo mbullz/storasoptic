@@ -1,6 +1,14 @@
 <?php
 session_start();
 include('../include/config_db.php');
+
+	function sphFormat($value) {
+		if ($value == 0) return '000';
+		else if ($value < 100 && $value > 0) return '0' . $value;
+		else if ($value < 0 && $value > -100) return '-0' . $value*-1;
+		else return $value;
+	}
+
 // get variable
 $tsk = $_GET['task'];
 $rid = $_GET['rid'];
@@ -303,16 +311,16 @@ $total_detbrg = mysqli_num_rows($detbrg);
 							</tr>
 							<tr>
 								<td>Right</td>
-								<td align="center"><?php echo $row_detbrg['rSph']/100; ?></td>
-								<td align="center"><?php echo $row_detbrg['rCyl']/100; ?></td>
+								<td align="center"><?=sphFormat($row_detbrg['rSph'])?></td>
+								<td align="center"><?=sphFormat($row_detbrg['rCyl'])?></td>
 								<td align="center"><?php echo $row_detbrg['rAxis']/100; ?></td>
 								<td align="center"><?php echo $row_detbrg['rAdd']/100; ?></td>
 								<td align="center"><?php echo $row_detbrg['rPd']; ?></td>
 							</tr>
 							<tr>
 								<td>Left</td>
-								<td align="center"><?php echo $row_detbrg['lSph']/100; ?></td>
-								<td align="center"><?php echo $row_detbrg['lCyl']/100; ?></td>
+								<td align="center"><?=sphFormat($row_detbrg['lSph'])?></td>
+								<td align="center"><?=sphFormat($row_detbrg['lCyl'])?></td>
 								<td align="center"><?php echo $row_detbrg['lAxis']/100; ?></td>
 								<td align="center"><?php echo $row_detbrg['lAdd']/100; ?></td>
 								<td align="center"><?php echo $row_detbrg['lPd']; ?></td>

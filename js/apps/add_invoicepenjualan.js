@@ -177,10 +177,10 @@ function getDetailLensa()
 	var kode = value[0];
 	var jenis = value[1];
 	var barang = value[2];
-	var rSph = $("#rSph").val() * 100;
-	var rCyl = $("#rCyl").val() * 100;
-	var lSph = $("#lSph").val() * 100;
-	var lCyl = $("#lCyl").val() * 100;
+	var rSph = $("#rSph").val();
+	var rCyl = $("#rCyl").val();
+	var lSph = $("#lSph").val();
+	var lCyl = $("#lCyl").val();
 
 	$.ajax({
 		url: 'component/masterbarang/task/ajax_masterbarang.php',
@@ -494,14 +494,14 @@ function manageInvoiceJual(t, v)
 				"&sosoftlens=" + sosoftlens + 
 				"&soinfo=" + soinfo + 
 				
-				"&rSph=" + (rSph*100) +
-				"&rCyl=" + (rCyl*100) +
+				"&rSph=" + rSph +
+				"&rCyl=" + rCyl +
 				"&rAxis=" + (rAxis*100) +
 				"&rAdd=" + (rAdd*100) +
 				"&rPd=" + rPd +
 				
-				"&lSph=" + (lSph*100) +
-				"&lCyl=" + (lCyl*100) +
+				"&lSph=" + lSph +
+				"&lCyl=" + lCyl +
 				"&lAxis=" + (lAxis*100) +
 				"&lAdd=" + (lAdd*100) +
 				"&lPd=" + lPd + 

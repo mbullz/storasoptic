@@ -72,6 +72,27 @@
 					$stat = 'Edit global discount accessories gagal';
 				}
 			break;
+
+			case 'editable_price':
+				$value = '';
+
+				$rs = $mysqli->query("SELECT * FROM kontak WHERE jenis = 'B001' ORDER BY user_id ASC");
+				while ($data = $rs->fetch_assoc()) {
+					$id = $data['user_id'];
+					$editable = $_POST[$id] == 'on' ? 1 : 0;
+
+					$value .= $id . '_' . $editable . '#';
+				}
+				
+				$exe = $mysqli->query("UPDATE config SET value = '$value' WHERE config = 'editable_price'");
+
+				if ($exe) {
+					$stat = 'Edit editable price berhasil';
+				}
+				else{
+					$stat = 'Edit editable price gagal';
+				}
+			break;
 		}
 	}
 ?>

@@ -110,14 +110,15 @@ function onLoad()
 			"Go": function()
 			{
 				var data = $("#cabang").val();
-				var i = "";
-				var oTable = $("#example").dataTable();
+				var id;
+				var oTable = $("#example").DataTable();
 
 				oTable.$('input:checked').each(function()
 				{
-					i = oTable.$("#hiddenNo" + $(this).val()).val();
+					source = oTable.row('#' + $(this).val()).data();
+					id = source[0];
 
-					data += "#" + oTable.$("#data" + i).val() + "-" + $("#textQty" + i).val();
+					data += "#" + id + "-" + $("#textQty" + id).val();
 				});
 
 				$.ajax(
@@ -413,20 +414,22 @@ function deleteProduct()
 function pindahCabang()
 {
 	var html = "<tr bgcolor='#660099'><th style='color:#FFF'>Product</th><th style='color:#FFF'>Qty</th></tr>";
-	var i = "";
-	var oTable = $("#example").dataTable();
+	var id;
+	var oTable = $("#example").DataTable();
+	var data;
 
 	oTable.$('input:checked').each(function()
 	{
-		i = oTable.$("#hiddenNo" + $(this).val()).val();
+		data = oTable.row('#' + $(this).val()).data();
+		id = data[0];
 
 		html += "<tr>" 
 						+ "<td align='center'>" 
-							+ oTable.$("#tdBrand" + i).html() + " # " + oTable.$("#tdKode" + i).html() + " # " + oTable.$("#tdColor" + i).html() 
+							+ data[3] + " # " + data[4] + " # " + data[5] 
 						+ "</td>" 
 	  
 						+ "<td align='center'>" 
-							+ "<input type='text' id='textQty" + i + "' size='1' value='0' onfocus='javascript:if(this.value==\"0\") this.value=\"\";' onblur='javascript:if(this.value==\"\") this.value=\"0\";' />" 
+							+ "<input type='text' id='textQty" + id + "' size='2' value='" + data[8] + "' onfocus='javascript:if(this.value==\"0\") this.value=\"\";' onblur='javascript:if(this.value==\"\") this.value=\"0\";' />" 
 						+ "</td>" 
 					+ "</tr>";
 	});

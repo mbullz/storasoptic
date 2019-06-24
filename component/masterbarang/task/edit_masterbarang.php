@@ -160,7 +160,6 @@ table ul li {
 
                     case 3:
                         echo 'Minus';
-                        $frame = $frame / 100;
                     break;
                 }
             ?>
@@ -187,7 +186,6 @@ table ul li {
 
                     case 3:
                         echo 'Silinder';
-                        $color = $color / 100;
                     break;
                 }
             ?>

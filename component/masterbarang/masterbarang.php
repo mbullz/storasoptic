@@ -56,11 +56,6 @@ $row_header = array(
 			$color = htmlspecialchars($data['color'], ENT_QUOTES);
 			$qty = $data['qty'];
 
-			if ($tipe == 3) {
-				$frame = $frame / 100;
-				$color = $color / 100;
-			}
-
 			$checkbox = '<input name="data[]" type="checkbox" value="'.$product_id.'" />';
 
 			$edit = '';
@@ -193,8 +188,8 @@ $row_header = array(
 		}
 	?>
 
-	<!--
 	<input type="button" value="Pindah Cabang" style="background:#609;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="pindahCabang()" />
+	<!--
 	<input type="button" value="Retur" style="background:#609;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="returSome()" />
 	<input type="button" value="Print Label" style="background:#609;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="openDialogPrintInvoice()" />
 	-->
@@ -218,7 +213,7 @@ $row_header = array(
 			
 			<td>
 				<select id="cabang">
-					<option>-- Pilih Cabang --</option>
+					<option value=" 0">-- Pilih Cabang --</option>
 					<?php
 					  $rs2 = $mysqli->query("SELECT * FROM kontak WHERE jenis LIKE 'B001' ORDER BY kontak ASC");
 					  while ($data2 = mysqli_fetch_assoc($rs2))

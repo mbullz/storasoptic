@@ -29,7 +29,7 @@ $pass   = $mysqli->real_escape_string($_POST['password']);
 			$_SESSION['branch_id'] = $data2['branch_id'];
 			$_SESSION['branch_name'] = $data2['branch_name'] ?? '';
 
-			$global_discounts = array('global_discount', 'global_discount_lensa', 'global_discount_softlens', 'global_discount_accessories');
+			$global_discounts = array('global_discount', 'global_discount_lensa', 'global_discount_softlens', 'global_discount_accessories', 'editable_price');
 
 			foreach ($global_discounts AS $value) {
 				$_SESSION[$value] = 0;

@@ -39,11 +39,6 @@
 		$keluar = "'$keluar'";
 	}
 
-	if ($tipe == 3) {
-		$fra *= 100;
-		$col *= 100;
-	}
-
 	//------
 	$data = $_POST['data'];
 	$jdata = count($data);
