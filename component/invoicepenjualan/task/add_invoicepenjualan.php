@@ -308,6 +308,55 @@ table ul li {
                     <td>&nbsp;</td>
                 </tr>
                 <tr>
+                    <td align="right">Right : </td>
+                    <td>
+                        <select name="rSph" id="rSph" onchange="getDetailLensa()">
+                            <?php for ($r = 1500; $r >= -2000; $r = $r - 25) {
+                                if ($r == 0) $r = '000';
+                                else if ($r < 100 && $r > 0) $r = '0' . $r;
+                                else if ($r < 0 && $r > -100) $r = '-0' . $r*-1;
+                                ?>
+                                    <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="rCyl" id="rCyl" onchange="getDetailLensa()">
+                            <?php for ($r = 1500; $r >= -2000; $r = $r - 25) {
+                                if ($r == 0) $r = '000';
+                                else if ($r < 100 && $r > 0) $r = '0' . $r;
+                                else if ($r < 0 && $r > -100) $r = '-0' . $r*-1;
+                                ?>
+                                    <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="rAxis" id="rAxis">
+                            <?php for ($r = 0; $r <= 180; $r = $r + 5) { ?>
+                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="rAdd" id="rAdd">
+                            <?php for ($r = 15; $r >= 0; $r = $r - 0.25) { ?>
+                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="rPd" id="rPd">
+                            <?php for ($r = 40; $r <= 80; $r = $r + 2) { ?>
+                            <option value="<?php echo $r; ?>" <?php echo ($r == 56 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php } ?>
+                        </select>
+                    </td>
+                    <td id="labelStockLensaRight">
+                        Stock : 
+                    </td>
+                </tr>
+                <tr>
                     <td align="right">Left : </td>
                     <td>
                         <select name="lSph" id="lSph" onchange="getDetailLensa()">
@@ -354,55 +403,6 @@ table ul li {
                         </select>
                     </td>
                     <td id="labelStockLensaLeft">
-                        Stock : 
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">Right : </td>
-                    <td>
-                        <select name="rSph" id="rSph" onchange="getDetailLensa()">
-                            <?php for ($r = 1500; $r >= -2000; $r = $r - 25) {
-                                if ($r == 0) $r = '000';
-                                else if ($r < 100 && $r > 0) $r = '0' . $r;
-                                else if ($r < 0 && $r > -100) $r = '-0' . $r*-1;
-                                ?>
-                                    <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
-                            <?php } ?>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="rCyl" id="rCyl" onchange="getDetailLensa()">
-                            <?php for ($r = 1500; $r >= -2000; $r = $r - 25) {
-                                if ($r == 0) $r = '000';
-                                else if ($r < 100 && $r > 0) $r = '0' . $r;
-                                else if ($r < 0 && $r > -100) $r = '-0' . $r*-1;
-                                ?>
-                                    <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
-                            <?php } ?>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="rAxis" id="rAxis">
-                            <?php for ($r = 0; $r <= 180; $r = $r + 5) { ?>
-                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
-                            <?php } ?>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="rAdd" id="rAdd">
-                            <?php for ($r = 15; $r >= 0; $r = $r - 0.25) { ?>
-                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
-                            <?php } ?>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="rPd" id="rPd">
-                            <?php for ($r = 40; $r <= 80; $r = $r + 2) { ?>
-                            <option value="<?php echo $r; ?>" <?php echo ($r == 56 ? 'selected' : ''); ?>><?php echo $r; ?></option>
-                            <?php } ?>
-                        </select>
-                    </td>
-                    <td id="labelStockLensaRight">
                         Stock : 
                     </td>
                 </tr>
