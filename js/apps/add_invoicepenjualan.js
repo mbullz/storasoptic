@@ -289,6 +289,7 @@ $(function() {
 	$('#hargaLensa').number(true, 0);
 	$('#hargaLensaSO').number(true, 0);
 	$('#uangMuka').number(true, 0);
+	$('#grand_total').number(true, 0);
 
 	if ($('#branch_id').val() == 0) {
 		alert('Pilih cabang terlebih dahulu sebelum menambahkan data');
@@ -497,13 +498,13 @@ function manageInvoiceJual(t, v)
 				"&rSph=" + rSph +
 				"&rCyl=" + rCyl +
 				"&rAxis=" + (rAxis*100) +
-				"&rAdd=" + (rAdd*100) +
+				"&rAdd=" + rAdd +
 				"&rPd=" + rPd +
 				
 				"&lSph=" + lSph +
 				"&lCyl=" + lCyl +
 				"&lAxis=" + (lAxis*100) +
-				"&lAdd=" + (lAdd*100) +
+				"&lAdd=" + lAdd +
 				"&lPd=" + lPd + 
 
 				"&lensaProductId=" + lensa_product_id +
@@ -517,7 +518,7 @@ function manageInvoiceJual(t, v)
 	$.ajax(
 	{
 		url: 'ajaxdata/manage_invoicejual.php',
-		type: 'GET',
+		type: 'POST',
 		data: queryString,
 		success: function(result)
 		{

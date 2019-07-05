@@ -340,8 +340,12 @@ table ul li {
                     </td>
                     <td>
                         <select name="rAdd" id="rAdd">
-                            <?php for ($r = 15; $r >= 0; $r = $r - 0.25) { ?>
-                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php for ($r = 1500; $r >= 0; $r = $r - 25) {
+                                if ($r == 0) $r = '000';
+                                else if ($r < 100 && $r > 0) $r = '0' . $r;
+                                else if ($r < 0 && $r > -100) $r = '-0' . $r*-1;
+                                ?>
+                                    <option value="<?=$r?>" <?=($r == 0 ? 'selected' : '')?> ><?=$r?></option>
                             <?php } ?>
                         </select>
                     </td>
@@ -390,8 +394,12 @@ table ul li {
                     </td>
                     <td>
                         <select name="lAdd" id="lAdd">
-                            <?php for ($r = 15; $r >= 0; $r = $r - 0.25) { ?>
-                            <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
+                            <?php for ($r = 1500; $r >= 0; $r = $r - 25) {
+                                if ($r == 0) $r = '000';
+                                else if ($r < 100 && $r > 0) $r = '0' . $r;
+                                else if ($r < 0 && $r > -100) $r = '-0' . $r*-1;
+                                ?>
+                                    <option value="<?=$r?>" <?=($r == 0 ? 'selected' : '')?> ><?=$r?></option>
                             <?php } ?>
                         </select>
                     </td>
@@ -549,7 +557,7 @@ table ul li {
         </td>
     </tr>
     <tr>
-        <td align="right">Keterangan</td>
+        <td align="right">Keterangan Pembayaran</td>
         <td align="center">:</td>
         <td>
             <textarea rows="3" cols="50" name="textInfoPembayaran" id="textInfoPembayaran"></textarea>

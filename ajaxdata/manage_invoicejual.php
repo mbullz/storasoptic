@@ -10,54 +10,54 @@ include('../include/config_db.php');
 	}
 
 // get variable
-$tsk = $_GET['task'];
-$rid = $_GET['rid'];
-$keluarbarang_id = $_GET['keluarbarang_id'] ?? 0;
-$ref = $mysqli->real_escape_string($_GET['ref']);
-$bar = $_GET['brg'] ?? 0;
+$tsk = $_POST['task'];
+$rid = $_POST['rid'];
+$keluarbarang_id = $_POST['keluarbarang_id'] ?? 0;
+$ref = $mysqli->real_escape_string($_POST['ref']);
+$bar = $_POST['brg'] ?? 0;
 $bar = $bar == '' ? 0 : $bar;
-$qty = $_GET['qty'];
-$tdi = $_GET['tdisc'];
-$dis = $_GET['disc'];
-$sat = $_GET['sat'];
-$hsa = $_GET['hsat'];
-$sub = $_GET['subtot'];
+$qty = $_POST['qty'];
+$tdi = $_POST['tdisc'];
+$dis = $_POST['disc'];
+$sat = $_POST['sat'];
+$hsa = $_POST['hsat'];
+$sub = $_POST['subtot'];
 
-$sosoftlens = $_GET['sosoftlens'];
+$sosoftlens = $_POST['sosoftlens'];
 
 $lensa_product_id = 0;
 
-$rSph = $_GET['rSph'];
-$rCyl = $_GET['rCyl'];
-$rAxis = $_GET['rAxis'];
-$rAdd = $_GET['rAdd'];
-$rPd = $_GET['rPd'];
+$rSph = $_POST['rSph'];
+$rCyl = $_POST['rCyl'];
+$rAxis = $_POST['rAxis'];
+$rAdd = $_POST['rAdd'];
+$rPd = $_POST['rPd'];
 
-$lSph = $_GET['lSph'];
-$lCyl = $_GET['lCyl'];
-$lAxis = $_GET['lAxis'];
-$lAdd = $_GET['lAdd'];
-$lPd = $_GET['lPd'];
+$lSph = $_POST['lSph'];
+$lCyl = $_POST['lCyl'];
+$lAxis = $_POST['lAxis'];
+$lAdd = $_POST['lAdd'];
+$lPd = $_POST['lPd'];
 
-$lensaProductId = $_GET['lensaProductId'] ?? 0;
+$lensaProductId = $_POST['lensaProductId'] ?? 0;
 $brandLensa = '';
-$hargaLensa = $_GET['hargaLensa'] ?? 0;
-$diskonLensa = $_GET['diskonLensa'] ?? 0;
+$hargaLensa = $_POST['hargaLensa'] ?? 0;
+$diskonLensa = $_POST['diskonLensa'] ?? 0;
 $tipeLensa = '';
 $jenisLensa = '';
 $supplierLensa = '';
-$solensa = $_GET['solensa'];
-$hargaLensaSO = $_GET['hargaLensaSO'] ?? 0;
-$infoLensaSO = $_GET['infoLensaSO'] ?? '';
+$solensa = $_POST['solensa'];
+$hargaLensaSO = $_POST['hargaLensaSO'] ?? 0;
+$infoLensaSO = $_POST['infoLensaSO'] ?? '';
 
-$info = $_GET['info'] ?? '';
+$info = $_POST['info'] ?? '';
 
-$frame2 = $_GET['frame2'] ?? '';
-$brand2 = $_GET['brand2'] ?? '';
-$warna2 = $_GET['warna2'] ?? '';
-$kode_harga2 = $_GET['kode_harga2'] ?? '';
+$frame2 = $_POST['frame2'] ?? '';
+$brand2 = $_POST['brand2'] ?? '';
+$warna2 = $_POST['warna2'] ?? '';
+$kode_harga2 = $_POST['kode_harga2'] ?? '';
 $kode_harga2 = $mysqli->real_escape_string($kode_harga2);
-$tipe = $_GET['tipe'];
+$tipe = $_POST['tipe'];
 
 if ($tipe != '3' && $tipe != '5') {
 	$hargaLensa = 0;
@@ -186,17 +186,16 @@ if($valid=='yes')
 					$lensa_product_id_left = 0;
 					$hargaLensa = $hargaLensaSO;
 					$diskonLensa = 0;
-					$info = $infoLensaSO;
 				}
 			}
 			
-			$query_ajaxsave = "INSERT INTO dkeluarbarang(keluarbarang_id, product_id, satuan_id, harga, qty, tdiskon, diskon, subtotal, lensa, rSph, rCyl, rAxis, rAdd, rPd, lSph, lCyl, lAxis, lAdd, lPd, tipe, harga_lensa, diskon_lensa, special_order, special_order_done, info) VALUES(
+			$query_ajaxsave = "INSERT INTO dkeluarbarang(keluarbarang_id, product_id, satuan_id, harga, qty, tdiskon, diskon, subtotal, lensa, rSph, rCyl, rAxis, rAdd, rPd, lSph, lCyl, lAxis, lAdd, lPd, tipe, harga_lensa, diskon_lensa, special_order, special_order_done, info, info_special_order) VALUES(
 				$keluarbarang_id, $bar, $sat, $hsa, 
 				$qty, '$tdi', $dis, $sub, 
 				'$lensa_product_id_left', 
 				$rSph, $rCyl, $rAxis, $rAdd, $rPd, 
 				$lSph, $lCyl, $lAxis, $lAdd, $lPd, 
-				$tipe, $hargaLensa, $diskonLensa, '$special_order', '0', '$info')";
+				$tipe, $hargaLensa, $diskonLensa, '$special_order', '0', '$info', '$infoLensaSO')";
 		}
 		else
 		{
@@ -278,15 +277,16 @@ $total_detbrg = mysqli_num_rows($detbrg);
 				if ($row_detbrg['tipe'] != 3)
 				{
 					?>
-                    	<?php
-							if ($row_detbrg['kode'] != '') echo $row_detbrg['kode'] . ' # ';
-						?>
-                        <?=$row_detbrg['jenis']?> #  <?=$row_detbrg['barang']?> # <?=$row_detbrg['color']?>
+                        <?=$row_detbrg['kode']?> # <?=$row_detbrg['jenis']?> # <?=$row_detbrg['barang']?> # <?=$row_detbrg['color']?>
                     <?php
 				}
 				else
 				{
 					echo "LENSA " . $lensa;
+				}
+
+				if ($row_detbrg['info'] != '') {
+					echo '<br /><u>KETERANGAN</u><br />' . nl2br($row_detbrg['info']);
 				}
 			?>
 			
@@ -295,10 +295,6 @@ $total_detbrg = mysqli_num_rows($detbrg);
 			<?php
 				if ($row_detbrg['tipe'] == 3 || $row_detbrg['tipe'] == 5)
 				{
-					if ($row_detbrg['special_order'] == '1') {
-						echo $row_detbrg['info'];
-					}
-
 					?>
 						<table rules="all" border="1">
 							<tr>
@@ -314,7 +310,7 @@ $total_detbrg = mysqli_num_rows($detbrg);
 								<td align="center"><?=sphFormat($row_detbrg['rSph'])?></td>
 								<td align="center"><?=sphFormat($row_detbrg['rCyl'])?></td>
 								<td align="center"><?php echo $row_detbrg['rAxis']/100; ?></td>
-								<td align="center"><?php echo $row_detbrg['rAdd']/100; ?></td>
+								<td align="center"><?=sphFormat($row_detbrg['rAdd'])?></td>
 								<td align="center"><?php echo $row_detbrg['rPd']; ?></td>
 							</tr>
 							<tr>
@@ -322,7 +318,7 @@ $total_detbrg = mysqli_num_rows($detbrg);
 								<td align="center"><?=sphFormat($row_detbrg['lSph'])?></td>
 								<td align="center"><?=sphFormat($row_detbrg['lCyl'])?></td>
 								<td align="center"><?php echo $row_detbrg['lAxis']/100; ?></td>
-								<td align="center"><?php echo $row_detbrg['lAdd']/100; ?></td>
+								<td align="center"><?=sphFormat($row_detbrg['lAdd'])?></td>
 								<td align="center"><?php echo $row_detbrg['lPd']; ?></td>
 							</tr>
 						</table>
@@ -338,7 +334,11 @@ $total_detbrg = mysqli_num_rows($detbrg);
 				
 				if ($row_detbrg['tipe'] == 5)
 				{
-					echo " - LENSA : " . $lensa;
+					echo "<br />LENSA : " . $lensa;
+				}
+
+				if ($row_detbrg['special_order'] == '1' && $row_detbrg['info_special_order'] != '' && ($row_detbrg['tipe'] == 3 || $row_detbrg['tipe'] == 5)) {
+					echo '<br /><u>KETERANGAN SO</u><br />' . nl2br($row_detbrg['info_special_order']);
 				}
 			?>
 			

@@ -1,3 +1,4 @@
+
 function generateReport(){
     var sp = $("#startPeriode").val();
     var ep = $("#endPeriode").val();
@@ -44,6 +45,8 @@ function getInfo(row, tr, keluarbarang_id) {
 			{
 				var keluarbarang = result.keluarbarang;
 				var lunas = keluarbarang.lunas == '1' ? '<font class="text-success">Lunas</font>' : '<font class="text-danger">Belum Lunas</font>';
+				var dkeluarbarang_info = '';
+
 				// keluarbarang
 				html += '<tr>';
 				html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Status</td>';
@@ -79,6 +82,8 @@ function getInfo(row, tr, keluarbarang_id) {
 
 				for (i=0;i<Object.keys(result.dkeluarbarang).length;i++) {
 					var data = result.dkeluarbarang[i];
+
+					if (data.info != '') dkeluarbarang_info = data.info;
 
 					if (data.tipe != 3) {
 						var subtotal = data.harga * data.qty;
@@ -130,7 +135,7 @@ function getInfo(row, tr, keluarbarang_id) {
 						product += data.lensa_kode + ' # ' + data.lensa_brand_name + ' # ' + data.lensa_barang + '<br />';
 
 						if (data.special_order == '1')
-							product += data.info + '<br />';
+							product += nl2br(data.info_special_order) + '<br />';
 
 						product += '<table width="100%" class="table table-bordered">';
 						product += '<thead>';
@@ -205,6 +210,12 @@ function getInfo(row, tr, keluarbarang_id) {
 				html += '</table>';
 
 				html += '</td>';
+				html += '</tr>';
+
+				//info
+				html += '<tr>';
+				html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Keterangan</td>';
+				html += '<td class="text-left">' + nl2br(dkeluarbarang_info) + '</td>';
 				html += '</tr>';
 
 				// payment

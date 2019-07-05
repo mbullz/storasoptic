@@ -238,6 +238,7 @@
 	        	$temp['diskon_lensa'] = $data['diskon_lensa'];
 	        	$temp['subtotal'] = $data['subtotal'];
 	        	$temp['info'] = $data['info'];
+	        	$temp['info_special_order'] = $data['info_special_order'];
 	        	$temp['special_order'] = $data['special_order'];
 
 	        	array_push($dkeluarbarang, $temp);

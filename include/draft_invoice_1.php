@@ -64,6 +64,8 @@ $total_detbrg = mysqli_num_rows($detbrg);
 $query_gkary = "SELECT kontak FROM kontak WHERE user_id = $karyawan";
 $gkary       = $mysqli->query($query_gkary);
 $row_gkary   = mysqli_fetch_assoc($gkary);
+
+    $dkeluarbarang_info = '';
 ?>
 
 <style type="text/css" media="all">
@@ -98,9 +100,17 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
         text-align: center;
     }
 
+    .section-to-print {
+        display: none;
+    }
+
     @media print {
         .no-print {
             display: none !important;
+        }
+
+        .section-to-print {
+            display: block;
         }
     }
     
@@ -181,6 +191,8 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
 						{
                             $gTot += $row_detbrg['subtotal'];
 
+                            if ($row_detbrg['info'] != '') $dkeluarbarang_info = $row_detbrg['info'];
+
 							if ($row_detbrg['tipe'] != '3')
 							{
 								
@@ -199,7 +211,10 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
 											<?php echo $row_detbrg['qty']; ?> <?php echo $row_detbrg['satuan']; ?>
 										</td>
 										<td align="right" style="border-right:solid 1px #DDD;border-bottom:solid 1px #DDD;">
-											<?php echo number_format($row_detbrg['harga'], 0, ',', '.'); ?>
+                                            <div class="no-print">
+                                                <?php echo number_format($row_detbrg['harga'], 0, ',', '.'); ?>
+                                            </div>
+                                            <div class="section-to-print">1</div>
 										</td>
 										<td align="center" style="border-right:solid 1px #DDD;border-bottom:solid 1px #DDD;">
 											<?php if ($row_detbrg['tdiskon'] == 0) {
@@ -220,7 +235,10 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
                                                     $price -= (($row_detbrg['diskon']/100) * $price);
                                                 } 
                                             ?>
-											<?php echo number_format($price, 0, ',', '.'); ?> Rupiah
+                                            <div class="no-print">
+                                                <?php echo number_format($price, 0, ',', '.'); ?> Rupiah
+                                            </div>
+                                            <div class="section-to-print">1 Rupiah</div>
 										</td>
 									</tr>
 								<?php
@@ -235,16 +253,22 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
 										</td>
 										<td style="border-right:solid 1px #FFF;border-bottom:solid 1px #DDD;">
 											<?php
-												$rs2 = $mysqli->query("SELECT * FROM barang WHERE product_id = $row_detbrg[lensa]");
-												$data2 = mysqli_fetch_assoc($rs2);
+                                                if ($row_detbrg['special_order'] == '1') echo 'LENSA SO';
+                                                else {
+                                                    $rs2 = $mysqli->query("SELECT * FROM barang a JOIN jenisbarang b ON a.brand_id = b.brand_id WHERE product_id = $row_detbrg[lensa]");
+                                                    $data2 = mysqli_fetch_assoc($rs2);
+                                                    echo 'LENSA : ' . $data2['kode'] . ' # ' . $data2['jenis'] . ' # ' . $data2['barang'];
+                                                }
 											?>
-											LENSA <?=$data2['barang']?>
 										</td>
 										<td align="center" style="border-right:solid 1px #DDD;border-bottom:solid 1px #DDD;">
 											2 PCS
 										</td>
 										<td align="right" style="border-right:solid 1px #DDD;border-bottom:solid 1px #DDD;">
-											<?php echo number_format($row_detbrg['harga_lensa'], 0, ',', '.'); ?>
+                                            <div class="no-print">
+                                                <?php echo number_format($row_detbrg['harga_lensa'], 0, ',', '.'); ?>
+                                            </div>
+                                            <div class="section-to-print">1</div>
 										</td>
 										<td align="center" style="border-right:solid 1px #DDD;border-bottom:solid 1px #DDD;">
                                             <?php 
@@ -257,7 +281,10 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
 
                                                 $price -= (($row_detbrg['diskon_lensa']/100) * $price);
                                             ?>
-											<?php echo number_format($price, 0, ',', '.'); ?> Rupiah
+                                            <div class="no-print">
+                                                <?php echo number_format($price, 0, ',', '.'); ?> Rupiah
+                                            </div>
+                                            <div class="section-to-print">1 Rupiah</div>
 										</td>
 									</tr>
 								<?php
@@ -335,8 +362,12 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
             <td colspan="6">
                 <table width="100%">
                     <tr>
-                        <td width="60%">
-                            <strong style="font-size: 12px;">Detail Ukuran</strong>:<br>
+                        <td width="60%" valign="top">
+                            <strong style="font-size: 12px;">Keterangan</strong>:
+                            <div style="padding: 5px;">
+                                <?=nl2br($dkeluarbarang_info)?>
+                            </div>
+                            <!--
                             <table align="left" width="85%" border="1" rules="all" bordercolor="#000000">
                                 <tr>
                                     <td>&nbsp;</td>
@@ -367,6 +398,7 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
                                     <td colspan="3">Frame: <?php echo $row_detbrg['frame']; ?></td>
                                 </tr>
                             </table>
+                            -->
                         </td>
                         <td width="40%">
                             <ul>
