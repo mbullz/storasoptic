@@ -152,21 +152,21 @@ function getInfo(row, tr, keluarbarang_id) {
 						product += '<tbody>';
 
 						product += '<tr>';
-						product += '<td>Left</td>';
-						product += '<td class="text-center">' + data.lSph + '</td>';
-						product += '<td class="text-center">' + data.lCyl + '</td>';
-						product += '<td class="text-center">' + data.lAxis + '</td>';
-						product += '<td class="text-center">' + data.lAdd + '</td>';
-						product += '<td class="text-center">' + data.lPd + '</td>';
-						product += '</tr>';
-
-						product += '<tr>';
 						product += '<td>Right</td>';
 						product += '<td class="text-center">' + data.rSph + '</td>';
 						product += '<td class="text-center">' + data.rCyl + '</td>';
 						product += '<td class="text-center">' + data.rAxis + '</td>';
 						product += '<td class="text-center">' + data.rAdd + '</td>';
 						product += '<td class="text-center">' + data.rPd + '</td>';
+						product += '</tr>';
+
+						product += '<tr>';
+						product += '<td>Left</td>';
+						product += '<td class="text-center">' + data.lSph + '</td>';
+						product += '<td class="text-center">' + data.lCyl + '</td>';
+						product += '<td class="text-center">' + data.lAxis + '</td>';
+						product += '<td class="text-center">' + data.lAdd + '</td>';
+						product += '<td class="text-center">' + data.lPd + '</td>';
 						product += '</tr>';
 
 						product += '</tbody>';
