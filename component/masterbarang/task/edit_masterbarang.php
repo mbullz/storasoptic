@@ -120,7 +120,7 @@ table ul li {
       <td align="center" valign="top">:</td>
       <td valign="top">
         <label>
-            <input name="kode" type="text" id="kode" value="<?php echo $row_edit['kode'];?>" size="10" />
+            <input name="kode" type="text" id="kode" value="<?=$row_edit['kode']?>" size="10" />
         </label>
         </td>
     </tr>

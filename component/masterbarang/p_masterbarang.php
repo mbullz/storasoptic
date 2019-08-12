@@ -7,7 +7,7 @@
 	$p   = $_GET['p'];
 	$id  = $_POST['id'];
 	$product_id = $_POST['product_id'];
-	$kod = strtoupper(str_replace(" ","_",$_POST['kode']));
+	$kod = strtoupper($_POST['kode']);
     $tipe = $_POST['tipe'];
     if ($_POST['frame'] != '') {
         $fra = $mysqli->real_escape_string($_POST['frame']);
