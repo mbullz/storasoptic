@@ -67,8 +67,8 @@
 					$kode = trim(strtoupper($_POST['data'][$i][0]));
 					$jenis = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][1]));
 					$barang = strtoupper($_POST['data'][$i][2]);
-					$frame = $_POST['data'][$i][3] ?? 0; //minus
-					$color = $_POST['data'][$i][4] ?? 0; //silinder
+					$frame = $_POST['data'][$i][3]; //minus
+					$color = $_POST['data'][$i][4]; //silinder
 					$qty = $_POST['data'][$i][5]==""?0:$_POST['data'][$i][5];
 					$price = $_POST['data'][$i][6]==""?0:$_POST['data'][$i][6];
 					$price2 = $_POST['data'][$i][7]==""?0:$_POST['data'][$i][7];
@@ -76,6 +76,9 @@
 					$diskon = 0;
 					$info = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][9]));
 					$tgl_masuk_akhir = $_POST['data'][$i][10]==""?date("Y-m-d"):$_POST['data'][$i][10];
+
+					if ($frame == '') $frame = '000';
+					if ($color == '') $color = '000';
 				break;
 				
 				case '4':

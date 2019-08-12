@@ -2,6 +2,13 @@
 session_start();
 include('../../include/config_db.php');
 
+	function sphFormat($value) {
+		if ($value == 0) return '000';
+		else if ($value < 100 && $value > 0) return '0' . $value;
+		else if ($value < 0 && $value > -100) return '-0' . $value*-1;
+		else return $value;
+	}
+
 	function penjualanLensa($dkeluarbarang_id) {
 		global $mysqli;
 
@@ -10,10 +17,10 @@ include('../../include/config_db.php');
 
 		$keluarbarang_id = $data['keluarbarang_id'];
 		$lensa_id = $data['lensa'];
-		$lSph = $data['lSph'];
-		$lCyl = $data['lCyl'];
-		$rSph = $data['rSph'];
-		$rCyl = $data['rCyl'];
+		$lSph = sphFormat($data['lSph']);
+		$lCyl = sphFormat($data['lCyl']);
+		$rSph = sphFormat($data['rSph']);
+		$rCyl = sphFormat($data['rCyl']);
 
 		$rs = $mysqli->query("SELECT * FROM barang WHERE product_id = $lensa_id");
 		$data = $rs->fetch_assoc();

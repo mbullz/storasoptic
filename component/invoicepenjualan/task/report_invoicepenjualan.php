@@ -1,5 +1,7 @@
 <?php
 include('../../../include/config_db.php');
+include('../../../include/function.php');
+include('../../../include/config.php');
 
 $mode = $_GET['mode'];
 $tipe = $_GET['tipe'];

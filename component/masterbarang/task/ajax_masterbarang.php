@@ -91,7 +91,7 @@ switch($mode) {
         $data['price'] = 0;
         $data['price2'] = 0;
 
-        $query = "SELECT * 
+        $query = "SELECT a.*, b.jenis 
             FROM barang a 
             JOIN jenisbarang b ON a.brand_id = b.brand_id 
             WHERE a.kode = '$kode' 
@@ -110,7 +110,7 @@ switch($mode) {
             $data['price2'] = $row['price2'];
         }
         
-        $query = "SELECT * 
+        $query = "SELECT a.*, b.jenis 
             FROM barang a 
             JOIN jenisbarang b ON a.brand_id = b.brand_id 
             WHERE a.kode = '$kode' 
@@ -125,7 +125,7 @@ switch($mode) {
             $data['qtyL'] = $row['qty'];
         }
 
-        $query = "SELECT * 
+        $query = "SELECT a.*, b.jenis 
             FROM barang a 
             JOIN jenisbarang b ON a.brand_id = b.brand_id 
             WHERE a.kode = '$kode' 
@@ -163,7 +163,7 @@ switch($mode) {
         $data['price'] = 0;
         $data['price2'] = 0;
 
-        $query = "SELECT * 
+        $query = "SELECT a.*, b.jenis 
             FROM barang a 
             JOIN jenisbarang b ON a.brand_id = b.brand_id 
             WHERE a.kode = '$kode' 
