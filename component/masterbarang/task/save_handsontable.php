@@ -16,7 +16,7 @@
 			$tipe = $_POST['tipe'];
 
 			$ukuran = '';
-			$power_add = '000';
+			$power_add = '';
 			
 			switch ($tipe)
 			{
