@@ -194,7 +194,7 @@ if(isset($_POST['import'])) {  ?>
 	var row_header = [
 		["Kode", "Brand Frame", "Nama Product", "Frame", "Color", "Qty", "Harga Beli", "Harga Jual", "Kode Harga", "Supplier", "Tanggal Masuk"],
 		["Kode", "Brand Softlens", "Nama Product", "Expiry Date", "Minus", "Color", "Qty", "Harga Beli", "Harga Jual", "Kode Harga", "Supplier", "Tanggal Masuk"],
-		["Kode", "Brand Lensa", "Nama Product", "Minus", "Silinder", "Qty", "Harga Beli", "Harga Jual", "Kode Harga", "Supplier", "Tanggal Masuk"],
+		["Kode", "Brand Lensa", "Nama Product", "SPH", "CYL", "ADD", "Qty", "Harga Beli", "Harga Jual", "Kode Harga", "Supplier", "Tanggal Masuk"],
 		["Kode", "Brand Acc", "Nama Product", "Qty", "Harga Beli", "Harga Jual", "Kode Harga", "Supplier", "Tanggal Masuk"]
 		];
 
@@ -287,10 +287,13 @@ if(isset($_POST['import'])) {  ?>
 								//tipe lensa
 							},
 							{
-								//minus
+								//SPH
 							},
 							{
-								//silinder
+								//CYL
+							},
+							{
+								//ADD
 							},
 						<?php
 					break;
@@ -367,7 +370,7 @@ if(isset($_POST['import'])) {  ?>
 						<?php
 							if ($tipe == 1) echo "9";
 							else if ($tipe == 2) echo "10";
-							else if ($tipe == 3) echo "9";
+							else if ($tipe == 3) echo "10";
 							else if ($tipe == 4) echo "7";
 						?>;
 						hot.setDataAtCell(change[0][0], col, response);
@@ -394,8 +397,8 @@ if(isset($_POST['import'])) {  ?>
 			success: function (res)
 			{
 				alert(res);
-				openDialogPrintInvoice();
-				//window.location = "<?=$base_url?>index-c-masterbarang.pos";
+				//openDialogPrintInvoice();
+				window.location = "<?=$base_url?>index-c-masterbarang.pos";
 			}
 		});
 	});

@@ -1,6 +1,11 @@
 <?php
 session_start();
 include('../include/config_db.php');
+require '../models/Barang.php';
+require '../models/JenisBarang.php';
+require '../models/DBHelper.php';
+
+$db = new DBHelper($mysqli);
 
 	function sphFormat($value) {
 		if ($value == 0) return '000';
@@ -137,48 +142,68 @@ if($valid=='yes')
 			if ($tipe == 3 || $tipe == 5)
 			{
 				if ($special_order == '0') {
-					$rs = $mysqli->query("SELECT * FROM barang WHERE product_id = $lensaProductId");
-					$data = $rs->fetch_assoc();
-					$lensaKode = $data['kode'];
-					$lensaBrandId = $data['brand_id'];
-					$lensaBarang = $data['barang'];
-					$lensaPrice = $data['price'];
-					$lensaPrice2 = $data['price2'];
+					$lensa = new Barang();
+					$lensa->setProductId($lensaProductId);
+					$lensa = $db->getBarang($lensa);
+					$lensa->setTipe(3);
+					$lensa->setBranchId($_SESSION['branch_id']);
 				}
 
 				if ($special_order == '0')
 				{	
 					// check lensa if already exists or not in table barang
+
 					//left
-					$rs2 = $mysqli->query("SELECT * FROM barang WHERE tipe = 3 AND branch_id = $_SESSION[branch_id] AND kode = '$lensaKode' AND brand_id = $lensaBrandId AND barang = '$lensaBarang' AND frame = '$lSph' AND color = '$lCyl'");
-					if ($data2 = mysqli_fetch_assoc($rs2))
-					{
-						$lensa_product_id_left = $data2['product_id'];
+					$lensa->setProductId(null);
+					$lensa->setFrame($lSph);
+					$lensa->setColor($lCyl);
+					$lensa->setPowerAdd($lAdd);
+					
+					$result = $db->getBarang($lensa);
+
+					if ($result != null) {
+						$lensa_product_id_left = $result->getProductId();
 					}
 					else
 					{
-						$mysqli->query("INSERT INTO barang(kode, brand_id, barang, frame, color, qty, price, price2, kode_harga, info, ukuran, tipe, tgl_masuk_akhir, branch_id, created_user_id, created_date) VALUES(
-							'$lensaKode', $lensaBrandId, '$lensaBarang', '$lSph', '$lCyl', 
-							0, $lensaPrice, $lensaPrice2, '', '', '', 
-							3, NOW(), $_SESSION[branch_id], $_SESSION[user_id], NOW())");
+						$lensa->setQty(0);
+						$lensa->setTglMasukAkhir(date('Y-m-d'));
+						$lensa->setTglKeluarAkhir('NULL');
+						$lensa->setCreatedUserId($_SESSION['user_id']);
+						$lensa->setCreatedDate('NOW()');
+						$lensa->setLastUpdateUserId($_SESSION['user_id']);
+						$lensa->setLastUpdateDate('NOW()');
 
-						$lensa_product_id_left = $mysqli->insert_id;
+						$result = $db->insertBarang($lensa);
+
+						$lensa_product_id_left = $result->id;
 					}
 
 					//right
-					$rs2 = $mysqli->query("SELECT * FROM barang WHERE tipe = 3 AND branch_id = $_SESSION[branch_id] AND kode = '$lensaKode' AND brand_id = $lensaBrandId AND barang = '$lensaBarang' AND frame = '$rSph' AND color = '$rCyl'");
-					if ($data2 = mysqli_fetch_assoc($rs2))
+					$lensa->setProductId(null);
+					$lensa->setFrame($rSph);
+					$lensa->setColor($rCyl);
+					$lensa->setPowerAdd($rAdd);
+					
+					$result = $db->getBarang($lensa);
+
+					if ($result != null)
 					{
-						$lensa_product_id_right = $data2['product_id'];
+						$lensa_product_id_right = $result->getProductId();
 					}
 					else
 					{
-						$mysqli->query("INSERT INTO barang(kode, brand_id, barang, frame, color, qty, price, price2, kode_harga, info, ukuran, tipe, tgl_masuk_akhir, branch_id, created_user_id, created_date) VALUES(
-							'$lensaKode', $lensaBrandId, '$lensaBarang', '$rSph', '$rCyl', 
-							0, $lensaPrice, $lensaPrice2, '', '', '', 
-							3, NOW(), $_SESSION[branch_id], $_SESSION[user_id], NOW())");
+						$lensa->setQty(0);
+						$lensa->setTglMasukAkhir(date('Y-m-d'));
+						$lensa->setTglKeluarAkhir('NULL');
+						$lensa->setCreatedUserId($_SESSION['user_id']);
+						$lensa->setCreatedDate('NOW()');
+						$lensa->setLastUpdateUserId($_SESSION['user_id']);
+						$lensa->setLastUpdateDate('NOW()');
 
-						$lensa_product_id_right = $mysqli->insert_id;
+						$result = $db->insertBarang($lensa);
+
+						$lensa_product_id_right = $result->id;
 					}
 				}
 				else // if special_order true

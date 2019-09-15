@@ -196,6 +196,7 @@ include('include/function.php');
   <?php if(strstr($_SESSION['akses'],'invoicepembelian') OR strstr($_SESSION['akses'],'hutangjtempo') OR strstr($_SESSION['akses'],'pembayaranhutang') OR strstr($_SESSION['akses'],'add_invoicepembelian')) { ?>
   <li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu4, '');" onmouseout="this.className='navbutton';delayhidemenu();">Pembelian</li>
   <?php } ?>
+
   <?php if(strstr($_SESSION['akses'],'invoicepenjualan') OR strstr($_SESSION['akses'],'piutangjtempo') OR strstr($_SESSION['akses'],'pembayaranpiutang') OR strstr($_SESSION['akses'],'add_invoicepenjualan')) { ?>
   <li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu5, '');" onmouseout="this.className='navbutton';delayhidemenu();">Penjualan</li>
   <?php } ?>
@@ -203,9 +204,15 @@ include('include/function.php');
   <?php if(strstr($_SESSION['akses'],'pembayaranhutang') OR strstr($_SESSION['akses'],'pembayaranpiutang') OR strstr($_SESSION['akses'],'biayaops')) { ?>
   <li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu7, '');" onmouseout="this.className='navbutton';delayhidemenu();">Arus Kas</li>
   <?php } ?>
+
+<?php if (strstr($_SESSION['akses'], 'report_all')): ?>
+  <li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu13, '');" onmouseout="this.className='navbutton';delayhidemenu();">Laporan</li>
+<?php endif; ?>
+
   <?php if(strstr($_SESSION['akses'],'user') OR strstr($_SESSION['akses'],'lokasigudang') OR strstr($_SESSION['akses'],'matauang') OR strstr($_SESSION['akses'],'cbayar') OR strstr($_SESSION['akses'],'satuan') OR strstr($_SESSION['akses'],'jenisbarang') OR strstr($_SESSION['akses'],'masterbarang') OR strstr($_SESSION['akses'],'targetpenjualan')) { ?>
   <li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu2, '');" onmouseout="this.className='navbutton';delayhidemenu();">Pengaturan</li>
   <?php } ?>
+
   <?php /* if(strstr($_SESSION['akses'],'reportjualper_pm') OR strstr($_SESSION['akses'],'reportjualper_customer') OR strstr($_SESSION['akses'],'reportjualper_barang') OR strstr($_SESSION['akses'],'reportrugilaba')) { ?>
   <li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu6, '');" onmouseout="this.className='navbutton';delayhidemenu();">Laporan</li>
   <?php } */ ?>

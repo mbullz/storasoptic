@@ -179,14 +179,16 @@ function getDetailLensa()
 	var barang = value[2];
 	var rSph = $("#rSph").val();
 	var rCyl = $("#rCyl").val();
+	var rAdd = $("#rAdd").val();
 	var lSph = $("#lSph").val();
 	var lCyl = $("#lCyl").val();
+	var lAdd = $("#lAdd").val();
 
 	$.ajax({
 		url: 'component/masterbarang/task/ajax_masterbarang.php',
 		type: 'GET',
 		dataType: 'json',
-		data: 'mode=get_detail_lensa&kode=' + kode + '&jenis=' + jenis + '&barang=' + barang + '&rSph=' + rSph + '&rCyl=' + rCyl + '&lSph=' + lSph + '&lCyl=' + lCyl,
+		data: 'mode=get_detail_lensa&kode=' + kode + '&jenis=' + jenis + '&barang=' + barang + '&rSph=' + rSph + '&rCyl=' + rCyl + '&rAdd=' + rAdd + '&lSph=' + lSph + '&lCyl=' + lCyl + '&lAdd=' + lAdd,
 		success: function(result)
 		{
 			if (result.length > 0) {

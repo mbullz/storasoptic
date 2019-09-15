@@ -31,13 +31,13 @@ menu2[1]='<a href="index-c-user.pos"><img src="images/invoices.png" align="left"
 //menu2[2]='<a href="index-c-lokasigudang.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Lokasi Gudang</a>'
 <?php } ?>
 <?php if(strstr($_SESSION['akses'],'matauang')) { ?>
-menu2[3]='<a href="index-c-matauang.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Mata Uang</a>'
+//menu2[3]='<a href="index-c-matauang.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Mata Uang</a>'
 <?php } ?>
 <?php if(strstr($_SESSION['akses'],'cbayar')) { ?>
 menu2[4]='<a href="index-c-cbayar.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Cara Pembayaran</a>'
 <?php } ?>
 <?php if(strstr($_SESSION['akses'],'satuan')) { ?>
-menu2[5]='<a href="index-c-satuan.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Satuan</a>'
+//menu2[5]='<a href="index-c-satuan.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Satuan</a>'
 <?php } ?>
 <?php if(strstr($_SESSION['akses'],'jenisbarang')) { ?>
 //menu2[6]='<a href="index-c-jenisbarang.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Jenis Brand</a>'
@@ -227,11 +227,16 @@ menu11[0]='<a href="index-c-jenisbarang.pos"><img src="images/invoices.png" alig
 <?php } ?>
 <?php if(strstr($_SESSION['akses'],'masterbarang')) { ?>
 menu11[1]='<a href="index-c-masterbarang.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Master Barang</a>'
-menu11[2]='<a href="index-c-report_masterbarang.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Laporan Master Barang</a>'
+//menu11[2]='<a href="index-c-report_masterbarang.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Laporan Master Barang</a>'
 //menu2[3]='<a href="index-c-report_kartustock.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Kartu Stock</a>'
 <?php } ?>
 
 var menu12 = new Array();
+
+var menu13 = new Array();
+<?php if (strstr($_SESSION['akses'], 'report_all')): ?>
+	menu13[0] = '<a href="index-c-report_all.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Laporan</a>';
+<?php endif; ?>
 
 var menuwidth='200px' //default menu width
 var menubgcolor='#E7EDF4'  //menu bgcolor

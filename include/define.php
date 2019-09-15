@@ -181,5 +181,8 @@ $menu = array(
     'profile'       => array(
         '0'         => 'Profile',
     ),
+    'report_all'    => array(
+        '0'         => 'Laporan',
+    ),
 );
 ?>

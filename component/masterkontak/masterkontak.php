@@ -3,24 +3,52 @@
 global $mysqli;
 global $klas, $c;
 
-$branch_id = $_SESSION['branch_id'] ?? 0;
+require "models/Kontak.php";
+require "models/DBHelper.php";
 
-$branch_filter = '';
-if ($branch_id != 0 && ($klas == 'karyawan' || $klas == 'customer' || $klas == 'sales')) {
-    $branch_filter = " AND a.branch_id = $branch_id ";
-}
+$db = new DBHelper($mysqli);
 
-$query_data  = "SELECT 
-                    a.user_id, a.gender, a.kontak, a.alamat, a.kperson, a.pinbb, a.mulai, a.jabatan, a.notlp, a.notlp2, a.hp, a.fax, a.email, a.info, b.jenis 
-				FROM kontak a 
-				JOIN jeniskontak b ON b.kode = a.jenis 
-                WHERE b.klasifikasi = '$klas' 
-                $branch_filter 
-                ORDER BY a.user_id ASC ";
+$contacts = $db->getAllKontak($klas);
 
-$data = $mysqli->query($query_data);
-$totalRows_data = mysqli_num_rows($data);
 ?>
+
+<script type="text/javascript">
+    var data = [];
+
+    <?php
+        foreach ($contacts AS $r) {
+            $user_id = $r->getUserId();
+
+            $kontak = htmlspecialchars($r->getKontak(), ENT_QUOTES);
+            $alamat = htmlspecialchars($r->getAlamat(), ENT_QUOTES);
+            $hp = htmlspecialchars($r->getHp(), ENT_QUOTES);
+            $notlp = htmlspecialchars($r->getNoTlp(), ENT_QUOTES);
+            $email = htmlspecialchars($r->getEmail(), ENT_QUOTES);
+
+            $edit = '';
+            if (strstr($_SESSION['akses'], "edit_".$c)) {
+                $edit = '<a href="index.php?component='.$c.'&task=add&klasifikasi='.$klas.'&id='.$user_id.'" title="Edit Data"><img src="images/edit_icon.png" width="16px" height="16px" /></a>';
+            }
+
+            $delete = '';
+            if (strstr($_SESSION['akses'], "delete_" . $c)) {
+                $delete = '<img src="images/delete_icon.png" height="16px" width="16px" style="cursor: pointer;" onclick="deleteData('.$user_id.')" />';
+            }
+
+            ?>
+                data.push([
+                    <?=$user_id?>,
+                    '',
+                    '<?=$kontak?>',
+                    '<?=$alamat?>',
+                    '<?=$hp?> / <?=$notlp?>',
+                    '<?=$email?>',
+                    '<?=$edit?> &nbsp; <?=$delete?>',
+                ]);
+            <?php
+        }
+    ?>
+</script>
 
 <script type="text/javascript" language="javascript" src="js/apps/masterkontak.js"></script>
 
@@ -29,8 +57,14 @@ $totalRows_data = mysqli_num_rows($data);
         background: url('media/images/details_open.png') no-repeat center center;
         cursor: pointer;
     }
+
     tr.shown td.details-control {
         background: url('media/images/details_close.png') no-repeat center center;
+    }
+
+    .th {
+        color: #660099;
+        text-align: center;
     }
 </style>
 
@@ -38,101 +72,38 @@ $totalRows_data = mysqli_num_rows($data);
 
 <form id="formdata" name="formdata" method="post" action="component/<?php echo $c;?>/p_<?php echo $c;?>.php?p=mdelete">
 	<input type="hidden" name="klas" value="<?=$klas?>" />
-  <div class="tablebg">
+
     <h1>Data  <?php echo ucfirst($klas);?></h1>
     
 	<?php if(strstr($_SESSION['akses'],"add_".$c)) { ?><a href="index-c-<?php echo $c;?>-t-add-k-<?php echo $klas;?>.pos"><img src="images/add.png" border="0"/>&nbsp;Tambah Data</a><?php } ?>
 
 	<table id="example" class="display" cellspacing="0" cellpadding="0" width="100%">
-    	<thead>
-      <tr>
-        <th width="16%" align="center"><font color="#0000CC"><?php echo strtoupper($klas);?></font></th>
-        <th width="18%" align="center"><font color="#0000CC">ALAMAT</font></th>
-        <th width="12%" align="center"><font color="#0000CC">PHONE</font></th>
-        <th width="10%" align="center"><font color="#0000CC">BERGABUNG</font></th>
-        <th align="center"><font color="#0000CC">KONTAK INFO</font></th>
-        <th width="8%" align="center"><font color="#0000CC"></font></th>
-      </tr>
-		</thead>
+        <thead>
+            <tr>
+                <th width="1%" class="th">INFO</th>
+                <th class="th"><?=strtoupper($klas)?></th>
+                <th class="th">ALAMAT</th>
+                <th class="th">CONTACT</th>
+                <th class="th">EMAIL</th>
+                <th class="th">&nbsp;</th>
+            </tr>
+        </thead>
         
+        <tfoot>
+            <tr>
+                <th></th>
+                <th><?=strtoupper($klas)?></th>
+                <th>ALAMAT</th>
+                <th>CONTACT</th>
+                <th>EMAIL</th>
+                <th></th>
+            </tr>
+        </tfoot>
+
         <tbody>
-      		<?php
-	  			$no=0;
-	   			while ($row_data = mysqli_fetch_assoc($data)) { 
-                        $user_id = $row_data['user_id'];
-                    ?>
-        <td align="left"><?php echo $row_data['kontak'];?></td>
-        <td align="left"><?php echo $row_data['alamat'];?></td>
-        <td align="center"><?php echo $row_data['notlp'];?></td>
-        <td align="center"><?php genDate($row_data['mulai']);?></td>
-        <td><small style="float:right;">[ <a href="javascript:void(0);" onclick="viewKontak('infotable_<?php echo $row_data['user_id'];?>');">Lihat Info</a> ]</small>
-          <table width="100%" border="0" cellspacing="0" cellpadding="4" id="infotable_<?php echo $row_data['user_id'];?>" style="display:none;">
-          <tr>
-            <td width="40%" align="right" valign="top"><strong>Phone 2 :</strong></td>
-            <td valign="top"><?php echo $row_data['notlp2'];?></td>
-          </tr>
-          <tr>
-            <td align="right" valign="top"><strong>Phone 3 :</strong></td>
-            <td valign="top"><?php echo $row_data['hp'];?></td>
-          </tr>
-          <tr>
-            <td align="right" valign="top"><strong>Email :</strong></td>
-            <td valign="top"><?php echo $row_data['email'];?></td>
-          </tr>
-          <?php if ($klas != 'supplier' && $klas != 'cabang') { ?>
-          <tr>
-            <td align="right" valign="top"><strong>Gender :</strong></td>
-            <td valign="top"><?php echo ($row_data['gender'] == 1 ? 'Laki-laki' : 'Perempuan');?></td>
-          </tr>
-          <?php } ?>
-          <tr>
-            <td align="right" valign="top"><strong>Keterangan :</strong></td>
-            <td valign="top"><?php echo $row_data['info'];?></td>
-          </tr>
-          <?php
-		  	if ($klas == "customer")
-			{
-				?>
-                	<tr>
-                        <td colspan="2">
-                            <!--
-                            <input type="button" value="General" onclick="generateReport2('customer', 'general', '<?=$user_id?>')" />
-                            -->
-                            <table width="100%" border="1" cellspacing="0">
-                            <?php
-                                $rs2 = $mysqli->query("SELECT * FROM keluarbarang WHERE client = $user_id AND referensi != '' ORDER BY tgl DESC");
-                                while ($data2 = $rs2->fetch_assoc()) {
-                                    ?>
-                                        <tr>
-                                            <td><?=$data2['tgl']?></td>
-                                            <td>
-                                                <a href="include/draft_invoice_1.php?keluarbarang_id=<?=$data2['keluarbarang_id']?>" onclick="NewWindow(this.href,'name','720','520','yes'); return false;" style="color: blue;">
-                                                    <?=$data2['referensi']?>
-                                                </a>
-                                            </td>
-                                            <td><?=number_format($data2['total'], 0)?></td>
-                                        </tr>
-                                    <?php
-                                }
-                            ?>
-                            </table>
-                        </td>
-                      </tr>
-                <?php
-			}
-		  ?>
-        </table></td>
-        <td align="center">
-            <?php if(strstr($_SESSION['akses'],"edit_".$c)) { ?><a href="index-c-<?=$c?>-t-add-k-<?=$klas?>-<?=$row_data['user_id']?>.pos" title="Edit Data"><img src="images/edit_icon.png" border="0" height="16px" width="16px" /></a><?php } ?>
-            &nbsp;
-            <?php if (strstr($_SESSION['akses'], "delete_" . $c)): ?>
-                <img src="images/delete_icon.png" height="16px" width="16px" style="cursor: pointer;" onclick="deleteData('<?=$klas?>', '<?=$row_data['user_id']?>')" />
-            <?php endif; ?>
-        </td>
-        </tr>
-      <?php } ?>
-		</tbody>
+        </tbody>
 	</table>
+</form>
     
     <br /><br />
     
@@ -241,6 +212,3 @@ $totalRows_data = mysqli_num_rows($data);
         
 		<input type="button" value="Cetak" onclick="generateReport();" />
 	</div>
-    
-  </div>
-</form>

@@ -109,20 +109,7 @@ Cetak Laporan:<br>
     <option value="2">Softlens</option>
     <option value="4">Accessories</option>
 </select>
-<!--
-<select id="frame1">
-	<option value="%">All</option>
-	<?php
-		$rs2 = $mysqli->query("SELECT DISTINCT frame FROM barang WHERE qty > 0 ORDER BY frame ASC");
-		while ($data2 = mysqli_fetch_assoc($rs2))
-		{
-			?>
-				<option value="<?=$data2['frame']?>"><?=$data2['frame']?></option>
-			<?php
-		}
-	?>
-</select>
--->
+
 <br>
 
 <label><input type="radio" name="laporan" id="report2" />Laporan Per Brand</label>&nbsp;&nbsp;
@@ -169,31 +156,8 @@ Cetak Laporan:<br>
 </label>
 <select id="supplier">
     <option value="">All</option>
-    <?php
-        $rs2 = $mysqli->query("SELECT a.user_id,kontak FROM kontak a JOIN jeniskontak b ON a.jenis = b.kode WHERE b.klasifikasi like 'supplier'");
-        while ($data2 = mysqli_fetch_assoc($rs2))
-        {
-            ?>
-                <option value="<?=$data2['user_id']?>"><?=$data2['kontak']?></option>
-            <?php
-        }
-    ?>
 </select>
 <br>
-
-<!--
-<label><input type="radio" name="laporan" id="report6" />Laporan Input Barang</label>&nbsp;&nbsp;
-<select id="tipe6">
-  	<option value="1">Frame</option>
-  	<option value="2">Softlens</option>
-  	<option value="4">Accessories</option>
-</select>
-<label>Periode </label>
-<input type="text" class="calendar" id="textPeriode61" name="textPeriode61" />
-<label>-</label>
-<input type="text" class="calendar" id="textPeriode62" name="textPeriode62" />
-<br>
--->
 
 <label><input type="radio" name="laporan" id="report7" />Laporan Cabang</label>
 <label>Periode </label>
@@ -205,15 +169,6 @@ Cetak Laporan:<br>
 <label><input type="radio" name="laporan" id="report8" />Laporan Detail Cabang</label>
 <select id="cabang">
     <option value="0">-- Choose Cabang --</option>
-    <?php
-        $rs2 = $mysqli->query("SELECT * FROM kontak WHERE jenis LIKE 'B001' ORDER BY kontak ASC");
-        while ($data2 = mysqli_fetch_assoc($rs2))
-        {
-            ?>
-                <option value="<?=$data2['user_id']?>"><?=$data2['kontak']?></option>
-            <?php
-        }
-    ?>
 </select>
 <label>Periode </label>
 <input type="text" class="calendar" id="textPeriode81" />

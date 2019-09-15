@@ -1,6 +1,10 @@
 <?php
 session_start();
 include('../../include/config_db.php');
+require '../../models/Barang.php';
+require '../../models/DBHelper.php';
+
+$db = new DBHelper($mysqli);
 
 	function sphFormat($value) {
 		if ($value == 0) return '000';
@@ -10,7 +14,7 @@ include('../../include/config_db.php');
 	}
 
 	function penjualanLensa($dkeluarbarang_id) {
-		global $mysqli;
+		global $mysqli, $db;
 
 		$rs = $mysqli->query("SELECT * FROM dkeluarbarang WHERE id = $dkeluarbarang_id");
 		$data = $rs->fetch_assoc();
@@ -19,34 +23,39 @@ include('../../include/config_db.php');
 		$lensa_id = $data['lensa'];
 		$lSph = sphFormat($data['lSph']);
 		$lCyl = sphFormat($data['lCyl']);
+		$lAdd = sphFormat($data['lAdd']);
 		$rSph = sphFormat($data['rSph']);
 		$rCyl = sphFormat($data['rCyl']);
+		$rAdd = sphFormat($data['rAdd']);
 
-		$rs = $mysqli->query("SELECT * FROM barang WHERE product_id = $lensa_id");
-		$data = $rs->fetch_assoc();
+		$lensa = new Barang();
+		$lensa->setProductId($lensa_id);
+		$lensa = $db->getBarang($lensa);
 
-		$kode = $data['kode'];
-		$brand_id = $data['brand_id'];
-		$barang = $data['barang'];
-		$branch_id = $data['branch_id'];
+		$lensa->setProductId(null);
+		$lensa->setFrame($lSph);
+		$lensa->setColor($lCyl);
+		$lensa->setPowerAdd($lAdd);
+		$lensa_left = $db->getBarang($lensa);
 
-		$rs = $mysqli->query("SELECT * FROM barang WHERE kode = '$kode' AND brand_id = $brand_id AND barang = '$barang' AND frame = '$lSph' AND color = '$lCyl' AND tipe = 3 AND branch_id = $branch_id");
-		$data = $rs->fetch_assoc();
-
-		$lensa_id_left = $data['product_id'] ?? 0;
-
-		$rs = $mysqli->query("SELECT * FROM barang WHERE kode = '$kode' AND brand_id = $brand_id AND barang = '$barang' AND frame = '$rSph' AND color = '$rCyl' AND tipe = 3 AND branch_id = $branch_id");
-		$data = $rs->fetch_assoc();
-
-		$lensa_id_right = $data['product_id'] ?? 0;
-
-		// product sent
-		$mysqli->query("INSERT INTO kirimbarang(keluarbarang_id, tgl, product_id, satuan_id, qty, gudang_id, info) VALUES($keluarbarang_id, NOW(), $lensa_id_left, 1, 1, 1, 'SENT')");
-		$mysqli->query("INSERT INTO kirimbarang(keluarbarang_id, tgl, product_id, satuan_id, qty, gudang_id, info) VALUES($keluarbarang_id, NOW(), $lensa_id_right, 1, 1, 1, 'SENT')");
+		$lensa->setProductId(null);
+		$lensa->setFrame($rSph);
+		$lensa->setColor($rCyl);
+		$lensa->setPowerAdd($rAdd);
+		$lensa_right = $db->getBarang($lensa);
 
 		// update qty in barang
-		$mysqli->query("UPDATE barang SET qty = qty - 1, tgl_keluar_akhir = NOW() where product_id = $lensa_id_left");
-		$mysqli->query("UPDATE barang SET qty = qty - 1, tgl_keluar_akhir = NOW() where product_id = $lensa_id_right");
+		$lensa_left->setQty($lensa_left->getQty() - 1);
+		$lensa_left->setTglKeluarAkhir(date('Y-m-d'));
+		$db->updateBarang($lensa_left);
+
+		$lensa_right->setQty($lensa_right->getQty() - 1);
+		$lensa_right->setTglKeluarAkhir(date('Y-m-d'));
+		$db->updateBarang($lensa_right);
+
+		// product sent
+		$mysqli->query("INSERT INTO kirimbarang(keluarbarang_id, tgl, product_id, satuan_id, qty, gudang_id, info) VALUES($keluarbarang_id, NOW(), ".$lensa_left->getProductId().", 1, 1, 1, 'SENT')");
+		$mysqli->query("INSERT INTO kirimbarang(keluarbarang_id, tgl, product_id, satuan_id, qty, gudang_id, info) VALUES($keluarbarang_id, NOW(), ".$lensa_right->getProductId().", 1, 1, 1, 'SENT')");
 	}
 
 //Define variable
@@ -272,7 +281,7 @@ if (isset($error)) {
 			$exe = $mysqli->query($query_exe);
 
 			$mysqli->query("DELETE FROM aruskas WHERE transaction_id = $keluarbarang_id AND tipe = 'piutang'");
-			$mysqli->query("INSERT INTO aruskas(carabayar_id, transaction_id, tipe, tgl, opr, referensi, jumlah, matauang_id, info, branch_id) VALUES($carabayar_id, $keluarbarang_id, 'piutang', '$tgl', $_SESSION[user_id], '$referensi', $uang_muka, $matauang_id, '$info_pembayaran', $_SESSION[branch_id])");
+			$mysqli->query("INSERT INTO aruskas(carabayar_id, transaction_id, tipe, account, tgl, opr, referensi, jumlah, matauang_id, info, branch_id) VALUES($carabayar_id, $keluarbarang_id, 'piutang', 'PIUTANG USAHA', '$tgl', $_SESSION[user_id], '$referensi', $uang_muka, $matauang_id, '$info_pembayaran', $_SESSION[branch_id])");
 			
 			if ($new_transaction) {
 			// Otomatis Barang Keluar

@@ -1,6 +1,11 @@
 <?php
 	session_start();
 	include('../../../include/config_db.php');
+
+	require '../../../models/Barang.php';
+	require '../../../models/DBHelper.php';
+
+	$db = new DBHelper($mysqli);
 	
 	$totalsuccess = 0;
 	$masukbarang_id = array();
@@ -11,6 +16,7 @@
 			$tipe = $_POST['tipe'];
 
 			$ukuran = '';
+			$power_add = '000';
 			
 			switch ($tipe)
 			{
@@ -67,18 +73,20 @@
 					$kode = trim(strtoupper($_POST['data'][$i][0]));
 					$jenis = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][1]));
 					$barang = strtoupper($_POST['data'][$i][2]);
-					$frame = $_POST['data'][$i][3]; //minus
-					$color = $_POST['data'][$i][4]; //silinder
-					$qty = $_POST['data'][$i][5]==""?0:$_POST['data'][$i][5];
-					$price = $_POST['data'][$i][6]==""?0:$_POST['data'][$i][6];
-					$price2 = $_POST['data'][$i][7]==""?0:$_POST['data'][$i][7];
-					$kode_harga = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][8]));
+					$frame = $_POST['data'][$i][3]; //SPH
+					$color = $_POST['data'][$i][4]; //CYL
+					$power_add = $_POST['data'][$i][5]; //ADD
+					$qty = $_POST['data'][$i][6] == "" ? 0 : $_POST['data'][$i][6];
+					$price = $_POST['data'][$i][7] == "" ? 0 : $_POST['data'][$i][7];
+					$price2 = $_POST['data'][$i][8] == "" ? 0 : $_POST['data'][$i][8];
+					$kode_harga = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][9]));
 					$diskon = 0;
-					$info = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][9]));
-					$tgl_masuk_akhir = $_POST['data'][$i][10]==""?date("Y-m-d"):$_POST['data'][$i][10];
+					$info = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][10]));
+					$tgl_masuk_akhir = $_POST['data'][$i][11] == "" ? date("Y-m-d") : $_POST['data'][$i][11];
 
 					if ($frame == '') $frame = '000';
 					if ($color == '') $color = '000';
+					if ($power_add == '') $power_add = '000';
 				break;
 				
 				case '4':
@@ -139,26 +147,53 @@
 				$data2 = mysqli_fetch_assoc($rs2);
 				$brand_id = $data2[0];
 			}
+
+			$b = new Barang();
+			$b->setKode($kode);
+			$b->setBrandId($brand_id);
+			$b->setBarang($barang);
+			$b->setFrame($frame);
+			$b->setColor($color);
+			$b->setPowerAdd($power_add);
+			$b->setQty($qty);
+			$b->setPrice($price);
+			$b->setPrice2($price2);
+			$b->setKodeHarga($kode_harga);
+			$b->setInfo($info);
+			$b->setUkuran($ukuran);
+			$b->setTipe($tipe);
+			$b->setTglMasukAkhir($tgl_masuk_akhir);
+			$b->setTglKeluarAkhir('NULL');
+			$b->setBranchId($_SESSION['branch_id']);
+			$b->setCreatedUserId($_SESSION['user_id']);
+			$b->setCreatedDate('NOW()');
+			$b->setLastUpdateUserId($_SESSION['user_id']);
+			$b->setLastUpdateDate('NOW()');
 			
-			$rs2 = $mysqli->query("SELECT * FROM barang WHERE kode = '$kode' AND brand_id = $brand_id AND barang LIKE '$barang' AND frame LIKE '$frame' AND color LIKE '$color' AND branch_id = $_SESSION[branch_id]");
-			if ($data2 = mysqli_fetch_assoc($rs2))
+			$existingBarang = $db->getBarang($b);
+			if ($existingBarang != null) //if product already exists, only update quantity
 			{
-				$mysqli->query("UPDATE barang SET qty = qty + $qty WHERE product_id = $data2[product_id]");
+				$b = $existingBarang;
 
-				$mysqli->query("INSERT INTO dmasukbarang(masukbarang_id, product_id, satuan_id, harga, qty, tdiskon, diskon, subtotal) VALUES($id, $data2[product_id], 1, $price, $qty, '0', 0, '".($qty*$price)."')");
+				$oldQty = $b->getQty();
+				$newQty = $oldQty + $qty;
 
-				$totalsuccess++;
+				$b->setQty($newQty);
+				$b->setLastUpdateUserId($_SESSION['user_id']);
+
+				$result = $db->updateBarang($b);
 			}
-			else
+			else //new product, do insert
 			{
-				$query = "INSERT INTO barang(product_id, kode, brand_id, barang, frame, color, qty, price, price2, kode_harga, info, ukuran, tipe, tgl_masuk_akhir, tgl_keluar_akhir, branch_id, created_user_id, created_date, last_update_user_id, last_update_date) VALUES (0, '$kode', $brand_id, '$barang', '$frame', '$color', $qty, $price, $price2, '$kode_harga', '$info', '$ukuran', $tipe, '$tgl_masuk_akhir', NULL, $_SESSION[branch_id], $_SESSION[user_id], NOW(), NULL, NULL)";
-				
-				$result = $mysqli->query($query);				
-				if ($result) $totalsuccess++;
-				
-				$product_id = $mysqli->insert_id;
-				
-				$mysqli->query("INSERT INTO dmasukbarang(id, masukbarang_id, product_id, satuan_id, harga, qty, tdiskon, diskon, subtotal) VALUES(0, $id, $product_id, 1, $price, $qty, '0', 0, '".($qty*$price)."')");
+				$result = $db->insertBarang($b);
+			}
+
+			if ($result->status == 'success') {
+				$totalsuccess++;
+
+				$product_id = $result->id;
+
+				$mysqli->query("INSERT INTO dmasukbarang(id, masukbarang_id, product_id, satuan_id, harga, qty, tdiskon, diskon, subtotal) VALUES(0, $id, ".$b->getProductId().", 1, $price, $qty, '0', 0, '".($qty*$price)."')");
 			}
 			
 		}

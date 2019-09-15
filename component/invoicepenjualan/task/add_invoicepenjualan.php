@@ -339,7 +339,7 @@ table ul li {
                         </select>
                     </td>
                     <td>
-                        <select name="rAdd" id="rAdd">
+                        <select name="rAdd" id="rAdd" onchange="getDetailLensa()">
                             <?php for ($r = 1500; $r >= 0; $r = $r - 25) {
                                 if ($r == 0) $r = '000';
                                 else if ($r < 100 && $r > 0) $r = '0' . $r;
@@ -393,7 +393,7 @@ table ul li {
                         </select>
                     </td>
                     <td>
-                        <select name="lAdd" id="lAdd">
+                        <select name="lAdd" id="lAdd" onchange="getDetailLensa()">
                             <?php for ($r = 1500; $r >= 0; $r = $r - 25) {
                                 if ($r == 0) $r = '000';
                                 else if ($r < 100 && $r > 0) $r = '0' . $r;

@@ -65,7 +65,7 @@
 				}
 			break;
 			default:
-				$query_exe = "INSERT INTO aruskas(carabayar_id, transaction_id, tipe, tgl, opr, referensi, jumlah, matauang_id, info, branch_id) VALUES($bay, 0, 'operasional', '$tgl', $opr, '$referensi', $jum, $mat, '$jenis # $inf', $_SESSION[branch_id])";
+				$query_exe = "INSERT INTO aruskas(carabayar_id, transaction_id, tipe, account, tgl, opr, referensi, jumlah, matauang_id, info, branch_id) VALUES($bay, 0, 'operasional', '$jenis', '$tgl', $opr, '$referensi', $jum, $mat, '$inf', $_SESSION[branch_id])";
 				$exe = $mysqli->query($query_exe);
 				
 				if ($exe) {

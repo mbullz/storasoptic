@@ -117,7 +117,7 @@
 				$data = $rs->fetch_assoc();
 				$branch_id = $data['branch_id'];
 
-				$query_exe = "INSERT INTO aruskas(carabayar_id, transaction_id, tipe, tgl, opr, referensi, jumlah, matauang_id, info, branch_id) VALUES ($bay, $keluarbarang_id, '$tipe', '$tgl', $opr, '$referensi', $jum, 1, '$inf', $branch_id)";
+				$query_exe = "INSERT INTO aruskas(carabayar_id, transaction_id, tipe, account, tgl, opr, referensi, jumlah, matauang_id, info, branch_id) VALUES ($bay, $keluarbarang_id, '$tipe', 'PIUTANG USAHA', '$tgl', $opr, '$referensi', $jum, 1, '$inf', $branch_id)";
 				$exe = $mysqli->query($query_exe);
 
 				refreshLunas($keluarbarang_id);

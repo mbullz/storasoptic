@@ -1,43 +1,51 @@
 <?php
 
-	global $mysqli;
-	global $branch_id;
+global $mysqli;
+global $branch_id;
 
-	require('include/define.php');
+require('include/define.php');
 
-	$tipe = $_POST['tipe'] ?? 1;
-	$emptyStock = $_POST['emptyStock'] ?? 0;
+$tipe = $_POST['tipe'] ?? 1;
+$emptyStock = $_POST['emptyStock'] ?? 0;
 
-	$stock_filter = '';
-	if ($emptyStock == 1) {
-		$stock_filter = ' AND a.qty <= 0 ';
-	}
-	else {
-		$stock_filter = ' AND a.qty > 0 ';
-	}
+$stock_filter = '';
+if ($emptyStock == 1) {
+	$stock_filter = ' AND a.qty <= 0 ';
+}
+else {
+	$stock_filter = ' AND a.qty > 0 ';
+}
 
-	$branch_filter = '';
-	if ($branch_id != 0) {
-	    $branch_filter = " AND a.branch_id = $branch_id ";
-	}
+if ($branch_id != 0) {
+	$branch_filter = " AND a.branch_id = $branch_id ";
 
-$query_data  = "SELECT a.*, b.jenis 
+	$query_data = "SELECT a.product_id, a.kode, a.barang, a.frame, a.color, a.power_add, a.qty, b.jenis 
 				FROM barang a 
 				JOIN jenisbarang b ON b.brand_id = a.brand_id 
 				WHERE a.tipe = $tipe 
 				$stock_filter 
 				$branch_filter 
 				ORDER BY b.jenis ASC, a.barang ASC ";
+}
+else {
+	$query_data = "SELECT a.kode, b.jenis, a.barang, a.frame, a.color, a.power_add, SUM(qty) AS qty 
+		FROM barang a 
+		JOIN jenisbarang b ON a.brand_id = b.brand_id 
+		WHERE a.tipe = $tipe 
+		$stock_filter 
+		GROUP BY a.kode, b.jenis, a.barang, a.frame, a.color, a.power_add 
+		ORDER BY b.jenis ASC, a.barang ASC ";
+}
 
 $data = $mysqli->query($query_data);
 
 $totalRows_data = mysqli_num_rows($data);
 
 $row_header = array(
-	array('INFO', 'BRAND', 'KODE', 'BARANG', 'FRAME', 'WARNA', 'QTY', ''),
-	array('INFO', 'BRAND', 'KODE', 'BARANG', 'MINUS', 'WARNA', 'QTY', ''),
-	array('INFO', 'BRAND', 'KODE', 'BARANG', 'MINUS', 'SILINDER', 'QTY', ''),
-	array('INFO', 'BRAND', 'KODE', 'BARANG', 'KET 1', 'KET 2', 'QTY', ''),
+	array('INFO', 'BRAND', 'KODE', 'BARANG', 'FRAME', 'WARNA', 'KET 3', 'QTY', ''),
+	array('INFO', 'BRAND', 'KODE', 'BARANG', 'MINUS', 'WARNA', 'KET 3', 'QTY', ''),
+	array('INFO', 'BRAND', 'KODE', 'BARANG', 'MINUS', 'SILINDER', 'ADD', 'QTY', ''),
+	array('INFO', 'BRAND', 'KODE', 'BARANG', 'KET 1', 'KET 2', 'KET 3', 'QTY', ''),
 );
 
 ?>
@@ -48,18 +56,21 @@ $row_header = array(
 	<?php
 		$rs = $mysqli->query($query_data);
 		while ($data = $rs->fetch_assoc()) {
-			$product_id = $data['product_id'];
+			if ($branch_id != 0) $product_id = $data['product_id'];
+			else $product_id = 0;
+
 			$brand = htmlspecialchars($data['jenis'], ENT_QUOTES);
 			$kode = htmlspecialchars($data['kode'], ENT_QUOTES);
 			$barang = htmlspecialchars($data['barang'], ENT_QUOTES);
 			$frame = htmlspecialchars($data['frame'], ENT_QUOTES);
 			$color = htmlspecialchars($data['color'], ENT_QUOTES);
+			$power_add = htmlspecialchars($data['power_add'], ENT_QUOTES);
 			$qty = $data['qty'];
 
 			$checkbox = '<input name="data[]" type="checkbox" value="'.$product_id.'" />';
 
 			$edit = '';
-			if (strstr($_SESSION['akses'], "edit_".$c)) {
+			if (strstr($_SESSION['akses'], "edit_".$c) && $branch_id != 0) {
 				$edit = '<a href="index.php?component='.$c.'&task=edit&id='.$product_id.'" title="Edit Data"><img src="images/edit_icon.png" width="16px" height="16px" /></a>';
 			}
 
@@ -73,6 +84,7 @@ $row_header = array(
 					'<?=$barang?>',
 					'<?=$frame?>',
 					'<?=$color?>',
+					'<?=$power_add?>',
 					'<?=$qty?>',
 					'<?=$edit?>',
 				]);
@@ -80,6 +92,8 @@ $row_header = array(
 		}
 	?>
 </script>
+
+<script type="text/javascript" language="javascript" src="js/number_format.js"></script>
 <script type="text/javascript" language="javascript" src="js/apps/masterbarang.js"></script>
 
 <style>
@@ -103,7 +117,7 @@ $row_header = array(
 
 <div>
 	<?php
-		if(strstr($_SESSION['akses'],"add_".$c))
+		if (strstr($_SESSION['akses'],"add_".$c))
 		{
 			?>
 				<img src="images/add2.png" height="64px" title="Input Barang Baru" style="cursor:pointer;" onclick="javascript:window.location='index-c-masterbarang-t-add-k-importcsv.pos';" />
@@ -155,6 +169,7 @@ $row_header = array(
 				<th class="th"><?=$row_header[$tipe-1][4]?></th>
 				<th class="th"><?=$row_header[$tipe-1][5]?></th>
 				<th class="th"><?=$row_header[$tipe-1][6]?></th>
+				<th class="th"><?=$row_header[$tipe-1][7]?></th>
 				<th width="1%">&nbsp;</th>
 			</tr>
 		</thead>
@@ -168,6 +183,7 @@ $row_header = array(
 				<th><?=$row_header[$tipe-1][3]?></th>
 				<th><?=$row_header[$tipe-1][4]?></th>
 				<th><?=$row_header[$tipe-1][5]?></th>
+				<th><?=$row_header[$tipe-1][6]?></th>
 				<th></th>
 				<th></th>
 			</tr>
@@ -179,16 +195,21 @@ $row_header = array(
 	
 	<img src="images/arrow_ltr.png" />&nbsp;&nbsp;
 	<?php
-		if(strstr($_SESSION['akses'],"delete_".$c))
+		if (strstr($_SESSION['akses'],"delete_".$c) && $branch_id != 0)
 		{
 			?>
 				<!--<input name="D_ALL" type="submit" id="D_ALL" value="Hapus Sekaligus" title="Hapus Sekaligus Data ( Cek )" style="background:#609;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="javascript:if(prompt('Kode Hapus :') == '1234') return confirm('Lanjutkan Proses ... ?'); else return false;"/>-->
 				<input type="button" value="Hapus Sekaligus" title="Hapus Sekaligus Data ( Cek )" style="background:#609;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="deleteProduct()"/>
 			<?php
 		}
+
+		if ($branch_id != 0) {
+			?>
+				<input type="button" value="Pindah Cabang" style="background:#609;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="pindahCabang()" />
+			<?php
+		}
 	?>
 
-	<input type="button" value="Pindah Cabang" style="background:#609;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="pindahCabang()" />
 	<!--
 	<input type="button" value="Retur" style="background:#609;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="returSome()" />
 	<input type="button" value="Print Label" style="background:#609;padding:5px;color:#FFFFFF;border:none;cursor:pointer;" onclick="openDialogPrintInvoice()" />

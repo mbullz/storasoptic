@@ -60,15 +60,72 @@ function generateReport2(klas, mode, id)
     NewWindow(url + data, 'name', '900', '600', 'yes');
 }
 
+function getInfo(row, tr, product_id) {
+	row.child('').show();
+	tr.addClass('shown');
+}
+
 $(document).ready(function()
 {
-	$("#example").dataTable(
+	var table = $("#example").DataTable(
 	{
-		dom: 'T<"clear">lfrtip',
-		tableTools:
+		dom: 'B<"clear">lfrtip',
+		buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
+        columns: [
+			{ className: 'details-control', data: [1], orderable: false },
+			{ data: [2] },
+			{ data: [3] },
+			{ data: [4] },
+			{ data: [5] },
+			{ className: 'text-center', data: [6], orderable: false },
+		],
+		data: data,
+		deferRender: true,
+		order: [
+			[1, 'asc']
+		],
+		rowId: [0],
+	});
+	
+	// Setup - add a text input to each footer cell
+	$('#example tfoot th').each( function ()
+	{
+		var title = $('#example tfoot th').eq( $(this).index() ).text();
+		title = $.trim(title);
+		if (title != "")
+			$(this).html( '<input type="text" placeholder="' + title + '" style="width:100%;padding:3px;box-sizing:border-box;" />' );
+	} );
+	
+	// Apply the search
+	table.columns().eq( 0 ).each( function ( colIdx )
+	{
+		$( 'input', table.column( colIdx ).footer() ).on( 'keyup change', function ()
 		{
-			"sSwfPath": "media/swf/copy_csv_xls_pdf.swf"
-		}
+			table
+				.column( colIdx )
+				.search( this.value )
+				.draw();
+		} );
+	} );
+
+	$('#example tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row(tr);
+        var product_id = $(tr).attr("id");
+ 
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            getInfo(row, tr, product_id);
+            //row.child( html ).show();
+            //tr.addClass('shown');
+        }
 	});
 	
 	$().ajaxStart(function() {
@@ -102,7 +159,8 @@ function viewKontak(infoID) {
 	})
 }
 
-function deleteData(klas, user_id) {
+function deleteData(user_id) {
+	var klas = $('#klas').val();
 	var c = confirm('Apakah anda yakin ingin menghapus data ini ?');
 
 	if (c) {

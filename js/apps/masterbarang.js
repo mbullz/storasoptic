@@ -277,86 +277,112 @@ function onLoad()
 	});
 }
 
-function getInfo(row, tr, product_id) {
+function getInfo(row, tr, product_id, data) {
 	var html = '';
+	var product_id = (product_id != null) ? product_id : 0;
+	var tipe = $('#tipe').val();
+	var brand = data[3];
+	var kode = data[4];
+	var barang = data[5];
+	var frame = data[6];
+	var color = data[7];
+	var power_add = data[8];
 
-	/*
 	$.ajax({
 		url: 'component/masterbarang/task/ajax_masterbarang.php',
 		type: 'GET',
 		dataType: 'json',
-		data: 'mode=get_info&product_id=' + product_id,
+		data: { mode: 'get_info', product_id: product_id, tipe: tipe, brand: brand, kode: kode, barang: barang, frame: frame, color: color, power_add: power_add },
 		success: function(result) {
-			html += '<table class="table table-bordered">';
+			html += '<table width="100%" class="table table-bordered">';
 
-			if (Object.keys(result[0].latest_purchase).length > 0)
-			{
-				var data = result[0].latest_purchase;
+			/*
+			var keluarbarang = result.keluarbarang;
+			var lunas = keluarbarang.lunas == '1' ? '<font class="text-success">Lunas</font>' : '<font class="text-danger">Belum Lunas</font>';
+			var dkeluarbarang_info = '';
+
+			// keluarbarang
+			html += '<tr>';
+			html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Status</td>';
+			html += '<td class="text-left">' + lunas + '</td>';
+			html += '</tr>';
+			*/
+
+			// stockbarang
+			html += 	'<tr>';
+			html += 		'<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Stock</td>';
+			html += 		'<td>';
+
+			html += 			'<table class="table table-bordered" style="width: 35%;">';
+			html += 				'<thead>';
+			html += 					'<tr>';
+			html += 						'<th class="text-center">Cabang</th>';
+			html += 						'<th class="text-center">Qty</th>';
+			html += 					'</tr>';
+			html += 				'</thead>';
+
+			html += 				'<tbody>';
+
+			for (i=0; i<Object.keys(result.stockbarang).length; i++) {
+				var data = result.stockbarang[i];
+
+				html += 				'<tr>';
+				html += 					'<td class="text-center">' + data.kontak + '</td>';
+				html += 					'<td class="text-center">' + print_number(data.qty) + '</td>';
+				html += 				'</tr>';
+			}
+
+			html += 				'</tbody>';
+			html += 			'</table>';
+
+			html += 		'</td>';
+			html += 	'</tr>';
+
+			/*
+			//info
+			html += '<tr>';
+			html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Keterangan</td>';
+			html += '<td class="text-left">' + nl2br(dkeluarbarang_info) + '</td>';
+			html += '</tr>';
+
+			// payment
+			html += '<tr>';
+			html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Pembayaran</td>';
+			html += '<td>';
+
+			html += '<table width="50%" class="table table-bordered">';
+			html += '<thead>';
+			html += '<tr>';
+			html += '<th class="text-center">Tanggal</th>';
+			html += '<th class="text-right">Jumlah</th>';
+			html += '<th class="text-left">Keterangan</th>';
+			html += '</tr>';
+			html += '</thead>';
+
+			html += '<tbody>';
+
+			for (i=0;i<Object.keys(result.payments).length;i++) {
+				var data = result.payments[i];
+
 				html += '<tr>';
-				html += '<td width="20%">Latest Purchase</td>';
-				html += '<td>';
-					html += 'Date: ' + data.transaction_date + '<br />';
-					html += 'Project: ' + data.project_kontak + ' - ' + data.project_location + '<br />';
-					html += 'Vendor: ' + data.vendor_kontak + '<br />';
-					html += 'Price: ' + digits(data.price) + ' / ' + data.satuan + ' (Qty: ' + digits(data.quantity) + ' ' + data.satuan + ')';
+				html += '<td class="text-center">' + data.tgl + '</td>';
+				html += '<td class="text-right">' + print_number(data.jumlah) + '</td>';
+				html += '<td class="text-left">';
+				html += '<span class="badge badge-primary" style="font-size:11px;">' + data.pembayaran + '</span> ';
+				html += data.info
 				html += '</td>';
 				html += '</tr>';
 			}
 
-			if (Object.keys(result[0].cheapest_purchase).length > 0)
-			{
-				var data = result[0].cheapest_purchase;
-				html += '<tr>';
-				html += '<td width="20%">Cheapest Purchase</td>';
-				html += '<td>';
-					html += 'Date: ' + data.transaction_date + '<br />';
-					html += 'Project: ' + data.project_kontak + ' - ' + data.project_location + '<br />';
-					html += 'Vendor: ' + data.vendor_kontak + '<br />';
-					html += 'Price: ' + digits(data.price) + ' / ' + data.satuan + ' (Qty: ' + digits(data.quantity) + ' ' + data.satuan + ')';
-				html += '</td>';
-				html += '</tr>';
-			}
-
-			if (Object.keys(result[0].most_expensive_purchase).length > 0)
-			{
-				var data = result[0].most_expensive_purchase;
-				html += '<tr>';
-				html += '<td width="20%">Most Expensive Purchase</td>';
-				html += '<td>';
-					html += 'Date: ' + data.transaction_date + '<br />';
-					html += 'Project: ' + data.project_kontak + ' - ' + data.project_location + '<br />';
-					html += 'Vendor: ' + data.vendor_kontak + '<br />';
-					html += 'Price: ' + digits(data.price) + ' / ' + data.satuan + ' (Qty: ' + digits(data.quantity) + ' ' + data.satuan + ')';
-				html += '</td>';
-				html += '</tr>';
-			}
-
-			if (Object.keys(result[0].vendors).length > 0)
-			{
-				html += '<tr>';
-				html += '<td width="20%">Vendors</td>';
-				html += '<td>';
-
-				for (i=0;i<Object.keys(result[0].vendors).length;i++)
-				{
-					var data = result[0].vendors[i];
-
-					html += 'Date: ' + data.transaction_date + '<br />';
-					html += 'Vendor: ' + data.vendor_kontak + '&nbsp;&nbsp;&nbsp;(' + data.project_kontak + ' - ' + data.project_location + ')<br />';
-					html += 'Price: ' + digits(data.price) + ' / ' + data.satuan + '&nbsp;&nbsp;&nbsp;(Qty: ' + digits(data.quantity) + ' ' + data.satuan + ')<hr />';
-				}
-
-				html += '</td>';
-				html += '</tr>';
-			}
-
-			html += '';
-			html += '';
-			html += '';
-			html += '';
-			html += '';
+			html += '</tbody>';
 			html += '</table>';
-			//alert(Object.keys(result[0].empty_array).length);
+
+			html += '</td>';
+			html += '</tr>';
+			*/
+
+			html += '</table>';
+			//alert(Object.keys(result[0].empty).length);
 		},
 		complete: function()
 		{
@@ -364,10 +390,6 @@ function getInfo(row, tr, product_id) {
            	tr.addClass('shown');
 		}
 	});
-	*/
-
-	row.child( html ).show();
-	tr.addClass('shown');
 }
 
 function deleteProduct()
@@ -429,7 +451,7 @@ function pindahCabang()
 						+ "</td>" 
 	  
 						+ "<td align='center'>" 
-							+ "<input type='text' id='textQty" + id + "' size='2' value='" + data[8] + "' onfocus='javascript:if(this.value==\"0\") this.value=\"\";' onblur='javascript:if(this.value==\"\") this.value=\"0\";' />" 
+							+ "<input type='text' id='textQty" + id + "' size='2' value='" + data[9] + "' onfocus='javascript:if(this.value==\"0\") this.value=\"\";' onblur='javascript:if(this.value==\"\") this.value=\"0\";' />" 
 						+ "</td>" 
 					+ "</tr>";
 	});
@@ -579,10 +601,11 @@ $(document).ready(function()
 			{ data: [3] },
 			{ data: [4] },
 			{ data: [5] },
-			{ data: [6] },
-			{ data: [7] },
+			{ className: ' text-center td-nowrap ', data: [6] },
+			{ className: ' text-center td-nowrap ', data: [7] },
 			{ className: ' text-center td-nowrap ', data: [8] },
-			{ data: [9], orderable: false },
+			{ className: ' text-center td-nowrap ', data: [9] },
+			{ data: [10], orderable: false },
 		],
 		data: data,
 		deferRender: true,
@@ -604,7 +627,7 @@ $(document).ready(function()
  
 			// Total over all pages
 			total = api
-				.column( 7 )
+				.column( 8 )
 				.data()
 				.reduce( function (a, b) {
 					return intVal(a) + intVal(b);
@@ -612,14 +635,14 @@ $(document).ready(function()
  
 			// Total over this page
 			pageTotal = api
-				.column( 7, { page: 'current'} )
+				.column( 8, { page: 'current'} )
 				.data()
 				.reduce( function (a, b) {
 					return intVal(a) + intVal(b);
 				}, 0 );
  
 			// Update footer
-			$( api.column( 7 ).footer() ).html( pageTotal + ' of ' + total );
+			$( api.column( 8 ).footer() ).html( pageTotal + ' of ' + total );
 		}
 	});
 	
@@ -628,7 +651,7 @@ $(document).ready(function()
 	{
 		var title = $('#example tfoot th').eq( $(this).index() ).text();
 		title = $.trim(title);
-		if (title != "" && $(this).index() != 7)
+		if (title != "" && $(this).index() != 8)
 			$(this).html( '<input type="text" placeholder="' + title + '" style="width:100%;padding:3px;box-sizing:border-box;" />' );
 	} );
 	
@@ -661,7 +684,7 @@ $(document).ready(function()
         }
         else {
             // Open this row
-            getInfo(row, tr, product_id);
+            getInfo(row, tr, product_id, row.data());
             //row.child( html ).show();
             //tr.addClass('shown');
         }
