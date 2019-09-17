@@ -80,6 +80,7 @@ function getInfo(row, tr, keluarbarang_id) {
 
 				html += '<tbody>';
 
+				var totalBeforePpn = 0;
 				for (i=0;i<Object.keys(result.dkeluarbarang).length;i++) {
 					var data = result.dkeluarbarang[i];
 
@@ -89,6 +90,8 @@ function getInfo(row, tr, keluarbarang_id) {
 						var subtotal = data.harga * data.qty;
 						if (data.tdiskon == '1') subtotal -= (subtotal * (data.diskon / 100));
 						else subtotal -= data.diskon;
+
+						totalBeforePpn += parseInt(subtotal);
 
 						var product = '';
 						if (data.tipe == 1 || data.tipe == 5) {
@@ -128,6 +131,8 @@ function getInfo(row, tr, keluarbarang_id) {
 					if (data.tipe == 3 || data.tipe == 5) {
 						var subtotal = data.harga_lensa * 2;
 						subtotal -= (subtotal * (data.diskon_lensa / 100));
+
+						totalBeforePpn += parseInt(subtotal);
 
 						var product = '';
 
@@ -195,8 +200,13 @@ function getInfo(row, tr, keluarbarang_id) {
 				var total = parseInt(keluarbarang.total);
 				if (ppn > 0) {
 					html += '<tr>';
+					html += '<td colspan="4" class="text-right">Total</td>';
+					html += '<td class="text-right">' + print_number(totalBeforePpn) + '</td>';
+					html += '</tr>';
+
+					html += '<tr>';
 					html += '<td colspan="4" class="text-right">PPN ' + ppn + '%</td>';
-					html += '<td class="text-right">' + print_number(Math.round(total/((100+ppn)/100))) + '</td>';
+					html += '<td class="text-right">' + print_number(Math.round(totalBeforePpn * (ppn/100))) + '</td>';
 					html += '</tr>';
 				}
 

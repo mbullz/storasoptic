@@ -20,7 +20,7 @@ $contacts = $db->getAllKontak($klas);
             $user_id = $r->getUserId();
 
             $kontak = htmlspecialchars($r->getKontak(), ENT_QUOTES);
-            $alamat = htmlspecialchars($r->getAlamat(), ENT_QUOTES);
+            $alamat = str_replace("\r\n", "<br />", htmlspecialchars($r->getAlamat(), ENT_QUOTES));
             $hp = htmlspecialchars($r->getHp(), ENT_QUOTES);
             $notlp = htmlspecialchars($r->getNoTlp(), ENT_QUOTES);
             $email = htmlspecialchars($r->getEmail(), ENT_QUOTES);
