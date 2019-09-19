@@ -50,6 +50,7 @@ $contacts = $db->getAllKontak($klas);
     ?>
 </script>
 
+<script type="text/javascript" language="javascript" src="js/number_format.js"></script>
 <script type="text/javascript" language="javascript" src="js/apps/masterkontak.js"></script>
 
 <style>
@@ -71,7 +72,7 @@ $contacts = $db->getAllKontak($klas);
 <div id="result" style="display: none;"></div>
 
 <form id="formdata" name="formdata" method="post" action="component/<?php echo $c;?>/p_<?php echo $c;?>.php?p=mdelete">
-	<input type="hidden" name="klas" value="<?=$klas?>" />
+	<input type="hidden" name="klas" id="klas" value="<?=$klas?>" />
 
     <h1>Data  <?php echo ucfirst($klas);?></h1>
     

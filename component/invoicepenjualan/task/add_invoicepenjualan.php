@@ -333,7 +333,7 @@ table ul li {
                     </td>
                     <td>
                         <select name="rAxis" id="rAxis">
-                            <?php for ($r = 0; $r <= 180; $r = $r + 5) { ?>
+                            <?php for ($r = 0; $r <= 180; $r = $r + 1) { ?>
                             <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
                             <?php } ?>
                         </select>
@@ -351,7 +351,7 @@ table ul li {
                     </td>
                     <td>
                         <select name="rPd" id="rPd">
-                            <?php for ($r = 40; $r <= 80; $r = $r + 2) { ?>
+                            <?php for ($r = 40; $r <= 80; $r = $r + 1) { ?>
                             <option value="<?php echo $r; ?>" <?php echo ($r == 56 ? 'selected' : ''); ?>><?php echo $r; ?></option>
                             <?php } ?>
                         </select>
@@ -387,7 +387,7 @@ table ul li {
                     </td>
                     <td>
                         <select name="lAxis" id="lAxis">
-                            <?php for ($r = 0; $r <= 180; $r = $r + 5) { ?>
+                            <?php for ($r = 0; $r <= 180; $r = $r + 1) { ?>
                             <option value="<?php echo $r; ?>" <?php echo ($r == 0 ? 'selected' : ''); ?>><?php echo $r; ?></option>
                             <?php } ?>
                         </select>
@@ -405,7 +405,7 @@ table ul li {
                     </td>
                     <td>
                         <select name="lPd" id="lPd">
-                            <?php for ($r = 40; $r <= 80; $r = $r + 2) { ?>
+                            <?php for ($r = 40; $r <= 80; $r = $r + 1) { ?>
                             <option value="<?php echo $r; ?>" <?php echo ($r == 56 ? 'selected' : ''); ?>><?php echo $r; ?></option>
                             <?php } ?>
                         </select>

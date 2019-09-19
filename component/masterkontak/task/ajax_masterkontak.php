@@ -1,6 +1,12 @@
 <?php
 session_start();
+
 include('../../../include/config_db.php');
+require '../../../models/KeluarBarang.php';
+require '../../../models/DBHelper.php';
+
+$db = new DBHelper($mysqli);
+
 $mode = $_GET['mode'];
 $keyword = $_GET['q'] ?? '';
 $keyword = $mysqli->real_escape_string($keyword);
@@ -41,4 +47,14 @@ switch($mode) {
 
         echo json_encode($arr);
         break;
+
+    case 'get_info_customer':
+        $user_id = $_GET['user_id'] ?? 0;
+
+        $arr = array(
+            'keluarbarang'  => $db->getKeluarBarangByCustomer($user_id, 'array'),
+        );
+
+        echo json_encode($arr);
+    break;
 }

@@ -338,6 +338,42 @@ function getInfo(row, tr, product_id, data) {
 			html += 		'</td>';
 			html += 	'</tr>';
 
+			// penjualan
+			html += 	'<tr>';
+			html += 		'<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Penjualan</td>';
+			html += 		'<td>';
+
+			html += 			'<table class="table table-bordered" style="width: 75%;">';
+			html += 				'<thead>';
+			html += 					'<tr>';
+			html += 						'<th class="text-center">Customer</th>';
+			html += 						'<th class="text-center">Qty</th>';
+			html += 						'<th class="text-center">Tanggal</th>';
+			html += 						'<th class="text-center">Referensi</th>';
+			html += 						'<th class="text-center">Cabang</th>';
+			html += 					'</tr>';
+			html += 				'</thead>';
+
+			html += 				'<tbody>';
+
+			for (i=0; i<Object.keys(result.penjualan).length; i++) {
+				var data = result.penjualan[i];
+
+				html += 				'<tr>';
+				html += 					'<td class="text-center">' + data.client_name + '</td>';
+				html += 					'<td class="text-center">' + data.qty + '</td>';
+				html += 					'<td class="text-center">' + data.tgl + '</td>';
+				html += 					'<td class="text-center">' + data.referensi + '</td>';
+				html += 					'<td class="text-center">' + data.branch_name + '</td>';
+				html += 				'</tr>';
+			}
+
+			html += 				'</tbody>';
+			html += 			'</table>';
+
+			html += 		'</td>';
+			html += 	'</tr>';
+
 			/*
 			//info
 			html += '<tr>';

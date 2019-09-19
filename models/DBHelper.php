@@ -277,6 +277,115 @@ class DBHelper {
 		return $rows;
 	}
 
+	public function getKeluarBarangByCustomer($user_id, $dataType = 'object') {
+		$query = "SELECT a.keluarbarang_id, a.referensi, a.tgl, a.jtempo, a.client, b.kontak AS client_name, a.sales, c.kontak AS sales_name, a.matauang_id, d.kode AS matauang_kode, d.matauang, a.tdiskon, a.diskon, a.ppn, a.total, (SELECT SUM(subtotal) FROM dkeluarbarang WHERE keluarbarang_id = a.keluarbarang_id) AS total_before, a.info, a.lunas, a.tipe_pembayaran, a.branch_id, e.kontak AS branch_name, a.created_by, a.created_at, a.updated_by, a.updated_at 
+				FROM keluarbarang a 
+				JOIN kontak b ON a.client = b.user_id 
+				LEFT JOIN kontak c ON a.sales = c.user_id 
+				JOIN matauang d ON a.matauang_id = d.matauang_id 
+				JOIN kontak e ON a.branch_id = e.user_id 
+				WHERE a.client = $user_id 
+				ORDER BY a.tgl DESC ";
+
+		$rs = $this->mysqli->query($query);
+
+		$rows = array();
+
+		while ($data = $rs->fetch_assoc()) {
+			if ($dataType == 'object') {
+				$r = new KeluarBarang();
+
+				$r->setKeluarbarangId($data['keluarbarang_id']);
+				$r->setReferensi($data['referensi']);
+				$r->setTgl($data['tgl']);
+				$r->setJtempo($data['jtempo']);
+				$r->setClient($data['client']);
+				$r->setClientName($data['client_name']);
+				$r->setSales($data['sales']);
+				$r->setSalesName($data['sales_name']);
+				$r->setMatauangId($data['matauang_id']);
+				$r->setMatauangKode($data['matauang_kode']);
+				$r->setMatauang($data['matauang']);
+				$r->setTdiskon($data['tdiskon']);
+				$r->setDiskon($data['diskon']);
+				$r->setPpn($data['ppn']);
+				$r->setTotal($data['total']);
+				$r->setTotalBefore($data['total_before']);
+				$r->setInfo($data['info']);
+				$r->setLunas($data['lunas']);
+				$r->setTipePembayaran($data['tipe_pembayaran']);
+				$r->setBranchId($data['branch_id']);
+				$r->setBranchName($data['branch_name']);
+				$r->setCreatedAt($data['created_at']);
+				$r->setCreatedBy($data['created_by']);
+				$r->setUpdatedAt($data['updated_at']);
+				$r->setUpdatedBy($data['updated_by']);
+			}
+			else {
+				$r = array(
+					'keluarbarang_id'	=> $data['keluarbarang_id'],
+					'referensi'			=> $data['referensi'],
+					'tgl'				=> $data['tgl'],
+					'jtempo'			=> $data['jtempo'],
+					'client'			=> $data['client'],
+					'client_name'		=> $data['client_name'],
+					'sales'				=> $data['sales'],
+					'sales_name'		=> $data['sales_name'],
+					'matauang_id'		=> $data['matauang_id'],
+					'matauang_kode'		=> $data['matauang_kode'],
+					'matauang'			=> $data['matauang'],
+					'tdiskon'			=> $data['tdiskon'],
+					'diskon'			=> $data['diskon'],
+					'ppn'				=> $data['ppn'],
+					'total'				=> $data['total'],
+					'total_before'		=> $data['total_before'],
+					'info'				=> $data['info'],
+					'lunas'				=> $data['lunas'],
+					'tipe_pembayaran'	=> $data['tipe_pembayaran'],
+					'branch_id'			=> $data['branch_id'],
+					'branch_name'		=> $data['branch_name'],
+					'created_by'		=> $data['created_by'],
+					'created_at'		=> $data['created_at'],
+					'updated_by'		=> $data['updated_by'],
+					'updated_at'		=> $data['updated_at'],
+				);
+			}
+
+			array_push($rows, $r);
+		}
+		
+		return $rows;
+	}
+
+	public function getDetailKeluarBarangByProduct($product_id) {
+		$query = "SELECT c.kontak AS client_name, a.qty, b.keluarbarang_id, b.referensi, b.tgl, d.kontak AS branch_name 
+			FROM dkeluarbarang a 
+			JOIN keluarbarang b ON a.keluarbarang_id = b.keluarbarang_id 
+			JOIN kontak c ON b.client = c.user_id 
+			JOIN kontak d ON b.branch_id = d.user_id 
+			JOIN barang e ON a.product_id = e.product_id 
+			WHERE a.product_id = $product_id 
+			ORDER BY c.kontak ASC, b.tgl DESC ";
+
+		$rs = $this->mysqli->query($query);
+
+		$rows = array();
+		while ($data = $rs->fetch_assoc()) {
+			$row = array(
+				'qty'				=> $data['qty'],
+				'keluarbarang_id'	=> $data['keluarbarang_id'],
+				'referensi'			=> $data['referensi'],
+				'tgl'				=> $data['tgl'],
+				'client_name'		=> $data['client_name'],
+				'branch_name'		=> $data['branch_name'],
+			);
+
+			array_push($rows, $row);
+		}
+
+		return $rows;
+	}
+
 	private function response_success($id = 0, $data = [], $parameter = []) {
 		return (object) array(
 			'parameter'	=> $parameter,

@@ -212,6 +212,7 @@ switch($mode) {
 
         $arr = array(
             'stockbarang'   => $db->getStockBarang($b),
+            'penjualan'     => $db->getDetailKeluarBarangByProduct($product_id),
         );
 
         echo json_encode($arr);

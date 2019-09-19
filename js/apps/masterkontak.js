@@ -60,9 +60,116 @@ function generateReport2(klas, mode, id)
     NewWindow(url + data, 'name', '900', '600', 'yes');
 }
 
-function getInfo(row, tr, product_id) {
-	row.child('').show();
-	tr.addClass('shown');
+function getInfoCustomer(row, tr, user_id) {
+	var html = '';
+
+	$.ajax({
+		url: 'component/masterkontak/task/ajax_masterkontak.php',
+		type: 'GET',
+		dataType: 'json',
+		data: { mode: 'get_info_customer', user_id: user_id },
+		success: function(result) {
+			html += '<table width="100%" class="table table-bordered">';
+
+			/*
+			var keluarbarang = result.keluarbarang;
+			var lunas = keluarbarang.lunas == '1' ? '<font class="text-success">Lunas</font>' : '<font class="text-danger">Belum Lunas</font>';
+			var dkeluarbarang_info = '';
+
+			// keluarbarang
+			html += '<tr>';
+			html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Status</td>';
+			html += '<td class="text-left">' + lunas + '</td>';
+			html += '</tr>';
+			*/
+
+			// stockbarang
+			html += 	'<tr>';
+			html += 		'<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Pembelian</td>';
+			html += 		'<td>';
+
+			html += 			'<table class="table table-bordered" style="width: 50%;">';
+			html += 				'<thead>';
+			html += 					'<tr>';
+			html += 						'<th class="text-center">Tanggal</th>';
+			html += 						'<th class="text-center">Invoice</th>';
+			html += 						'<th class="text-center">Grand Total</th>';
+			html += 						'<th class="text-center">Status</th>';
+			html += 					'</tr>';
+			html += 				'</thead>';
+
+			html += 				'<tbody>';
+
+			for (i=0; i<Object.keys(result.keluarbarang).length; i++) {
+				var data = result.keluarbarang[i];
+				var status_lunas = (data.lunas == '1') ? 'Lunas' : 'Belum Lunas';
+
+				html += 				'<tr>';
+				html += 					'<td class="text-center">' + data.tgl + '</td>';
+				html += 					'<td class="text-center"><a href="include/draft_invoice_1.php?keluarbarang_id=' + data.keluarbarang_id + '" target="_blank">' + data.referensi + '</a></td>';
+				html += 					'<td class="text-right">' + print_number(data.total) + '</td>';
+				html += 					'<td class="text-center">' + status_lunas + '</td>';
+				html += 				'</tr>';
+			}
+
+			html += 				'</tbody>';
+			html += 			'</table>';
+
+			html += 		'</td>';
+			html += 	'</tr>';
+
+			/*
+			//info
+			html += '<tr>';
+			html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Keterangan</td>';
+			html += '<td class="text-left">' + nl2br(dkeluarbarang_info) + '</td>';
+			html += '</tr>';
+
+			// payment
+			html += '<tr>';
+			html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Pembayaran</td>';
+			html += '<td>';
+
+			html += '<table width="50%" class="table table-bordered">';
+			html += '<thead>';
+			html += '<tr>';
+			html += '<th class="text-center">Tanggal</th>';
+			html += '<th class="text-right">Jumlah</th>';
+			html += '<th class="text-left">Keterangan</th>';
+			html += '</tr>';
+			html += '</thead>';
+
+			html += '<tbody>';
+
+			for (i=0;i<Object.keys(result.payments).length;i++) {
+				var data = result.payments[i];
+
+				html += '<tr>';
+				html += '<td class="text-center">' + data.tgl + '</td>';
+				html += '<td class="text-right">' + print_number(data.jumlah) + '</td>';
+				html += '<td class="text-left">';
+				html += '<span class="badge badge-primary" style="font-size:11px;">' + data.pembayaran + '</span> ';
+				html += data.info
+				html += '</td>';
+				html += '</tr>';
+			}
+
+			html += '</tbody>';
+			html += '</table>';
+
+			html += '</td>';
+			html += '</tr>';
+			*/
+
+			html += '</table>';
+			//alert(Object.keys(result[0].empty).length);
+		},
+		complete: function()
+		{
+			row.child( html ).show();
+           	tr.addClass('shown');
+		}
+	});
 }
 
 $(document).ready(function()
@@ -113,7 +220,8 @@ $(document).ready(function()
 	$('#example tbody').on('click', 'td.details-control', function () {
         var tr = $(this).closest('tr');
         var row = table.row(tr);
-        var product_id = $(tr).attr("id");
+        var user_id = $(tr).attr("id");
+        var klasifikasi = $('#klas').val();
  
         if ( row.child.isShown() ) {
             // This row is already open - close it
@@ -122,7 +230,7 @@ $(document).ready(function()
         }
         else {
             // Open this row
-            getInfo(row, tr, product_id);
+            if (klasifikasi == 'customer') getInfoCustomer(row, tr, user_id);
             //row.child( html ).show();
             //tr.addClass('shown');
         }
