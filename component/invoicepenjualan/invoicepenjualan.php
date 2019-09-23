@@ -9,14 +9,13 @@
 
 $query_data = "SELECT a.keluarbarang_id, a.referensi, a.tgl, a.total, a.info, 
 					b.kontak AS customer_name, b.user_id as customer_id, c.matauang, 
-					(SELECT SUM(jumlah) FROM aruskas d WHERE a.keluarbarang_id = d.transaction_id AND d.tipe = 'piutang') AS 'uang_muka', 
-					a.tipe_pembayaran , a.lunas, 
-					a.updated_by, 
-					(SELECT kontak FROM kontak WHERE user_id = a.updated_by) AS nama_karyawan, 
-					(SELECT kontak FROM kontak WHERE user_id = a.sales) AS nama_sales 
+					a.tipe_pembayaran , a.lunas, a.updated_by, 
+					d.kontak AS nama_sales, e.kontak AS nama_karyawan 
 				FROM keluarbarang a 
 				JOIN kontak b ON b.user_id = a.client 
 				JOIN matauang c ON a.matauang_id = c.matauang_id 
+				LEFT JOIN kontak d ON a.sales = d.user_id 
+				LEFT JOIN kontak e ON a.updated_by = e.user_id 
 				WHERE 1 = 1 
 				$branch_filter 
 				ORDER BY a.tgl DESC, a.keluarbarang_id DESC ";
