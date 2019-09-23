@@ -17,6 +17,7 @@ class ArusKas {
 	private $info;
 	private $branch_id;
 	private $branch_name;
+	private $client_name;
 
 	public function __construct() {}
 
@@ -36,6 +37,7 @@ class ArusKas {
 	public function setInfo($info) { $this->info = $info; }
 	public function setBranchId($branch_id) { $this->branch_id = $branch_id; }
 	public function setBranchName($branch_name) { $this->branch_name = $branch_name; }
+	public function setClientName($client_name) { $this->client_name = $client_name; }
 
 	public function getId() { return $this->id; }
 	public function getCarabayarId() { return $this->carabayar_id; }
@@ -53,7 +55,7 @@ class ArusKas {
 	public function getInfo() { return $this->info; }
 	public function getBranchId() { return $this->branch_id; }
 	public function getBranchName() { return $this->branch_name; }
-
+	public function getClientName() { return $this->client_name; }
 }
 
 ?>

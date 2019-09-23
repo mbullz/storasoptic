@@ -199,4 +199,9 @@ function decrypt_text($value)
    $decrypttext = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, 'SECURE_STRING_1', $crypttext, MCRYPT_MODE_ECB, 'SECURE_STRING_2');
    return trim($decrypttext);
 }
+
+function date_comparator($array1, $array2) {
+	return strcmp($array1['tgl'], $array2['tgl']);
+}
+
 ?>

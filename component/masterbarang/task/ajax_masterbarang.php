@@ -202,6 +202,7 @@ switch($mode) {
         $brand = $db->getJenisBarang($brand);
 
         $b = new Barang();
+        $b->setProductId($product_id);
         $b->setKode($kode);
         $b->setBrandId($brand->getBrandId());
         $b->setBarang($barang);
@@ -212,7 +213,7 @@ switch($mode) {
 
         $arr = array(
             'stockbarang'   => $db->getStockBarang($b),
-            'penjualan'     => $db->getDetailKeluarBarangByProduct($product_id),
+            'penjualan'     => $db->getDetailKeluarBarangByProduct($b),
         );
 
         echo json_encode($arr);

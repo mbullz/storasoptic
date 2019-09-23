@@ -235,11 +235,13 @@ class DBHelper {
 			$branch_filter = " AND a.branch_id = $branch_id ";
 		}
 
-		$query = "SELECT a.id, a.carabayar_id, b.pembayaran, a.transaction_id, a.tipe, a.account, a.tgl, a.opr, a.referensi, a.jumlah, a.matauang_id, c.kode AS matauang_kode, c.matauang, a.info, a.branch_id, d.kontak AS branch_name 
+		$query = "SELECT a.id, a.carabayar_id, b.pembayaran, a.transaction_id, a.tipe, a.account, a.tgl, a.opr, a.referensi, a.jumlah, a.matauang_id, c.kode AS matauang_kode, c.matauang, a.info, a.branch_id, d.kontak AS branch_name, f.kontak AS client_name 
 				FROM aruskas a 
 				JOIN carabayar b ON a.carabayar_id = b.carabayar_id 
 				JOIN matauang c ON a.matauang_id = c.matauang_id 
 				JOIN kontak d ON a.branch_id = d.user_id 
+				LEFT JOIN keluarbarang e ON a.transaction_id = e.keluarbarang_id 
+				LEFT JOIN kontak f ON e.client = f.user_id 
 				WHERE a.tgl >= '$start' 
 				AND a.tgl <= '$end' 
 				AND a.tipe LIKE '$tipe' 
@@ -270,6 +272,65 @@ class DBHelper {
 			$r->setInfo($data['info']);
 			$r->setBranchId($data['branch_id']);
 			$r->setBranchName($data['branch_name']);
+			$r->setClientName($data['client_name']);
+
+			array_push($rows, $r);
+		}
+		
+		return $rows;
+	}
+
+	public function getKeluarBarangByPeriode($start, $end) {
+		$branch_id = $_SESSION['branch_id'] ?? 0;
+
+		$branch_filter = '';
+		if ($branch_id != 0) {
+			$branch_filter = " AND a.branch_id = $branch_id ";
+		}
+
+		$query = "SELECT a.keluarbarang_id, a.referensi, a.tgl, a.jtempo, a.client, b.kontak AS client_name, a.sales, c.kontak AS sales_name, a.matauang_id, d.kode AS matauang_kode, d.matauang, a.tdiskon, a.diskon, a.ppn, a.total, (SELECT SUM(subtotal) FROM dkeluarbarang WHERE keluarbarang_id = a.keluarbarang_id) AS total_before, a.info, a.lunas, a.tipe_pembayaran, a.branch_id, e.kontak AS branch_name, a.created_by, a.created_at, a.updated_by, a.updated_at 
+				FROM keluarbarang a 
+				JOIN kontak b ON a.client = b.user_id 
+				LEFT JOIN kontak c ON a.sales = c.user_id 
+				JOIN matauang d ON a.matauang_id = d.matauang_id 
+				JOIN kontak e ON a.branch_id = e.user_id 
+				WHERE a.tgl >= '$start' 
+				AND a.tgl <= '$end' 
+				$branch_filter 
+				ORDER BY a.tgl ASC ";
+
+		$rs = $this->mysqli->query($query);
+
+		$rows = array();
+
+		while ($data = $rs->fetch_assoc()) {
+			$r = new KeluarBarang();
+
+			$r->setKeluarbarangId($data['keluarbarang_id']);
+			$r->setReferensi($data['referensi']);
+			$r->setTgl($data['tgl']);
+			$r->setJtempo($data['jtempo']);
+			$r->setClient($data['client']);
+			$r->setClientName($data['client_name']);
+			$r->setSales($data['sales']);
+			$r->setSalesName($data['sales_name']);
+			$r->setMatauangId($data['matauang_id']);
+			$r->setMatauangKode($data['matauang_kode']);
+			$r->setMatauang($data['matauang']);
+			$r->setTdiskon($data['tdiskon']);
+			$r->setDiskon($data['diskon']);
+			$r->setPpn($data['ppn']);
+			$r->setTotal($data['total']);
+			$r->setTotalBefore($data['total_before']);
+			$r->setInfo($data['info']);
+			$r->setLunas($data['lunas']);
+			$r->setTipePembayaran($data['tipe_pembayaran']);
+			$r->setBranchId($data['branch_id']);
+			$r->setBranchName($data['branch_name']);
+			$r->setCreatedAt($data['created_at']);
+			$r->setCreatedBy($data['created_by']);
+			$r->setUpdatedAt($data['updated_at']);
+			$r->setUpdatedBy($data['updated_by']);
 
 			array_push($rows, $r);
 		}
@@ -357,14 +418,20 @@ class DBHelper {
 		return $rows;
 	}
 
-	public function getDetailKeluarBarangByProduct($product_id) {
+	public function getDetailKeluarBarangByProduct($b) {
 		$query = "SELECT c.kontak AS client_name, a.qty, b.keluarbarang_id, b.referensi, b.tgl, d.kontak AS branch_name 
 			FROM dkeluarbarang a 
 			JOIN keluarbarang b ON a.keluarbarang_id = b.keluarbarang_id 
 			JOIN kontak c ON b.client = c.user_id 
 			JOIN kontak d ON b.branch_id = d.user_id 
 			JOIN barang e ON a.product_id = e.product_id 
-			WHERE a.product_id = $product_id 
+			WHERE e.kode = '".$b->getKode()."' 
+			AND e.brand_id = ".$b->getBrandId()." 
+			AND e.barang = '".$b->getBarang()."' 
+			AND e.frame = '".$b->getFrame()."' 
+			AND e.color = '".$b->getColor()."' 
+			AND e.power_add = '".$b->getPowerAdd()."' 
+			AND e.tipe = ".$b->getTipe()." 
 			ORDER BY c.kontak ASC, b.tgl DESC ";
 
 		$rs = $this->mysqli->query($query);

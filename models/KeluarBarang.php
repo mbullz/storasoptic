@@ -74,12 +74,12 @@ class KeluarBarang {
 	public function getInfo() { return $this->info; }
 	public function getLunas() { return $this->lunas; }
 	public function getTipePembayaran() { return $this->tipe_pembayaran; }
-	public function getBranchId() { return $branch_id; }
-	public function getBranchName() { return $branch_name; }
-	public function getCreatedBy() { return $created_by; }
-	public function getCreatedAt() { return $created_at; }
-	public function getUpdatedBy() { return $updated_by; }
-	public function getUpdatedAt() { return $updated_at; }
+	public function getBranchId() { return $this->branch_id; }
+	public function getBranchName() { return $this->branch_name; }
+	public function getCreatedBy() { return $this->created_by; }
+	public function getCreatedAt() { return $this->created_at; }
+	public function getUpdatedBy() { return $this->updated_by; }
+	public function getUpdatedAt() { return $this->updated_at; }
 }
 
 ?>
