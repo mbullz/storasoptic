@@ -350,8 +350,67 @@ if(isset($_POST['import'])) {  ?>
 			}
 			
 			var hot = $('#example').data('handsontable');
-			
-			if (change[0][1] == 1)
+
+			if (change[0][1] == 0) {
+				$.ajax(
+				{
+					url: 'component/masterbarang/task/ajax_handsontable.php',
+					data: {"kode": hot.getDataAtCell(change[0][0], change[0][1]), "method": "get_barang", "tipe": $('#tipe').val()},
+					type: 'POST',
+					dataType: 'json',
+					error: function(e)
+					{
+					},
+					beforeSend: function()
+					{
+					},
+					success: function(response)
+					{
+						if (response.length != 0) {
+							switch ($('#tipe').val()) {
+								case '1':
+									hot.setDataAtCell(change[0][0], 1, response.brand_name);
+									hot.setDataAtCell(change[0][0], 2, response.barang);
+									hot.setDataAtCell(change[0][0], 3, response.frame);
+									hot.setDataAtCell(change[0][0], 4, response.color);
+									hot.setDataAtCell(change[0][0], 6, response.price);
+									hot.setDataAtCell(change[0][0], 7, response.price2);
+									hot.setDataAtCell(change[0][0], 8, response.kode_harga);
+								break;
+
+								case '2':
+									hot.setDataAtCell(change[0][0], 1, response.brand_name);
+									hot.setDataAtCell(change[0][0], 2, response.barang);
+									hot.setDataAtCell(change[0][0], 5, response.color);
+									hot.setDataAtCell(change[0][0], 7, response.price);
+									hot.setDataAtCell(change[0][0], 8, response.price2);
+									hot.setDataAtCell(change[0][0], 9, response.kode_harga);
+								break;
+
+								case '3':
+									hot.setDataAtCell(change[0][0], 1, response.brand_name);
+									hot.setDataAtCell(change[0][0], 2, response.barang);
+									hot.setDataAtCell(change[0][0], 7, response.price);
+									hot.setDataAtCell(change[0][0], 8, response.price2);
+									hot.setDataAtCell(change[0][0], 9, response.kode_harga);
+								break;
+
+								case '4':
+									hot.setDataAtCell(change[0][0], 1, response.brand_name);
+									hot.setDataAtCell(change[0][0], 2, response.barang);
+									hot.setDataAtCell(change[0][0], 4, response.price);
+									hot.setDataAtCell(change[0][0], 5, response.price2);
+									hot.setDataAtCell(change[0][0], 6, response.kode_harga);
+								break;
+							}
+						}
+					},
+					complete: function()
+					{
+					}
+				});
+			}
+			else if (change[0][1] == 1)
 			{
 				$.ajax(
 				{

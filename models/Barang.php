@@ -4,6 +4,7 @@ class Barang {
 	private $product_id;
 	private $kode;
 	private $brand_id;
+	private $brand_name;
 	private $barang;
 	private $frame;
 	private $color;
@@ -56,6 +57,7 @@ class Barang {
 	public function setProductId($product_id) { $this->product_id = $product_id; }
 	public function setKode($kode) { $this->kode = $kode; }
 	public function setBrandId($brand_id) { $this->brand_id = $brand_id; }
+	public function setBrandName($brand_name) { $this->brand_name = $brand_name; }
 	public function setBarang($barang) { $this->barang = $barang; }
 	public function setFrame($frame) { $this->frame = $frame; }
 	public function setColor($color) { $this->color = $color; }
@@ -78,6 +80,7 @@ class Barang {
 	public function getProductId() { return $this->product_id; }
 	public function getKode() { return $this->kode; }
 	public function getBrandId() { return $this->brand_id; }
+	public function getBrandName() { return $this->brand_name; }
 	public function getBarang() { return $this->barang; }
 	public function getFrame() { return $this->frame; }
 	public function getColor() { return $this->color; }

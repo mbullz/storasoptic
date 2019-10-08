@@ -23,9 +23,9 @@
 				case '1':
 					$kode = trim(strtoupper($_POST['data'][$i][0]));
 					$jenis = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][1]));
-					$barang = strtoupper($_POST['data'][$i][2]);
-					$frame = strtoupper($_POST['data'][$i][3]);
-					$color = strtoupper($_POST['data'][$i][4]);
+					$barang = strtoupper(trim($_POST['data'][$i][2]));
+					$frame = strtoupper(trim($_POST['data'][$i][3]));
+					$color = strtoupper(trim($_POST['data'][$i][4]));
 					$qty = $_POST['data'][$i][5]==""?0:$_POST['data'][$i][5];
 					$price = $_POST['data'][$i][6]==""?0:$_POST['data'][$i][6];
 					$price2 = $_POST['data'][$i][7]==""?0:$_POST['data'][$i][7];
@@ -50,10 +50,10 @@
 				case '2':
 					$kode = trim(strtoupper($_POST['data'][$i][0]));
 					$jenis = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][1]));
-					$barang = strtoupper($_POST['data'][$i][2]);
+					$barang = strtoupper(trim($_POST['data'][$i][2]));
 					$ukuran = strtoupper($_POST['data'][$i][3]); //expiry date
 					$frame = strtoupper($_POST['data'][$i][4]); //minus
-					$color = strtoupper($_POST['data'][$i][5]);
+					$color = strtoupper(trim($_POST['data'][$i][5]));
 					$qty = $_POST['data'][$i][5]==""?0:$_POST['data'][$i][6];
 					$price = $_POST['data'][$i][6]==""?0:$_POST['data'][$i][7];
 					$price2 = $_POST['data'][$i][7]==""?0:$_POST['data'][$i][8];
@@ -72,7 +72,7 @@
 				case '3':
 					$kode = trim(strtoupper($_POST['data'][$i][0]));
 					$jenis = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][1]));
-					$barang = strtoupper($_POST['data'][$i][2]);
+					$barang = strtoupper(trim($_POST['data'][$i][2]));
 					$frame = $_POST['data'][$i][3]; //SPH
 					$color = $_POST['data'][$i][4]; //CYL
 					$power_add = $_POST['data'][$i][5]; //ADD
@@ -92,7 +92,7 @@
 				case '4':
 					$kode = trim(strtoupper($_POST['data'][$i][0]));
 					$jenis = $mysqli->real_escape_string(strtoupper($_POST['data'][$i][1]));
-					$barang = strtoupper($_POST['data'][$i][2]);
+					$barang = strtoupper(trim($_POST['data'][$i][2]));
 					$qty = $_POST['data'][$i][5]==""?0:$_POST['data'][$i][3];
 					$price = $_POST['data'][$i][6]==""?0:$_POST['data'][$i][4];
 					$price2 = $_POST['data'][$i][7]==""?0:$_POST['data'][$i][5];

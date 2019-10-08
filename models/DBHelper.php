@@ -56,6 +56,48 @@ class DBHelper {
 		}
 	}
 
+	public function getBarangByKode($kode, $tipe) {
+		$query = "SELECT a.*, b.jenis AS brand_name 
+			FROM barang a 
+			JOIN jenisbarang b ON a.brand_id = b.brand_id 
+			WHERE a.kode = '$kode' 
+			AND a.tipe = $tipe ";
+
+		$rs = $this->mysqli->query($query);
+
+		if ($data = $rs->fetch_assoc()) {
+			$r = new Barang();
+
+			$r->setProductId($data['product_id']);
+			$r->setKode($data['kode']);
+			$r->setBrandId($data['brand_id']);
+			$r->setBrandName($data['brand_name']);
+			$r->setBarang($data['barang']);
+			$r->setFrame($data['frame']);
+			$r->setColor($data['color']);
+			$r->setPowerAdd($data['power_add']);
+			$r->setQty($data['qty']);
+			$r->setPrice($data['price']);
+			$r->setPrice2($data['price2']);
+			$r->setKodeHarga($data['kode_harga']);
+			$r->setInfo($data['info']);
+			$r->setUkuran($data['ukuran']);
+			$r->setTipe($data['tipe']);
+			$r->setTglMasukAkhir($data['tgl_masuk_akhir']);
+			$r->setTglKeluarAkhir($data['tgl_keluar_akhir']);
+			$r->setBranchId($data['branch_id']);
+			$r->setCreatedUserId($data['created_user_id']);
+			$r->setCreatedDate($data['created_date']);
+			$r->setLastUpdateUserId($data['last_update_user_id']);
+			$r->setLastUpdateDate($data['last_update_date']);
+
+			return $r;
+		}
+		else {
+			return null;
+		}
+	}
+
 	public function insertBarang($b) {
 		$kode = $b->getKode();
 		$brand_id = $b->getBrandId();
