@@ -126,7 +126,7 @@ menu5[1]='<a href="index-c-piutangjtempo.pos"><img src="images/invoices.png" ali
 <?php if(strstr($_SESSION['akses'],'pembayaranpiutang')) { ?>
 menu5[2]='<a href="index-c-pembayaranpiutang.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Pembayaran Lunas</a>'
 <?php } ?>
-<?php if(strstr($_SESSION['akses'],'invoicepenjualan')) { ?>
+<?php if(strstr($_SESSION['akses'],'specialorder')) { ?>
 menu5[3]='<a href="index-c-specialorder.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Special Order</a>'
 <?php } ?>
 <?php if(strstr($_SESSION['akses'],'barangkeluar')) { ?>

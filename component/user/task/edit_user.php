@@ -277,7 +277,9 @@ Detail Data <br />
 								<input name="per[]" type="checkbox" id="per[]" value="delete_invoicepenjualan" <?php if(strstr($row_edit['akses'],'delete_invoicepenjualan')) { ?>checked="checked"<?php } ?>/>
 								
 							Delete Data<br />
-							</td>
+
+							<input name="per[]" type="checkbox" id="per[]" value="specialorder" <?php if(strstr($row_edit['akses'],'specialorder')) { ?>checked="checked"<?php } ?>/> Special Order<br />
+						</td>
 						<td valign="top">
 								<input name="per[]" type="checkbox" id="per[]" value="barangmasuk_invoicepembelian" <?php if(strstr($row_edit['akses'],'barangmasuk_invoicepembelian')) { ?>checked="checked"<?php } ?>/>
 	
