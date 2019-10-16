@@ -27,6 +27,9 @@ if ($data = $rs->fetch_assoc()) {
     $branch_address = $data['branch_address'];
     $branch_phone1 = $data['branch_phone1'];
     $branch_phone2 = $data['branch_phone2'];
+
+    if ($branch_name == 'PRASIDA OPTIK')
+        $branch_name = 'PRASIDA OPTIK BY ITC OPTIK';
 }
 else {
     return;
@@ -123,13 +126,12 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
     <table width="100%" border="0" cellspacing="0" cellpadding="4" class="divInvoice">
         <tr>
             <td align="left">
-                <h2><?=$GLOBALS['company_name']?></h2>
+                <h2><?=$branch_name?></h2>
                 <p>
                     <!--
-                   	<?=$GLOBALS['company_address']?>
+                        <?=$GLOBALS['company_name']?>
+                   	    <?=$GLOBALS['company_address']?>
                     -->
-                    <?=$branch_name?>
-                    <br />
                     <?=$branch_address?>
                     <br />
                     Phone: <?=$branch_phone1?>
