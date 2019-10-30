@@ -19,6 +19,7 @@ class KeluarBarang {
 	private $total_before;
 	private $info;
 	private $lunas;
+	private $total_payment;
 	private $tipe_pembayaran;
 	private $branch_id;
 	private $branch_name;
@@ -47,6 +48,7 @@ class KeluarBarang {
 	public function setTotalBefore($total_before) { $this->total_before = $total_before; }
 	public function setInfo($info) { $this->info = $info; }
 	public function setLunas($lunas) { $this->lunas = $lunas; }
+	public function setTotalPayment($total_payment) { $this->total_payment = $total_payment; }
 	public function setTipePembayaran($tipe_pembayaran) { $this->tipe_pembayaran = $tipe_pembayaran; }
 	public function setBranchId($branch_id) { $this->branch_id = $branch_id; }
 	public function setBranchName($branch_name) { $this->branch_name = $branch_name; }
@@ -73,6 +75,7 @@ class KeluarBarang {
 	public function getTotalBefore() { return $this->total_before; }
 	public function getInfo() { return $this->info; }
 	public function getLunas() { return $this->lunas; }
+	public function getTotalPayment() { return $this->total_payment; }
 	public function getTipePembayaran() { return $this->tipe_pembayaran; }
 	public function getBranchId() { return $this->branch_id; }
 	public function getBranchName() { return $this->branch_name; }

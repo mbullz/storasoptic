@@ -330,7 +330,7 @@ class DBHelper {
 			$branch_filter = " AND a.branch_id = $branch_id ";
 		}
 
-		$query = "SELECT a.keluarbarang_id, a.referensi, a.tgl, a.jtempo, a.client, b.kontak AS client_name, a.sales, c.kontak AS sales_name, a.matauang_id, d.kode AS matauang_kode, d.matauang, a.tdiskon, a.diskon, a.ppn, a.total, (SELECT SUM(subtotal) FROM dkeluarbarang WHERE keluarbarang_id = a.keluarbarang_id) AS total_before, a.info, a.lunas, a.tipe_pembayaran, a.branch_id, e.kontak AS branch_name, a.created_by, a.created_at, a.updated_by, a.updated_at 
+		$query = "SELECT a.keluarbarang_id, a.referensi, a.tgl, a.jtempo, a.client, b.kontak AS client_name, a.sales, c.kontak AS sales_name, a.matauang_id, d.kode AS matauang_kode, d.matauang, a.tdiskon, a.diskon, a.ppn, a.total, (SELECT SUM(subtotal) FROM dkeluarbarang WHERE keluarbarang_id = a.keluarbarang_id) AS total_before, a.info, a.lunas, (SELECT SUM(jumlah) FROM aruskas WHERE transaction_id = a.keluarbarang_id) AS total_payment, a.tipe_pembayaran, a.branch_id, e.kontak AS branch_name, a.created_by, a.created_at, a.updated_by, a.updated_at 
 				FROM keluarbarang a 
 				JOIN kontak b ON a.client = b.user_id 
 				LEFT JOIN kontak c ON a.sales = c.user_id 
@@ -366,6 +366,7 @@ class DBHelper {
 			$r->setTotalBefore($data['total_before']);
 			$r->setInfo($data['info']);
 			$r->setLunas($data['lunas']);
+			$r->setTotalPayment($data['total_payment']);
 			$r->setTipePembayaran($data['tipe_pembayaran']);
 			$r->setBranchId($data['branch_id']);
 			$r->setBranchName($data['branch_name']);
@@ -492,6 +493,26 @@ class DBHelper {
 			array_push($rows, $row);
 		}
 
+		return $rows;
+	}
+
+	public function getAllCaraBayar() {
+		$query = "SELECT * FROM carabayar a ORDER BY carabayar_id ASC ";
+
+		$rs = $this->mysqli->query($query);
+
+		$rows = array();
+
+		while ($data = $rs->fetch_assoc()) {
+			$r = new CaraBayar();
+
+			$r->setCarabayarId($data['carabayar_id']);
+			$r->setPembayaran($data['pembayaran']);
+			$r->setInfo($data['info']);
+
+			array_push($rows, $r);
+		}
+		
 		return $rows;
 	}
 
