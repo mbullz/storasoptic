@@ -315,6 +315,7 @@ function calculate_subtotal2()
 	var subtotal_lensa = 0;
 	var diskon = 0;
 	var diskon_lensa = 0;
+	var promo = 0;
 	var tipe = $('#tipe').val();
 
 	if (tipe != '3') {
@@ -324,6 +325,11 @@ function calculate_subtotal2()
 		else diskon = $("#diskon").val();
 
 		subtotal -= diskon;
+
+		if (tipe == '1') promo += parseInt($('#promo_frame').val());
+		if (tipe == '2') promo += parseInt($('#promo_softlens').val());
+		if (tipe == '4') promo += parseInt($('#promo_accessories').val());
+		if (tipe == '5') promo += parseInt($('#promo_frame').val());
 	}
 
 	if (tipe == '3' || tipe == '5') {
@@ -340,9 +346,12 @@ function calculate_subtotal2()
 
 			subtotal_lensa -= diskonlensa;
 		}
+
+		promo += parseInt($('#promo_lensa').val());
 	}
 	
-	$("#subtotal").val(parseInt(subtotal) + parseInt(subtotal_lensa));
+	$('#promo').val(promo);
+	$("#subtotal").val(parseInt(subtotal) + parseInt(subtotal_lensa) - parseInt(promo));
 }
 
 function calculate_grandtotal()
@@ -454,6 +463,7 @@ function manageInvoiceJual(t, v)
 	var hsa = $("#hsatuan").val();
 	var tdi = $("#tdiskon").val();
 	var dis = $("#diskon").val();
+	var promo = $('#promo').val();
 	var xsu = $("#subtotal").val();
 	
 	var sosoftlens = $("#checkSOLensa").is(":checked")==true?'1':'0';
@@ -491,6 +501,7 @@ function manageInvoiceJual(t, v)
 				"&qty=" + qty + 
 				"&sat=" + sat + 
 				"&hsat=" + hsa + 
+				"&promo=" + promo + 
 				"&subtot=" + xsu + 
 				"&tdisc=" + tdi + 
 				"&disc=" + dis + 
@@ -568,6 +579,7 @@ function resetField()
 	$('#qty').val('0');
 	$('#hsatuan').val('0');
 	//$('#diskon').val('0');
+	$('#promo').val('0');
 	$('#subtotal').val('0');
 
 	$('#hargaLensa').val('0');

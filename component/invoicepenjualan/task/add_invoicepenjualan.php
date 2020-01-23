@@ -118,6 +118,49 @@ table ul li {
 <input type="hidden" id="global_discount_accessories" value="<?=($_SESSION['global_discount_accessories'] ?? 0)?>" />
 <input type="hidden" id="editable_price" value="<?=($_SESSION['editable_price'] ?? 0)?>" />
 
+<?php
+    $tipes = array(
+        '0' => 'SEMUA TIPE',
+        '1' => 'FRAME',
+        '2' => 'SOFTLENS',
+        '3' => 'LENSA',
+        '4' => 'ACCESSORIES',
+    );
+
+    $promo = array(
+        '1' => 0,
+        '2' => 0,
+        '3' => 0,
+        '4' => 0,
+    );
+
+    $rs = $mysqli->query("SELECT * FROM promo WHERE branch_id IN (0, $branch_id) AND NOW() BETWEEN start_date AND end_date");
+    while ($data = $rs->fetch_assoc()) {
+        $category = $data['category'];
+        
+        if ($category == 0) {
+            $promo[1] += $data['discount'];
+            $promo[2] += $data['discount'];
+            $promo[3] += $data['discount'];
+            $promo[4] += $data['discount'];
+        }
+        else {
+            $promo[$category] += $data['discount'];
+        }
+
+        ?>
+            <div class="alert alert-info" role="alert">
+                <strong><?=$data['name']?></strong> - Potongan <strong><?=number_format($data['discount'], 0)?></strong> untuk pembelian <strong><?=$tipes[$category]?></strong>
+            </div>
+        <?php
+    }
+?>
+
+<input type="hidden" id="promo_frame" value="<?=$promo['1']?>" />
+<input type="hidden" id="promo_softlens" value="<?=$promo['2']?>" />
+<input type="hidden" id="promo_lensa" value="<?=$promo['3']?>" />
+<input type="hidden" id="promo_accessories" value="<?=$promo['4']?>" />
+
 <form name="add" id="add" action="component/<?=$c?>/p_<?=$c?>.php?p=<?=$t?>" method="POST">
 	<input type="hidden" name="keluarbarang_id" id="keluarbarang_id" value="<?=$keluarbarang_id?>">
     <input type="hidden" id="tipePembayaran" name="tipePembayaran" value="1" />
@@ -489,7 +532,8 @@ table ul li {
                     <td align="right">Subtotal</td>
                     <td>:</td>
                     <td>
-                            <input name="subtotal" type="text" id="subtotal" value="0" disabled="disabled" />
+                        <input type="hidden" name="promo" id="promo" value="0" />
+                        <input name="subtotal" type="text" id="subtotal" value="0" disabled="disabled" />
                     </td>
                 </tr>
                 <tr>

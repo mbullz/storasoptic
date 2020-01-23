@@ -93,6 +93,37 @@
 					$stat = 'Edit editable price gagal';
 				}
 			break;
+
+			case 'create_promo':
+				$branch_id = $_POST['branch_id'];
+				$name = $_POST['name'];
+				$start_date = $_POST['start_date'];
+				$end_date = $_POST['end_date'];
+				$category = $_POST['category'];
+				$discount = $_POST['discount'] == '' ? 0 : $_POST['discount'];
+
+				$exe = $mysqli->query("INSERT INTO promo(name, start_date, end_date, branch_id, category_type, category, discount_type, discount, updated_by, updated_at) VALUES('$name', '$start_date', '$end_date', $branch_id, '2', $category, '0', $discount, $user_id, NOW())");
+
+				if ($exe) {
+					$stat = 'Add promo berhasil';
+				}
+				else{
+					$stat = 'Add promo gagal';
+				}
+			break;
+
+			case 'delete_promo':
+				$id = $_GET['id'];
+
+				$exe = $mysqli->query("DELETE FROM promo WHERE id = $id");
+
+				if ($exe) {
+					$stat = 'Delete promo berhasil';
+				}
+				else{
+					$stat = 'Delete promo gagal';
+				}
+			break;
 		}
 	}
 ?>

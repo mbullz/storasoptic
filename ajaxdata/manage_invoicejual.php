@@ -15,6 +15,9 @@ $db = new DBHelper($mysqli);
 	}
 
 // get variable
+$branch_id = $_SESSION['branch_id'];
+$user_id = $_SESSION['user_id'];
+
 $tsk = $_POST['task'];
 $rid = $_POST['rid'];
 $keluarbarang_id = $_POST['keluarbarang_id'] ?? 0;
@@ -26,6 +29,7 @@ $tdi = $_POST['tdisc'];
 $dis = $_POST['disc'];
 $sat = $_POST['sat'];
 $hsa = $_POST['hsat'];
+$promo = $_POST['promo'];
 $sub = $_POST['subtot'];
 
 $sosoftlens = $_POST['sosoftlens'];
@@ -245,6 +249,21 @@ if($valid=='yes')
 					. "where id='$row_cekbrg[id]'";
 		}
 		$ajaxsave       = $mysqli->query($query_ajaxsave);
+		$dkeluarbarang_id = $mysqli->insert_id;
+
+		if ($promo > 0) {
+			$promo_id = 0;
+			$promo_name = 'PROMO';
+			$category = $tipe == 5 ? '1, 3' : $tipe;
+			$rs = $mysqli->query("SELECT * FROM promo WHERE branch_id IN (0, $branch_id) AND NOW() BETWEEN start_date AND end_date AND category IN (0, $category)");
+			if ($data = $rs->fetch_assoc()) {
+				$promo_id = $data['id'];
+				$promo_name = $data['name'];
+			}
+
+			$mysqli->query("INSERT INTO keluarbarang_discount(promo_id, keluarbarang_id, dkeluarbarang_id, discount, description, updated_by, updated_at) VALUES($promo_id, $keluarbarang_id, $dkeluarbarang_id, $promo, '$promo_name', $user_id, NOW())");
+		}
+
 	}else{
 		$query_ajaxsave = "delete from dkeluarbarang where id='$rid'";
 		$ajax_save      = $mysqli->query($query_ajaxsave);
@@ -255,11 +274,12 @@ if($valid=='yes')
 $query_detbrg = "SELECT 
 					a.*, 
 					b.kode, b.barang, b.color, b.frame, 
-					c.satuan, d.jenis 
+					c.satuan, d.jenis, e.discount AS promo 
 				FROM dkeluarbarang a 
 				LEFT JOIN barang b ON a.product_id = b.product_id 
 				LEFT JOIN satuan c ON a.satuan_id = c.satuan_id 
 				LEFT JOIN jenisbarang d ON d.brand_id = b.brand_id 
+				LEFT JOIN keluarbarang_discount e ON a.id = e.dkeluarbarang_id 
 				WHERE a.keluarbarang_id = $keluarbarang_id 
 				ORDER BY a.id ASC ";
 $detbrg = $mysqli->query($query_detbrg);
@@ -403,6 +423,8 @@ $total_detbrg = mysqli_num_rows($detbrg);
 			else
 				echo $row_detbrg['diskon_lensa'] . " %";
 			
+			if ($row_detbrg['promo'] != NULL)
+				echo '<br />+' . number_format($row_detbrg['promo'], 0);
 		?>
 	</td>
       

@@ -274,4 +274,106 @@
 	</div>
 </div>
 
+<br />
+
+<div class="row">
+	<div class="col">
+		<h1 style="text-align: left;margin-top: 8px;">Promo</h1>
+		
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Cabang</th>
+					<th>Promo</th>
+					<th>Periode</th>
+					<th>Tipe</th>
+					<th>Potongan</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<?php
+					$tipes = array(
+						'0'	=> 'SEMUA',
+						'1'	=> 'FRAME',
+						'2'	=> 'SOFTLENS',
+						'3'	=> 'LENSA',
+						'4'	=> 'ACCESSORIES',
+					);
+
+					$rs = $mysqli->query('SELECT a.*, b.kontak FROM promo a LEFT JOIN kontak b ON a.branch_id = b.user_id WHERE end_date >= NOW() ORDER BY kontak ASC, end_date ASC');
+					while ($data = $rs->fetch_assoc()) {
+						$branch = $data['branch_id'] == 0 ? 'SEMUA' : $data['kontak'];
+						$category = $data['category'];
+						?>
+							<tr>
+								<td><?=$branch?></td>
+								<td><?=$data['name']?></td>
+								<td><?=$data['start_date']?> - <?=$data['end_date']?></td>
+								<td><?=$tipes[$category]?></td>
+								<td><?=number_format($data['discount'], 0)?></td>
+								<td>
+									<a href="component/config/p_config.php?p=delete_promo&id=<?=$data['id']?>" class="btn btn-danger btn-sm">Delete</a>
+								</td>
+							</tr>
+						<?php
+					}
+				?>
+			</tbody>
+		</table>
+
+		<div class="card">
+			<div class="card-body">
+				<form name="form_promo" method="POST" action="component/config/p_config.php?p=create_promo">
+					<h4>Add Promo</h4>
+					<br />
+					<div class="form-group">
+						<label>Cabang</label>
+						<select name="branch_id" class="form-control form-control-sm">
+							<option value="0">SEMUA</option>
+							<?php
+								$rs = $mysqli->query("SELECT * FROM kontak WHERE jenis = 'B001' ORDER BY kontak ASC");
+								while ($data = $rs->fetch_assoc()) {
+									$id = $data['user_id'];
+									?>
+										<option value="<?=$id?>"><?=$data['kontak']?></option>
+									<?php
+								}
+							?>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Nama Promo</label>
+						<input type="text" name="name" class="form-control form-control-sm" />
+					</div>
+					<div class="form-group">
+						<label>Periode&nbsp;&nbsp;&nbsp;</label>
+						<input type="date" name="start_date" class="form_control form-control-sm" />
+						-
+						<input type="date" name="end_date" class="form_control form-control-sm" />
+					</div>
+					<div class="form-group">
+						<label>Tipe</label>
+						<select name="category" class="form-control form-control-sm">
+							<option value="0">SEMUA</option>
+							<option value="1">FRAME</option>
+							<option value="2">SOFTLENS</option>
+							<option value="3">LENSA</option>
+							<option value="4">ACCESSORIES</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Potongan</label>
+						<input type="number" name="discount" class="form-control form-control-sm" placeholder="0" />
+					</div>
+					<div class="form-group">
+						<input type="submit" value="Create" class="btn btn-primary btn-sm" />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
 </div>
