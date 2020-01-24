@@ -312,7 +312,7 @@
 								<td><?=$data['name']?></td>
 								<td><?=$data['start_date']?> - <?=$data['end_date']?></td>
 								<td><?=$tipes[$category]?></td>
-								<td><?=number_format($data['discount'], 0)?></td>
+								<td><?=number_format($data['discount'], 0)?><?=$data['discount_type']=='1'?'%':''?></td>
 								<td>
 									<a href="component/config/p_config.php?p=delete_promo&id=<?=$data['id']?>" class="btn btn-danger btn-sm">Delete</a>
 								</td>
@@ -363,9 +363,17 @@
 							<option value="4">ACCESSORIES</option>
 						</select>
 					</div>
-					<div class="form-group">
-						<label>Potongan</label>
-						<input type="number" name="discount" class="form-control form-control-sm" placeholder="0" />
+					<div class="form-group row">
+						<label class="col-12">Potongan</label>
+						<div class="col-2">
+							<select name="discount_type" class="form-control form-control-sm">
+								<option value="0">Cash</option>
+								<option value="1">%</option>
+							</select>
+						</div>
+						<div class="col-10">
+							<input type="number" name="discount" class="form-control form-control-sm" placeholder="0" />
+						</div>
 					</div>
 					<div class="form-group">
 						<input type="submit" value="Create" class="btn btn-primary btn-sm" />

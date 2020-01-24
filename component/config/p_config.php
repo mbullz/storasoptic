@@ -100,9 +100,10 @@
 				$start_date = $_POST['start_date'];
 				$end_date = $_POST['end_date'];
 				$category = $_POST['category'];
+				$discount_type = $_POST['discount_type'];
 				$discount = $_POST['discount'] == '' ? 0 : $_POST['discount'];
 
-				$exe = $mysqli->query("INSERT INTO promo(name, start_date, end_date, branch_id, category_type, category, discount_type, discount, updated_by, updated_at) VALUES('$name', '$start_date', '$end_date', $branch_id, '2', $category, '0', $discount, $user_id, NOW())");
+				$exe = $mysqli->query("INSERT INTO promo(name, start_date, end_date, branch_id, category_type, category, discount_type, discount, updated_by, updated_at) VALUES('$name', '$start_date', '$end_date', $branch_id, '2', $category, '$discount_type', $discount, $user_id, NOW())");
 
 				if ($exe) {
 					$stat = 'Add promo berhasil';

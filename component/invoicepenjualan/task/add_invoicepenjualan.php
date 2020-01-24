@@ -134,23 +134,41 @@ table ul li {
         '4' => 0,
     );
 
+    $promo_persen = array(
+        '1' => '0',
+        '2' => '0',
+        '3' => '0',
+        '4' => '0',
+    );
+
     $rs = $mysqli->query("SELECT * FROM promo WHERE branch_id IN (0, $branch_id) AND NOW() BETWEEN start_date AND end_date");
     while ($data = $rs->fetch_assoc()) {
         $category = $data['category'];
         
         if ($category == 0) {
-            $promo[1] += $data['discount'];
-            $promo[2] += $data['discount'];
-            $promo[3] += $data['discount'];
-            $promo[4] += $data['discount'];
+            if ($data['discount_type'] == '0') {
+                $promo[1] += $data['discount'];
+                $promo[2] += $data['discount'];
+                $promo[3] += $data['discount'];
+                $promo[4] += $data['discount'];
+            }
+            else if ($data['discount_type'] == '1') {
+                $promo_persen[1] .= ',' . $data['discount'];
+                $promo_persen[2] .= ',' . $data['discount'];
+                $promo_persen[3] .= ',' . $data['discount'];
+                $promo_persen[4] .= ',' . $data['discount'];
+            }
         }
         else {
-            $promo[$category] += $data['discount'];
+            if ($data['discount_type'] == '0')
+                $promo[$category] += $data['discount'];
+            else if ($data['discount_type'] == '1')
+                $promo_persen[$category] .= ',' . $data['discount'];
         }
 
         ?>
             <div class="alert alert-info" role="alert">
-                <strong><?=$data['name']?></strong> - Potongan <strong><?=number_format($data['discount'], 0)?></strong> untuk pembelian <strong><?=$tipes[$category]?></strong>
+                <strong><?=$data['name']?></strong> - Potongan <strong><?=number_format($data['discount'], 0)?><?=$data['discount_type']=='1'?'%':''?></strong> untuk pembelian <strong><?=$tipes[$category]?></strong>
             </div>
         <?php
     }
@@ -160,6 +178,11 @@ table ul li {
 <input type="hidden" id="promo_softlens" value="<?=$promo['2']?>" />
 <input type="hidden" id="promo_lensa" value="<?=$promo['3']?>" />
 <input type="hidden" id="promo_accessories" value="<?=$promo['4']?>" />
+
+<input type="hidden" id="promo_persen_frame" value="<?=$promo_persen['1']?>" />
+<input type="hidden" id="promo_persen_softlens" value="<?=$promo_persen['2']?>" />
+<input type="hidden" id="promo_persen_lensa" value="<?=$promo_persen['3']?>" />
+<input type="hidden" id="promo_persen_accessories" value="<?=$promo_persen['4']?>" />
 
 <form name="add" id="add" action="component/<?=$c?>/p_<?=$c?>.php?p=<?=$t?>" method="POST">
 	<input type="hidden" name="keluarbarang_id" id="keluarbarang_id" value="<?=$keluarbarang_id?>">

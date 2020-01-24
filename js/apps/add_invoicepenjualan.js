@@ -315,7 +315,7 @@ function calculate_subtotal2()
 	var subtotal_lensa = 0;
 	var diskon = 0;
 	var diskon_lensa = 0;
-	var promo = 0;
+	var total_promo = 0;
 	var tipe = $('#tipe').val();
 
 	if (tipe != '3') {
@@ -326,10 +326,35 @@ function calculate_subtotal2()
 
 		subtotal -= diskon;
 
-		if (tipe == '1') promo += parseInt($('#promo_frame').val());
-		if (tipe == '2') promo += parseInt($('#promo_softlens').val());
-		if (tipe == '4') promo += parseInt($('#promo_accessories').val());
-		if (tipe == '5') promo += parseInt($('#promo_frame').val());
+		if (tipe == '1') {
+			var promo = parseInt($('#promo_frame').val());
+			total_promo += parseInt($('#promo_frame').val());
+			var promo_persen = $('#promo_persen_frame').val();
+		}
+		else if (tipe == '2') {
+			var promo = parseInt($('#promo_softlens').val());
+			total_promo += parseInt($('#promo_softlens').val());
+			var promo_persen = $('#promo_persen_softlens').val();
+		}
+		else if (tipe == '4') {
+			var promo = parseInt($('#promo_accessories').val());
+			total_promo += parseInt($('#promo_accessories').val());
+			var promo_persen = $('#promo_persen_accessories').val();
+		}
+		else if (tipe == '5') {
+			var promo = parseInt($('#promo_frame').val());
+			total_promo += parseInt($('#promo_frame').val());
+			var promo_persen = $('#promo_persen_frame').val();
+		}
+
+		subtotal -= parseInt(promo);
+
+		var promo_persen_list = promo_persen.split(",");
+		promo_persen_list.forEach(function (item) {
+			var promo = parseInt(parseInt(item)/100 * subtotal);
+			total_promo += promo;
+			subtotal -= promo;
+		});
 	}
 
 	if (tipe == '3' || tipe == '5') {
@@ -347,11 +372,22 @@ function calculate_subtotal2()
 			subtotal_lensa -= diskonlensa;
 		}
 
-		promo += parseInt($('#promo_lensa').val());
+		var promo = parseInt($('#promo_lensa').val());
+		total_promo += parseInt($('#promo_lensa').val());
+
+		subtotal_lensa -= parseInt(promo);
+
+		var promo_persen = $('#promo_persen_lensa').val();
+		var promo_persen_list = promo_persen.split(",");
+		promo_persen_list.forEach(function (item) {
+			var promo = parseInt(parseInt(item)/100 * subtotal_lensa);
+			total_promo += promo;
+			subtotal_lensa -= promo;
+		});
 	}
 	
-	$('#promo').val(promo);
-	$("#subtotal").val(parseInt(subtotal) + parseInt(subtotal_lensa) - parseInt(promo));
+	$('#promo').val(total_promo);
+	$("#subtotal").val(parseInt(subtotal) + parseInt(subtotal_lensa));
 }
 
 function calculate_grandtotal()
