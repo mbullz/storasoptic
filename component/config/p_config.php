@@ -94,6 +94,36 @@
 				}
 			break;
 
+			case 'bpjs_promo':
+				$value = '';
+				for ($i = 1; $i <= 3; $i++) {
+					$discount = $_POST['bpjs_promo_discount_' . $i] ?? 0;
+
+					$value .= $i . '_' . $discount . '#';
+				}
+
+				$mysqli->query("UPDATE config SET value = '$value' WHERE config = 'bpjs_promo_discount'");
+
+				$value = '';
+
+				$rs = $mysqli->query("SELECT * FROM kontak WHERE jenis = 'B001' ORDER BY user_id ASC");
+				while ($data = $rs->fetch_assoc()) {
+					$id = $data['user_id'];
+					$editable = $_POST[$id] == 'on' ? 1 : 0;
+
+					$value .= $id . '_' . $editable . '#';
+				}
+				
+				$exe = $mysqli->query("UPDATE config SET value = '$value' WHERE config = 'bpjs_promo_enabled'");
+
+				if ($exe) {
+					$stat = 'Edit promo bpjs berhasil';
+				}
+				else{
+					$stat = 'Edit promo bpjs gagal';
+				}
+			break;
+
 			case 'create_promo':
 				$branch_id = $_POST['branch_id'];
 				$name = $_POST['name'];

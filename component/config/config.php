@@ -50,6 +50,26 @@
 		if (sizeof($r) <= 1) continue;
 		$editable_price[$r[0]] = $r[1];
 	}
+
+	$rs = $mysqli->query("SELECT * FROM config WHERE config = 'bpjs_promo_enabled'");
+	$data = $rs->fetch_assoc();
+	$temp = $data['value'];
+	$temp = explode('#', $temp);
+	foreach ($temp AS $r) {
+		$r = explode('_', $r);
+		if (sizeof($r) <= 1) continue;
+		$bpjs_promo_enabled[$r[0]] = $r[1];
+	}
+
+	$rs = $mysqli->query("SELECT * FROM config WHERE config = 'bpjs_promo_discount'");
+	$data = $rs->fetch_assoc();
+	$temp = $data['value'];
+	$temp = explode('#', $temp);
+	foreach ($temp AS $r) {
+		$r = explode('_', $r);
+		if (sizeof($r) <= 1) continue;
+		$bpjs_promo_discount[$r[0]] = $r[1];
+	}
 ?>
 
 <script type="text/javascript" language="javascript">
@@ -250,12 +270,79 @@
 						$rs = $mysqli->query("SELECT * FROM kontak WHERE jenis = 'B001' ORDER BY kontak ASC");
 						while ($data = $rs->fetch_assoc()) {
 							$id = $data['user_id'];
+							$editable_price[$id] = $editable_price[$id] ?? 0;
 							?>
 								<tr>
 									<td><?=$data['kontak']?></td>
 									<td>:</td>
 									<td>
 									    &nbsp;&nbsp;&nbsp;<input type="checkbox" class="form-check-input" name="<?=$id?>" <?=($editable_price[$id] == 1 ? 'checked="checked"' : '')?> />&nbsp;
+									</td>
+								</tr>
+							<?php
+						}
+					?>
+
+					<tr>
+						<td colspan="2">&nbsp;</td>
+						<td>
+							<input type="submit" value="Update" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	</div>
+
+	<div class="col-sm">
+		<form name="form_bpjs_promo" class="form_global_discount" method="POST" action="component/config/p_config.php?p=bpjs_promo">
+			<table border="0" cellspacing="0" cellpadding="10" style="border: solid 1px #CCC;">
+				<thead>
+					<tr>
+						<th colspan="3" align="center">
+							<h1 style="margin: 5px;">BPJS</h1>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Potongan Kelas 1</td>
+						<td>:</td>
+						<td>
+							<input type="number" name="bpjs_promo_discount_1" value="<?=($bpjs_promo_discount[1] ?? 0)?>" />
+						</td>
+					</tr>
+
+					<tr>
+						<td>Potongan Kelas 2</td>
+						<td>:</td>
+						<td>
+							<input type="number" name="bpjs_promo_discount_2" value="<?=($bpjs_promo_discount[2] ?? 0)?>" />
+						</td>
+					</tr>
+
+					<tr>
+						<td>Potongan Kelas 3</td>
+						<td>:</td>
+						<td>
+							<input type="number" name="bpjs_promo_discount_3" value="<?=($bpjs_promo_discount[3] ?? 0)?>" />
+						</td>
+					</tr>
+
+					<tr>
+						<td colspan="3"><hr /></td>
+					</tr>
+					<?php
+						$rs = $mysqli->query("SELECT * FROM kontak WHERE jenis = 'B001' ORDER BY kontak ASC");
+						while ($data = $rs->fetch_assoc()) {
+							$id = $data['user_id'];
+							$bpjs_promo_enabled[$id] = $bpjs_promo_enabled[$id] ?? 0;
+							?>
+								<tr>
+									<td><?=$data['kontak']?></td>
+									<td>:</td>
+									<td>
+									    &nbsp;&nbsp;&nbsp;<input type="checkbox" class="form-check-input" name="<?=$id?>" <?=($bpjs_promo_enabled[$id] == 1 ? 'checked="checked"' : '')?> />&nbsp;
 									</td>
 								</tr>
 							<?php

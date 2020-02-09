@@ -385,9 +385,16 @@ function calculate_subtotal2()
 			subtotal_lensa -= promo;
 		});
 	}
+
+	//potongan bpjs
+	var bpjs_promo_discount = 0;
+	if ($('#bpjs_promo_enabled').val() == '1') {
+		bpjs_promo_discount = parseInt($('#bpjs_promo').val());
+		total_promo += bpjs_promo_discount;
+	}
 	
 	$('#promo').val(total_promo);
-	$("#subtotal").val(parseInt(subtotal) + parseInt(subtotal_lensa));
+	$("#subtotal").val(parseInt(subtotal) + parseInt(subtotal_lensa) - parseInt(bpjs_promo_discount));
 }
 
 function calculate_grandtotal()

@@ -29,7 +29,7 @@ $pass   = $mysqli->real_escape_string($_POST['password']);
 			$_SESSION['branch_id'] = $data2['branch_id'];
 			$_SESSION['branch_name'] = $data2['branch_name'] ?? '';
 
-			$global_discounts = array('global_discount', 'global_discount_lensa', 'global_discount_softlens', 'global_discount_accessories', 'editable_price');
+			$global_discounts = array('global_discount', 'global_discount_lensa', 'global_discount_softlens', 'global_discount_accessories', 'editable_price', 'bpjs_promo_enabled');
 
 			foreach ($global_discounts AS $value) {
 				$_SESSION[$value] = 0;
@@ -44,6 +44,17 @@ $pass   = $mysqli->real_escape_string($_POST['password']);
 
 					if ($r[0] == $data2['branch_id']) $_SESSION[$value] = $r[1];
 				}
+			}
+
+			$rs3 = $mysqli->query("SELECT * FROM config WHERE config = 'bpjs_promo_discount'");
+			$data3 = $rs3->fetch_assoc();
+			$temp = $data3['value'];
+			$temp = explode('#', $temp);
+			foreach ($temp AS $r) {
+				$r = explode('_', $r);
+				if (sizeof($r) <= 1) continue;
+
+				$_SESSION['bpjs_promo_discount_' . $r[0]] = $r[1];
 			}
 
 			?>

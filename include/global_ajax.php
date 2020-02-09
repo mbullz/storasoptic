@@ -64,6 +64,28 @@
 				if ($r[0] == $branch_id) $_SESSION['editable_price'] = $r[1];
 			}
 
+			$rs3 = $mysqli->query("SELECT * FROM config WHERE config = 'bpjs_promo_enabled'");
+			$data3 = $rs3->fetch_assoc();
+			$temp = $data3['value'];
+			$temp = explode('#', $temp);
+			foreach ($temp AS $r) {
+				$r = explode('_', $r);
+				if (sizeof($r) <= 1) continue;
+
+				if ($r[0] == $branch_id) $_SESSION['bpjs_promo_enabled'] = $r[1];
+			}
+
+			$rs3 = $mysqli->query("SELECT * FROM config WHERE config = 'bpjs_promo_discount'");
+			$data3 = $rs3->fetch_assoc();
+			$temp = $data3['value'];
+			$temp = explode('#', $temp);
+			foreach ($temp AS $r) {
+				$r = explode('_', $r);
+				if (sizeof($r) <= 1) continue;
+
+				$_SESSION['bpjs_promo_discount_' . $r[0]] = $r[1];
+			}
+
 			echo json_encode(array(
 				'status'	=> 'success',
 				'message'	=> 'Success',

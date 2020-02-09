@@ -117,6 +117,10 @@ table ul li {
 <input type="hidden" id="global_discount_softlens" value="<?=($_SESSION['global_discount_softlens'] ?? 0)?>" />
 <input type="hidden" id="global_discount_accessories" value="<?=($_SESSION['global_discount_accessories'] ?? 0)?>" />
 <input type="hidden" id="editable_price" value="<?=($_SESSION['editable_price'] ?? 0)?>" />
+<input type="hidden" id="bpjs_promo_enabled" value="<?=($_SESSION['bpjs_promo_enabled'] ?? 0)?>" />
+<input type="hidden" id="bpjs_promo_discount_1" value="<?=($_SESSION['bpjs_promo_discount_1'] ?? 0)?>" />
+<input type="hidden" id="bpjs_promo_discount_2" value="<?=($_SESSION['bpjs_promo_discount_2'] ?? 0)?>" />
+<input type="hidden" id="bpjs_promo_discount_3" value="<?=($_SESSION['bpjs_promo_discount_3'] ?? 0)?>" />
 
 <?php
     $tipes = array(
@@ -551,6 +555,26 @@ table ul li {
                         </select>
                     </td>
                 </tr>
+
+                <?php
+                    if ($_SESSION['bpjs_promo_enabled'] == 1) {
+                        ?>
+                            <tr>
+                                <td align="right">BPJS</td>
+                                <td>:</td>
+                                <td>
+                                    <select id="bpjs_promo" onchange="calculate_subtotal2()">
+                                        <option value="0">-</option>
+                                        <option value="<?=($_SESSION['bpjs_promo_discount_1'] ?? 0)?>">Kelas 1</option>
+                                        <option value="<?=($_SESSION['bpjs_promo_discount_2'] ?? 0)?>">Kelas 2</option>
+                                        <option value="<?=($_SESSION['bpjs_promo_discount_3'] ?? 0)?>">Kelas 3</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        <?php
+                    }
+                ?>
+
                 <tr>
                     <td align="right">Subtotal</td>
                     <td>:</td>
