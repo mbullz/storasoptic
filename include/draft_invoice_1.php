@@ -431,3 +431,21 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
         </tr>
     </table>
 </body>
+
+<script type="text/javascript" language="javascript" src="../js/jquery-3.4.0.min.js"></script>
+<script type="text/javascript">
+    window.onafterprint = (event) => {
+        $.ajax({
+            url: 'global_ajax.php',
+            type: 'POST',
+            dataType: 'json',
+            data: 'mode=open_cash_drawer',
+            success: function(result) {
+                alert('success');
+            },
+            complete: function() {
+                alert('complete');
+            },
+        });
+    };
+</script>

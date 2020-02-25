@@ -92,5 +92,9 @@
 			));
 
 			break;
+
+		case 'open_cash_drawer':
+			system("cmd /c C:\\RP58\\open_cash_drawer.bat");
+			break;
 	}
 ?>
