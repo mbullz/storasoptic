@@ -435,17 +435,6 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
 <script type="text/javascript" language="javascript" src="../js/jquery-3.4.0.min.js"></script>
 <script type="text/javascript">
     window.onafterprint = (event) => {
-        $.ajax({
-            url: 'rp58:open',
-            type: 'GET',
-            success: function(result) {
-                alert(result);
-            },
-            complete: function() {
-                alert('complete');
-            },
-        });
-
         // window.location = "rp58:open";
     };
 </script>
