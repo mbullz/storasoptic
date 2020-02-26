@@ -430,11 +430,14 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
             <td align="center"><?=$row_gkary['kontak']?></td>
         </tr>
     </table>
+
+    <div id="iframe" style="visibility: hidden;width: 0px;height: 0px;"></div>
 </body>
 
 <script type="text/javascript" language="javascript" src="../js/jquery-3.4.0.min.js"></script>
 <script type="text/javascript">
     window.onafterprint = (event) => {
-        // window.location = "rp58:open";
+        $('#iframe').html('<iframe src="rp58:open"></iframe>');
+        $('#iframe').html('');
     };
 </script>
