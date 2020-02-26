@@ -448,6 +448,6 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
         });
         */
 
-        window.location = "rp58:open";
+        window.location = "rp57:open";
     };
 </script>
