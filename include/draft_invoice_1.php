@@ -434,6 +434,7 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
 
 <script type="text/javascript" language="javascript" src="../js/jquery-3.4.0.min.js"></script>
 <script type="text/javascript">
+    /*
     window.onafterprint = (event) => {
         $.ajax({
             url: 'global_ajax.php',
@@ -441,11 +442,12 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
             dataType: 'json',
             data: 'mode=open_cash_drawer',
             success: function(result) {
-                alert('success');
+                //alert('success');
             },
             complete: function() {
-                alert('complete');
+                //alert('complete');
             },
         });
     };
+    */
 </script>
