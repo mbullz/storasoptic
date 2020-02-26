@@ -438,6 +438,5 @@ $row_gkary   = mysqli_fetch_assoc($gkary);
 <script type="text/javascript">
     window.onafterprint = (event) => {
         $('#iframe').html('<iframe src="rp58:open"></iframe>');
-        $('#iframe').html('');
     };
 </script>
