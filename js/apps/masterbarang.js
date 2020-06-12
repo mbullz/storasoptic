@@ -646,7 +646,7 @@ $(document).ready(function()
 		data: data,
 		deferRender: true,
 		order: [
-			[2, 'asc']
+			//[2, 'asc']
 		],
 		rowId: [0],
 		"footerCallback": function ( row, data, start, end, display )

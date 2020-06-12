@@ -25,7 +25,7 @@ if ($branch_id != 0) {
 				WHERE a.tipe = $tipe 
 				$stock_filter 
 				$branch_filter 
-				ORDER BY b.jenis ASC, a.barang ASC ";
+				ORDER BY b.jenis ASC, a.barang ASC, a.kode ASC, a.frame DESC, a.color DESC, a.power_add DESC ";
 }
 else {
 	$query_data = "SELECT a.kode, b.jenis, a.barang, a.frame, a.color, a.power_add, SUM(qty) AS qty 
@@ -34,7 +34,7 @@ else {
 		WHERE a.tipe = $tipe 
 		$stock_filter 
 		GROUP BY a.kode, b.jenis, a.barang, a.frame, a.color, a.power_add 
-		ORDER BY b.jenis ASC, a.barang ASC ";
+		ORDER BY b.jenis ASC, a.barang ASC, a.kode ASC, a.frame DESC, a.color DESC, a.power_add DESC ";
 }
 
 $data = $mysqli->query($query_data);
