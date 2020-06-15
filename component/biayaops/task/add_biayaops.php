@@ -108,6 +108,11 @@ table ul li {
           <option value="BIAYA KONSUMSI">BIAYA KONSUMSI</option>
           <option value="BIAYA TRANSPORT">BIAYA TRANSPORT</option>
           <option value="BIAYA PENGIRIMAN">BIAYA PENGIRIMAN</option>
+          <option value="BIAYA GAJI">BIAYA GAJI</option>
+          <option value="BIAYA SERVICE CHARGE">BIAYA SERVICE CHARGE</option>
+          <option value="BIAYA SEWA">BIAYA SEWA</option>
+          <option value="BIAYA PENYUSUTAN">BIAYA PENYUSUTAN</option>
+          <option value="BIAYA PARKIR">BIAYA PARKIR</option>
           <option value="BIAYA LAIN-LAIN">BIAYA LAIN-LAIN</option>
         </select>
       </td>
