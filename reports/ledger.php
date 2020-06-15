@@ -13,7 +13,7 @@ $db = new DBHelper($mysqli);
 $start = $_GET['start'];
 $end = $_GET['end'];
 
-$accounts = array('BIAYA OPERASIONAL', 'BIAYA LISTRIK', 'BIAYA TELEPHONE', 'BIAYA INTERNET', 'BIAYA KONSUMSI', 'BIAYA TRANSPORT', 'BIAYA PENGIRIMAN', 'BIAYA LAIN-LAIN');
+$accounts = array('BIAYA OPERASIONAL', 'BIAYA LISTRIK', 'BIAYA TELEPHONE', 'BIAYA INTERNET', 'BIAYA KONSUMSI', 'BIAYA TRANSPORT', 'BIAYA PENGIRIMAN', 'BIAYA GAJI', 'BIAYA SERVICE CHARGE', 'BIAYA SEWA', 'BIAYA PENYUSUTAN', 'BIAYA PARKIR', 'BIAYA LAIN-LAIN');
 
 $keluarbarangs = $db->getKeluarBarangByPeriode($start, $end);
 $costs = $db->getAllArusKas($start, $end, '%', 'piutang');
