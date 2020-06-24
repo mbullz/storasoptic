@@ -126,7 +126,7 @@ function onLoad()
 					url: 'component/masterbarang/task/_pindah_cabang.php',
 					type: 'POST',
 					data: "data=" + data,
-					success: function()
+					success: function(result)
 					{
 						alert("Sukses Memindahkan Barang Antar Cabang");
 

@@ -8,16 +8,6 @@
 
 	$branch_id = $data[0] ?? 0;
 
-	//$referensi = "PCB-" . date("ymd");
-	//$rs = $mysqli->query("SELECT referensi FROM keluarbarang WHERE referensi like '".$referensi."%'");
-	//$totalreferensi = mysqli_num_rows($rs);
-
-	//if ($totalreferensi < 9) $referensi .= "00" . ($totalreferensi+1);
-	//else if ($totalreferensi < 99) $referensi .= "0" . ($totalreferensi+1);
-	//else $referensi .= ($totalreferensi+1);
-
-	//echo $mysqli->query("INSERT INTO keluarbarang VALUES('$referensi',NOW(),NULL,$data[0],0,'',0,'Pindah Cabang','1','Cash')");
-
 	for ($i=1;$i<sizeof($data);$i++)
 	{
 		$temp = explode("-", $data[$i]);
@@ -31,13 +21,19 @@
 				$mysqli->query("UPDATE barang SET branch_id = $branch_id WHERE product_id = $product_id");
 			}
 			else if ($qty < $data2['qty']) {
+				$rs3 = $mysqli->query("SELECT * FROM barang WHERE kode = '$data2[kode]' AND brand_id = $data2[brand_id] AND barang = '$data2[barang]' AND frame = '$data2[frame]' AND color = '$data2[color]' AND power_add = '$data2[power_add]' AND info = '$data2[info]' AND tipe = $data2[tipe] AND branch_id = $branch_id");
+
+				//product exists in destination, update qty
+				if ($data3 = $rs3->fetch_assoc()) {
+					$mysqli->query("UPDATE barang SET qty = qty + $qty WHERE product_id = $data3[product_id]");
+				}
+				//new product
+				else {
+					$mysqli->query("INSERT INTO barang(kode, brand_id, barang, frame, color, power_add, qty, price, price2, kode_harga, info, ukuran, tipe, branch_id, created_user_id, created_date) VALUES('$data2[kode]', $data2[brand_id], '$data2[barang]', '$data2[frame]', '$data2[color]', '$data2[power_add]', $qty, $data2[price], $data2[price2], '$data2[kode_harga]', '$data2[info]', '$data2[ukuran]', $data2[tipe], $branch_id, $_SESSION[user_id], NOW())");
+				}
+
 				$mysqli->query("UPDATE barang SET qty = qty - $qty WHERE product_id = $product_id");
-				$mysqli->query("INSERT INTO barang(kode, brand_id, barang, frame, color, qty, price, price2, kode_harga, info, ukuran, tipe, tgl_masuk_akhir, tgl_keluar_akhir, branch_id, created_user_id, created_date) VALUES('$data2[kode]', $data2[brand_id], '$data2[barang]', '$data2[frame]', '$data2[color]', $data2[qty], $data2[price], $data2[price2], '$data2[kode_harga]', '$data2[info]', '$data2[ukuran]', $data2[tipe], '$data2[tgl_masuk_akhir]', '$data2[tgl_keluar_akhir]', $branch_id, $_SESSION[user_id], 'NOW()')");
 			}
 		}
-
-		//echo $mysqli->query("INSERT INTO dkeluarbarang VALUES(0,$temp[0],1,0,$temp[1],'0',0,'0','$referensi','',0,0,0,0,0,0,0,0,0,0,1,0,'0','0','')");
-
-		
 	}
 ?>
