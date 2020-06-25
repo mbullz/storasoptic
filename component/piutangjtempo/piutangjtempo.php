@@ -52,7 +52,8 @@ $(function() {
     tableTools:
     {
       "sSwfPath": "media/swf/copy_csv_xls_pdf.swf"
-    }
+    },
+    order: [],
   });
     
   $().ajaxStart(function() {
@@ -125,7 +126,7 @@ function viewInfo(infoID) {
 		$total_detbrg = mysqli_num_rows($detbrg);
 	  ?>
       <tr valign="top">
-        <td align="center"><?=genDate($row_data['tgl'])?></td>
+        <td align="center"><?=$row_data['tgl']?></td>
         <td align="center"><?php echo $row_data['referensi'];?></td>
         <td align="left"><?php echo $row_data['kontak'];?></td>
         <td align="right"><?php echo number_format($row_data['total'],0,',','.');?> <?php echo $row_data['matauang'];?></td>

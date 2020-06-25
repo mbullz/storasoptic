@@ -75,7 +75,8 @@ $(document).ready(function()
 		tableTools:
 		{
 			"sSwfPath": "media/swf/copy_csv_xls_pdf.swf"
-		}
+		},
+		order: [],
 	});
 		
 	$().ajaxStart(function() {
