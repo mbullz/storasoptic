@@ -164,6 +164,9 @@ $menu = array(
     'specialorder'  => array(
         '0'         => 'Special Order',
     ),
+    'penjualanorder'=> array(
+        '0'         => 'Penjualan Order',
+    ),
     'biayaops'          => array(
         '0'         => 'Biaya Operasional',
         'add'       => 'Biaya Operasional Baru',

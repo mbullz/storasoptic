@@ -129,6 +129,9 @@ menu5[2]='<a href="index-c-pembayaranpiutang.pos"><img src="images/invoices.png"
 <?php if(strstr($_SESSION['akses'],'specialorder')) { ?>
 menu5[3]='<a href="index-c-specialorder.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Special Order</a>'
 <?php } ?>
+<?php if(strstr($_SESSION['akses'],'penjualanorder')) { ?>
+menu5[4]='<a href="index-c-penjualanorder.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Penjualan Order</a>'
+<?php } ?>
 <?php if(strstr($_SESSION['akses'],'barangkeluar')) { ?>
 //menu5[4]='<a href="index-c-barangkeluar.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Pengiriman Barang</a>'
 <?php } ?>

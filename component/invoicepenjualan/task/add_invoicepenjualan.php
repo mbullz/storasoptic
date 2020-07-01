@@ -610,6 +610,19 @@ table ul li {
       </td>
     </tr>
     <tr>
+        <td colspan="2">&nbsp;</td>
+        <td>
+            <ul>
+                <li style="display: table-row;">
+                    <div style="display: table-cell; vertical-align: middle;">
+                        <input type="checkbox" name="checkOrder" />
+                    </div>
+                    <div style="display: table-cell; vertical-align: middle;padding-top: 2px;">&nbsp;Penjualan Order</div>
+                </li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
         <td align="right">PPN</td>
         <td align="center">:</td>
         <td>

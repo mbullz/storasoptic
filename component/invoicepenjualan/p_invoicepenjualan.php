@@ -90,6 +90,8 @@ $carabayar_id = $_POST['carabayar_id'] ?? 1;
 $uang_muka = $_POST['uangMuka'] ?? 0;
 $info_pembayaran = $_POST['textInfoPembayaran'] ?? '';
 
+$checkOrder = $_POST['checkOrder'] ?? null;
+
 //------
 $data = $_POST['data'] ?? [];
 $jdata = count($data);
@@ -326,6 +328,15 @@ if (isset($error)) {
 				$upstok = $mysqli->query($query_upstok);
 				*/
 			}
+			}
+
+			//pre-order transaction
+			if ($checkOrder != null) {
+				//delete existing
+				$mysqli->query("DELETE FROM keluarbarang_order WHERE keluarbarang_id = $keluarbarang_id");
+
+				//insert
+				$mysqli->query("INSERT INTO keluarbarang_order(keluarbarang_id, status, created_by, created_at) VALUES($keluarbarang_id, 1, $_SESSION[user_id], NOW())");
 			}
 
 			if ($exe) {

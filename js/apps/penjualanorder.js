@@ -1,36 +1,4 @@
 
-function generateReport(){
-    var sp = $("#startPeriode").val();
-    var ep = $("#endPeriode").val();
-    var url = "";
-    var data = "";
-    
-    if (sp == '') {
-        alert('Tanggal mulai harus diisi');
-    } else if (ep == '') {
-        alert('Tanggal selesai harus diisi');
-    }
-    
-    if ($("#tipe1").prop('checked') == true) {
-        var tipe = $("#tipe").val();
-        data = '?mode=1&tipe=' + tipe + '&sp=' + sp + '&ep=' + ep;
-    } else if ($("#tipe2").prop('checked') == true) {
-        var order = $("#urutanPenjualan").val();
-        data = '?mode=2&order=' + order + '&sp=' + sp + '&ep=' + ep;
-    }
-	else if ($("#tipe3").prop('checked') == true)
-	{
-        data = '?mode=3&sp=' + sp + '&ep=' + ep;
-    }
-	else {
-        return ;
-    }
-	
-	url = 'component/invoicepenjualan/task/report_invoicepenjualan.php';
-    
-    NewWindow(url + data,'name','900','600','yes');
-}
-
 function getInfo(row, tr, keluarbarang_id) {
 	var html = '';
 	$.ajax({
@@ -44,23 +12,7 @@ function getInfo(row, tr, keluarbarang_id) {
 			if (Object.keys(result.dkeluarbarang).length > 0)
 			{
 				var keluarbarang = result.keluarbarang;
-				var lunas = keluarbarang.lunas == '1' ? '<font class="text-success">Lunas</font>' : '<font class="text-danger">Belum Lunas</font>';
 				var dkeluarbarang_info = '';
-
-				// keluarbarang
-				html += '<tr>';
-				html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Status</td>';
-				html += '<td class="text-left">' + lunas + '</td>';
-				html += '</tr>';
-
-				/*
-				if (keluarbarang.lunas == '0') {
-					html += '<tr>';
-					html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Piutang</td>';
-					html += '<td class="text-left"><font class="text-danger">Rp ' + print_number(keluarbarang.round) + '</font>&nbsp;&nbsp;&nbsp;(Jatuh Tempo : ' + keluarbarang.ship_date + ')</td>';
-					html += '</tr>';
-				}
-				*/
 
 				// dkeluarbarang
 				html += '<tr>';
@@ -72,9 +24,6 @@ function getInfo(row, tr, keluarbarang_id) {
 				html += '<tr>';
 				html += '<th class="text-left">Barang</th>';
 				html += '<th class="text-right">Qty</th>';
-				html += '<th class="text-right">Harga</th>';
-				html += '<th class="text-right">Diskon</th>';
-				html += '<th class="text-right">Subtotal</th>';
 				html += '</tr>';
 				html += '</thead>';
 
@@ -116,14 +65,6 @@ function getInfo(row, tr, keluarbarang_id) {
 						html += '<tr>';
 						html += '<td class="text-left">' + product + '</td>';
 						html += '<td class="text-right">' + print_number(data.qty) + '</td>';
-						html += '<td align="right">' + print_number(data.harga) + '</td>';
-						
-						html += '<td align="right">';
-						if (data.tdiskon == '1') html += print_number(data.diskon) + ' %';
-						else html += print_number(data.diskon);
-						html += '</td>';
-
-						html += '<td align="right">' + print_number(subtotal) + '</td>';
 
 						html += '</tr>';
 					}
@@ -177,44 +118,13 @@ function getInfo(row, tr, keluarbarang_id) {
 						product += '</tbody>';
 						product += '</table>';
 
-						product += '<button type="button">Gagal Potong Kiri</button>&nbsp;';
-						product += '<button type="button">Gagal Potong Kanan</button>';
-
 						html += '<tr>';
 						html += '<td class="text-left">' + product + '</td>';
 						html += '<td class="text-right">2</td>';
-						html += '<td align="right">' + print_number(data.harga_lensa) + '</td>';
-						
-						html += '<td align="right">';
-						html += print_number(data.diskon_lensa) + ' %';
-						html += '</td>';
-
-						html += '<td align="right">' + print_number(subtotal) + '</td>';
 
 						html += '</tr>';
 					}
 				}
-
-				// ppn
-				var ppn = parseInt(keluarbarang.ppn);
-				var total = parseInt(keluarbarang.total);
-				if (ppn > 0) {
-					html += '<tr>';
-					html += '<td colspan="4" class="text-right">Total</td>';
-					html += '<td class="text-right">' + print_number(totalBeforePpn) + '</td>';
-					html += '</tr>';
-
-					html += '<tr>';
-					html += '<td colspan="4" class="text-right">PPN ' + ppn + '%</td>';
-					html += '<td class="text-right">' + print_number(Math.round(totalBeforePpn * (ppn/100))) + '</td>';
-					html += '</tr>';
-				}
-
-				// Grand Total
-				html += '<tr>';
-				html += '<td colspan="4" class="text-right"><strong>Grand Total</strong></td>';
-				html += '<td class="text-right"><strong>' + print_number(keluarbarang.total) + '</strong></td>';
-				html += '</tr>';
 
 				html += '</tbody>';
 				html += '</table>';
@@ -226,41 +136,6 @@ function getInfo(row, tr, keluarbarang_id) {
 				html += '<tr>';
 				html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Keterangan</td>';
 				html += '<td class="text-left">' + nl2br(dkeluarbarang_info) + '</td>';
-				html += '</tr>';
-
-				// payment
-				html += '<tr>';
-				html += '<td width="10%" style="vertical-align:middle;" class="text-center text-secondary">Pembayaran</td>';
-				html += '<td>';
-
-				html += '<table width="50%" class="table table-bordered">';
-				html += '<thead>';
-				html += '<tr>';
-				html += '<th class="text-center">Tanggal</th>';
-				html += '<th class="text-right">Jumlah</th>';
-				html += '<th class="text-left">Keterangan</th>';
-				html += '</tr>';
-				html += '</thead>';
-
-				html += '<tbody>';
-
-				for (i=0;i<Object.keys(result.payments).length;i++) {
-					var data = result.payments[i];
-
-					html += '<tr>';
-					html += '<td class="text-center">' + data.tgl + '</td>';
-					html += '<td class="text-right">' + print_number(data.jumlah) + '</td>';
-					html += '<td class="text-left">';
-					html += '<span class="badge badge-primary" style="font-size:11px;">' + data.pembayaran + '</span> ';
-					html += data.info
-					html += '</td>';
-					html += '</tr>';
-				}
-
-				html += '</tbody>';
-				html += '</table>';
-
-				html += '</td>';
 				html += '</tr>';
 			}
 
@@ -275,6 +150,21 @@ function getInfo(row, tr, keluarbarang_id) {
 	});
 }
 
+function updateStatus(keluarbarang_order_id) {
+	var c = confirm('Are you sure?');
+
+	if (c) {
+		$.ajax({
+			url: 'component/penjualanorder/p_penjualanorder.php',
+			type: 'POST',
+			data: 'keluarbarang_order_id=' + keluarbarang_order_id,
+			success: function(result) {
+				$('#result').html(result);
+			},
+		});
+	}
+}
+
 $(document).ready(function()
 {
 	var table = $("#example").DataTable(
@@ -284,19 +174,18 @@ $(document).ready(function()
             'copy', 'csv', 'excel', 'pdf', 'print'
         ],
         columns: [
-			{ data: [1], orderable: false },
-			{ className: 'details-control', data: [2], orderable: false },
+			{ className: 'details-control', data: [1], orderable: false },
+			{ data: [2] },
 			{ data: [3] },
 			{ data: [4] },
-			{ data: [5] },
-			{ className: ' text-right td-nowrap ', data: [6] },
-			{ className: ' text-center ', data: [7] },
+			{ className: '', data: [5] },
+			{ className: ' text-center ', data: [6], orderable: false },
 		],
 		createdRow: function(row, data, dataIndex) {
-			if (data[8] == 1) {
+			if (data[7] == 1) {
 				$(row).addClass(' status-order ');
 			}
-			else if (data[8] == 2) {
+			else if (data[7] == 2) {
 				$(row).addClass(' status-ready ');
 			}
 		},
@@ -372,6 +261,7 @@ $(document).ready(function()
   $(this).hide();
   });
 })
+
 // --- show / hide info
 function viewInfo(infoID) {
 	$(document).ready(function() {

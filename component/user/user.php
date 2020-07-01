@@ -59,12 +59,15 @@ $(document).ready(function() {
             <!--<a href="index-c-<?php echo $c;?>-t-add.pos"><img src="images/add.png" border="0"/>&nbsp;Tambah Data</a>-->
           <?php endif; ?>
         </td>
-        <td colspan="3" align="right"><label>
+        <td colspan="3" align="right">
+          <!--
+          <label>
             <input name="q" type="text" id="q" value="<?php echo $q;?>" size="30" onkeypress="return event.keyCode!=13;"/>
           </label>
           <label>
             <input name="Search" type="button" id="Search" value="Pencarian" onclick="window.location='index-c-<?php echo $_GET['component'];?>-q-' + document.getElementById('q').value.replace(/ /g,'+') + '.pos';"/>
           </label>
+          -->
         </td>
       </tr>
       <tr>
