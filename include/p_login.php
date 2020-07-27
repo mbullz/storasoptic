@@ -21,6 +21,7 @@ $pass   = $mysqli->real_escape_string($_POST['password']);
 				$_SESSION['is_admin'] = false;
 			}
 
+			$_SESSION['role'] = $data2['jabatan'];
 			$_SESSION['is_logged_in'] = true;
 			$_SESSION['nama'] = $data2['kontak'];
 			$_SESSION['akses'] = $data2['akses'];

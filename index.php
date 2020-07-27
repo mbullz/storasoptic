@@ -157,7 +157,7 @@ include('include/function.php');
   <div id="welcome" style="margin-left: 50px;">
     Selamat Datang ,  <strong><a href="index-c-profile.pos"><?php echo $_SESSION['nama'];?></a></strong>
     [ <a href="logout.php" title="Logout">Logout</a> ]
-    <?php if ($_SESSION['is_admin']): ?>
+    <?php if ($_SESSION['is_admin'] || $_SESSION['role'] == 'Co-Administrator'): ?>
     <select id="branch_id" style="margin-left: 16px;" onchange="changeBranch(this.value)">
       <option value="0">ALL</option>
       <?php
