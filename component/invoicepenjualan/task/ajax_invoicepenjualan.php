@@ -273,5 +273,11 @@
 
 	        echo json_encode($arr);
         break;
+
+        case 'get_customer_last_lens_size':
+        	$user_id = $_GET['user_id'] ?? 0;
+
+        	
+        break;
 	}
 ?>

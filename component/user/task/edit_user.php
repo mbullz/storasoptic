@@ -388,9 +388,9 @@ input[type='checkbox'] {
 					-->
 
 					<tr>
-						
 						<th valign="top">Cara Pembayaran</th>
 						<th valign="top">Laporan</th>
+						<th valign="top">Absensi</th>
 					</tr>
 
 					<tr>
@@ -419,6 +419,10 @@ input[type='checkbox'] {
 							<input name="per[]" type="checkbox" id="per[]3" value="reportrugilaba" <?php if(strstr($row_edit['akses'],'reportrugilaba')) { ?>checked="checked"<?php } ?>/> Rugi Laba Perusahaan
 							-->
 							<input name="per[]" type="checkbox" id="per[]" value="report_all" <?php if(strstr($row_edit['akses'],'report_all')) echo 'checked="checked"'; ?> /> Laporan
+						</td>
+
+						<td valign="top">
+							<input name="per[]" type="checkbox" id="per[]" value="presence" <?php if(strstr($row_edit['akses'],'presence')) echo 'checked="checked"'; ?> /> Absensi
 						</td>
 					</tr>
 				</table>

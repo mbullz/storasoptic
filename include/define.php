@@ -187,5 +187,8 @@ $menu = array(
     'report_all'    => array(
         '0'         => 'Laporan',
     ),
+    'presence'      => array(
+        '0'         => 'Absensi',
+    ),
 );
 ?>

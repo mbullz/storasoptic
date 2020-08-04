@@ -15,6 +15,10 @@ function refreshCustomer(keyword) {
 	});
 }
 
+function onChangeCustomer() {
+	
+}
+
 function refreshTipe() {
 	var tipe = $("#tipe").val();
 	

@@ -223,7 +223,7 @@ table ul li {
       <td align="center">:</td>
 		<td>
           	<input type="text" placeholder="Cari Customer" maxlength="15" size="15" onkeyup="refreshCustomer(this.value);" />
-        	<select name="customer" id="customer"></select>
+        	<select name="customer" id="customer" onchange="onChangeCustomer()"></select>
 		</td>
     </tr>
 	<tr>
