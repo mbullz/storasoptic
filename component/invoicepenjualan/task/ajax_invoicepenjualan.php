@@ -275,9 +275,20 @@
         break;
 
         case 'get_customer_last_lens_size':
-        	$user_id = $_GET['user_id'] ?? 0;
+        	$customer_id = $_GET['customer_id'] ?? 0;
 
-        	
+        	$rs = $mysqli->query("SELECT a.rSph, a.rCyl, a.rAxis, a.rAdd, a.rPd, 
+        								a.lSph, a.lCyl, a.lAxis, a.lAdd, a.lPd 
+									FROM dkeluarbarang a 
+									JOIN keluarbarang b ON a.keluarbarang_id = b.keluarbarang_id 
+									WHERE b.client = $customer_id 
+									AND (a.tipe = 3 OR a.tipe = 5)
+									ORDER BY b.tgl DESC, b.keluarbarang_id DESC, a.id DESC 
+									LIMIT 0,1 ");
+
+        	$data = $rs->fetch_assoc();
+
+        	echo json_encode($data);
         break;
 	}
 ?>

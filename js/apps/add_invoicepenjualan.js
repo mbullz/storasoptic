@@ -16,7 +16,45 @@ function refreshCustomer(keyword) {
 }
 
 function onChangeCustomer() {
-	
+	var customer_id = $('#customer').val();
+
+	$.ajax({
+		url: 'component/invoicepenjualan/task/ajax_invoicepenjualan.php',
+		type: 'GET',
+		dataType: 'json',
+		data: 'mode=get_customer_last_lens_size&customer_id=' + customer_id,
+		success: function(result)
+		{
+			if (result != null) {
+				$('#rSph').val(formatLensSize(result.rSph));
+				$('#rCyl').val(formatLensSize(result.rCyl));
+				$('#rAxis').val(result.rAxis/100);
+				$('#rAdd').val(formatLensSize(result.rAdd));
+				$('#rPd').val(result.rPd);
+
+				$('#lSph').val(formatLensSize(result.lSph));
+				$('#lCyl').val(formatLensSize(result.lCyl));
+				$('#lAxis').val(result.lAxis/100);
+				$('#lAdd').val(formatLensSize(result.lAdd));
+				$('#lPd').val(result.lPd);
+			}
+			else {
+				$('#rSph').val('000');
+				$('#rCyl').val('000');
+				$('#rAxis').val('0');
+				$('#rAdd').val('000');
+				$('#rPd').val('56');
+
+				$('#lSph').val('000');
+				$('#lCyl').val('000');
+				$('#lAxis').val('0');
+				$('#lAdd').val('000');
+				$('#lPd').val('56');
+			}
+
+			getDetailLensa();
+		}
+	});
 }
 
 function refreshTipe() {
@@ -633,4 +671,12 @@ function resetField()
 	$('#hargaLensaSO').val('0');
 	$('#searchLensa').val('');
 	refreshLensa();
+}
+
+function formatLensSize(lens) {
+	if (lens == 0) lens = '000';
+	else if (lens < 100 && lens > 0) lens = '0' + lens;
+	else if (lens < 0 && lens > -100) lens = '-0' + (lens * -1);
+
+	return lens;
 }
