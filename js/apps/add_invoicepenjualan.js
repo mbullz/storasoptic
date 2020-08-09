@@ -11,6 +11,8 @@ function refreshCustomer(keyword) {
 				html += "<option value='" + result[i].user_id + "'>" + result[i].kontak + "</option>";
 			}
 			$("#customer").html(html);
+
+			onChangeCustomer();
 		}
 	});
 }
