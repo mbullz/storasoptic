@@ -131,7 +131,7 @@ while ($data = $rs->fetch_assoc()) {
 										<br />
 										<?=Carbon::parse($start)->addDays($i)->format('D')?>
 									</th>
-								<?
+								<?php
 							}
 						?>
 					</tr>
@@ -164,7 +164,7 @@ while ($data = $rs->fetch_assoc()) {
 												<td scope="row" class="text-center text-nowrap <?=$classLate?> <?=$classTooltip?> " <?=$tooltip?> >
 													<?=$time?>
 												</td>
-											<?
+											<?php
 										}
 									?>
 								</tr>
