@@ -1,5 +1,9 @@
 <?php
 
+echo "Maintenance";
+
+return;
+
 session_start();
 
 require "../include/config_db.php";
