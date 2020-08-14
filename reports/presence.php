@@ -7,12 +7,11 @@ require "../include/function.php";
 require '../vendor/autoload.php';
 
 use Carbon\Carbon;
-use Carbon\CarbonImmutable;
 
 $start = $_GET['start'];
 $end = $_GET['end'];
 
-$startDate = CarbonImmutable::parse($start);
+$startDate = Carbon::parse($start);
 
 $countDays = Carbon::parse($start)->diffInDays(Carbon::parse($end)) + 1;
 
@@ -59,7 +58,7 @@ while ($data = $rs->fetch_assoc()) {
 $rs = $mysqli->query("SELECT a.* 
 						FROM presence a 
 						JOIN kontak b ON a.user_id = b.user_id 
-						WHERE a.presence_date BETWEEN '$start' AND '$end' 
+						WHERE a.presence_date BETWEEN '$start' AND '$end 23:59:59' 
 						$branch_filter 
 						ORDER BY a.presence_date ASC");
 
@@ -128,9 +127,9 @@ while ($data = $rs->fetch_assoc()) {
 							for ($i = 0; $i < $countDays; $i++) {
 								?>
 									<th scope="col" class="text-center text-nowrap">
-										<?=$startDate->addDays($i)->format('j')?>
+										<?=Carbon::parse($start)->addDays($i)->format('j')?>
 										<br />
-										<?=$startDate->addDays($i)->format('D')?>
+										<?=Carbon::parse($start)->addDays($i)->format('D')?>
 									</th>
 								<?
 							}
@@ -154,7 +153,7 @@ while ($data = $rs->fetch_assoc()) {
 									<td scope="row" class="text-center"><?=$lateCount?></td>
 									<?php
 										for ($i = 0; $i < $countDays; $i++) {
-											$date = $startDate->addDays($i)->format('Y-m-d');
+											$date = Carbon::parse($start)->addDays($i)->format('Y-m-d');
 											$time = $presence[$user_id][$date][0] ?? null;
 											$note = $presence[$user_id][$date][1] ?? null;
 											$isLate = $presence[$user_id][$date]['late'] ?? false;
