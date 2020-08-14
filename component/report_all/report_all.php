@@ -27,7 +27,7 @@
 
 		if (start == '' || end == '') return;
 
-		window.open("reports/presence_new.php?start=" + start + "&end=" + end);
+		window.open("reports/presence.php?start=" + start + "&end=" + end);
 	}
 </script>
 
