@@ -5,6 +5,10 @@ global $branch_id;
 
 require('include/define.php');
 
+//$str = 'a&j';
+//echo htmlentities($str);
+$q = str_replace(':;:', '&', $q);
+
 $tipe = $_POST['tipe'] ?? 1;
 $emptyStock = $_POST['emptyStock'] ?? 0;
 
@@ -71,7 +75,8 @@ $row_header = array(
 
 			$edit = '';
 			if (strstr($_SESSION['akses'], "edit_".$c) && $branch_id != 0) {
-				$edit = '<a href="index.php?component='.$c.'&task=edit&id='.$product_id.'" title="Edit Data"><img src="images/edit_icon.png" width="16px" height="16px" /></a>';
+				//$edit = '<a href="index.php?component='.$c.'&task=edit&id='.$product_id.'" title="Edit Data"><img src="images/edit_icon.png" width="16px" height="16px" /></a>';
+				$edit = '<img src="images/edit_icon.png" width="16px" height="16px" title="Edit Data" style="cursor: pointer;" onclick="editProduct('.$product_id.')" />';
 			}
 
 			?>
@@ -112,6 +117,8 @@ $row_header = array(
 </style>
 
 <input type="hidden" id="totalRows_data" value="<?=$totalRows_data?>" />
+<input type="hidden" id="component" value="<?=$c?>" />
+<input type="hidden" id="old_search" value="<?=$q?>" />
 
 <h1>Master Barang</h1>
 

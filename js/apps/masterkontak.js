@@ -1,3 +1,4 @@
+
 function generateReport()
 {
     var sp = $("#startPeriode").val();
@@ -181,18 +182,16 @@ $(document).ready(function()
             'copy', 'csv', 'excel', 'pdf', 'print'
         ],
         columns: [
-			{ className: 'details-control', data: [1], orderable: false },
-			{ data: [2] },
+			{ className: ' details-control ', data: [1], orderable: false },
+			{ className: ' td-nowrap ', data: [2] },
 			{ data: [3] },
 			{ data: [4] },
 			{ data: [5] },
-			{ className: 'text-center', data: [6], orderable: false },
+			{ className: ' text-center ', data: [6], orderable: false },
 		],
 		data: data,
 		deferRender: true,
-		order: [
-			[1, 'asc']
-		],
+		order: [],
 		rowId: [0],
 	});
 	
@@ -235,14 +234,6 @@ $(document).ready(function()
             //tr.addClass('shown');
         }
 	});
-	
-	$().ajaxStart(function() {
-		$('#loading').show();
-		$('#result').hide();
-	}).ajaxStop(function() {
-		$('#loading').hide();
-		$('#result').fadeIn('slow');
-	});
 
 	$('#formdata').submit(function() {
 		$.ajax({
@@ -250,14 +241,11 @@ $(document).ready(function()
 			url: $(this).attr('action'),
 			data: $(this).serialize(),
 			success: function(data) {
-				$('#result').html(data);
 			}
 		})
 		return false;
 	});
-  $('#result').click(function(){
-  $(this).hide();
-  });
+
 })
 
 // --- show / hide kontak

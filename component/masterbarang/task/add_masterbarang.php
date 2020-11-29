@@ -373,7 +373,8 @@ if(isset($_POST['import'])) {  ?>
 									hot.setDataAtCell(change[0][0], 2, response.barang);
 									hot.setDataAtCell(change[0][0], 3, response.frame);
 									hot.setDataAtCell(change[0][0], 4, response.color);
-									hot.setDataAtCell(change[0][0], 6, response.price);
+									//hot.setDataAtCell(change[0][0], 6, response.price);
+									hot.setDataAtCell(change[0][0], 6, 0);
 									hot.setDataAtCell(change[0][0], 7, response.price2);
 									hot.setDataAtCell(change[0][0], 8, response.kode_harga);
 								break;
@@ -382,7 +383,8 @@ if(isset($_POST['import'])) {  ?>
 									hot.setDataAtCell(change[0][0], 1, response.brand_name);
 									hot.setDataAtCell(change[0][0], 2, response.barang);
 									hot.setDataAtCell(change[0][0], 5, response.color);
-									hot.setDataAtCell(change[0][0], 7, response.price);
+									//hot.setDataAtCell(change[0][0], 7, response.price);
+									hot.setDataAtCell(change[0][0], 7, 0);
 									hot.setDataAtCell(change[0][0], 8, response.price2);
 									hot.setDataAtCell(change[0][0], 9, response.kode_harga);
 								break;
@@ -390,7 +392,8 @@ if(isset($_POST['import'])) {  ?>
 								case '3':
 									hot.setDataAtCell(change[0][0], 1, response.brand_name);
 									hot.setDataAtCell(change[0][0], 2, response.barang);
-									hot.setDataAtCell(change[0][0], 7, response.price);
+									//hot.setDataAtCell(change[0][0], 7, response.price);
+									hot.setDataAtCell(change[0][0], 7, 0);
 									hot.setDataAtCell(change[0][0], 8, response.price2);
 									hot.setDataAtCell(change[0][0], 9, response.kode_harga);
 								break;
@@ -398,7 +401,8 @@ if(isset($_POST['import'])) {  ?>
 								case '4':
 									hot.setDataAtCell(change[0][0], 1, response.brand_name);
 									hot.setDataAtCell(change[0][0], 2, response.barang);
-									hot.setDataAtCell(change[0][0], 4, response.price);
+									//hot.setDataAtCell(change[0][0], 4, response.price);
+									hot.setDataAtCell(change[0][0], 4, 0);
 									hot.setDataAtCell(change[0][0], 5, response.price2);
 									hot.setDataAtCell(change[0][0], 6, response.kode_harga);
 								break;

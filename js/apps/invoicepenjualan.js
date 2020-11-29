@@ -284,28 +284,39 @@ $(document).ready(function()
             'copy', 'csv', 'excel', 'pdf', 'print'
         ],
         columns: [
-			{ data: [1], orderable: false },
-			{ className: 'details-control', data: [2], orderable: false },
-			{ data: [3] },
-			{ data: [4] },
-			{ data: [5] },
-			{ className: ' text-right td-nowrap ', data: [6] },
-			{ className: ' text-center ', data: [7] },
+			{ data: "checkbox", searchable: false, orderable: false },
+			{ className: 'details-control', data: null, defaultContent: "", searchable: false, orderable: false },
+			{ data: "tgl" },
+			{ data: "link_referensi" },
+			{ data: "customer_name" },
+			{ className: ' text-right td-nowrap ', data: "total", searchable: false },
+			{ className: ' text-center ', data: "lunas" },
 		],
 		createdRow: function(row, data, dataIndex) {
-			if (data[8] == 1) {
+			if (data["status_order"] == 1) {
 				$(row).addClass(' status-order ');
 			}
-			else if (data[8] == 2) {
+			else if (data["status_order"] == 2) {
 				$(row).addClass(' status-ready ');
 			}
 		},
-		data: data,
-		deferRender: true,
+		//data: data,
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+			"url": "component/invoicepenjualan/task/ajax_invoicepenjualan.php",
+			"type": "GET",
+			"data": function (d) {
+				d.mode = "get_data";
+				d.c = $('#c').val();
+				d.branch_id = $('#branch_id').val();
+			},
+		},
+		//deferRender: true,
 		order: [
 			//[2, 'desc']
 		],
-		rowId: [0],
+		//rowId: "keluarbarang_id",
 	});
 
 	$('#example tbody').on('click', 'td.details-control', function () {
@@ -372,9 +383,3 @@ $(document).ready(function()
   $(this).hide();
   });
 })
-// --- show / hide info
-function viewInfo(infoID) {
-	$(document).ready(function() {
-		$('#' + infoID).toggle();					   
-	})
-}

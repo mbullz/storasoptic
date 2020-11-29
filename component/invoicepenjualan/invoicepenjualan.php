@@ -2,74 +2,8 @@
 
 	global $mysqli, $c, $branch_id;
 
-	$branch_filter = '';
-	if ($branch_id != 0) {
-	    $branch_filter = " AND a.branch_id = $branch_id ";
-	}
-
-$query_data = "SELECT a.keluarbarang_id, a.referensi, a.tgl, a.total, a.info, 
-					b.kontak AS customer_name, b.user_id as customer_id, c.matauang, 
-					a.tipe_pembayaran , a.lunas, a.updated_by, 
-					d.kontak AS nama_sales, e.kontak AS nama_karyawan, 
-					f.status AS status_order 
-				FROM keluarbarang a 
-				JOIN kontak b ON b.user_id = a.client 
-				JOIN matauang c ON a.matauang_id = c.matauang_id 
-				LEFT JOIN kontak d ON a.sales = d.user_id 
-				LEFT JOIN kontak e ON a.updated_by = e.user_id 
-				LEFT JOIN keluarbarang_order f ON a.keluarbarang_id = f.keluarbarang_id 
-				WHERE 1 = 1 
-				$branch_filter 
-				ORDER BY a.tgl DESC, a.keluarbarang_id DESC ";
-
-$data = $mysqli->query($query_data);
-$totalRows_data = mysqli_num_rows($data);
-
 ?>
 
-<script type="text/javascript">
-	var data = [];
-
-	<?php
-		$rs = $mysqli->query($query_data);
-		while ($data = $rs->fetch_assoc()) {
-			$keluarbarang_id = $data['keluarbarang_id'];
-			$referensi = $data['referensi'];
-			$tgl = $data['tgl'];
-			$customer_name = htmlspecialchars($data['customer_name'], ENT_QUOTES);
-			$total = number_format($data['total'], 0, ',', '.');
-			$lunas = $data['lunas'];
-			$status_order = $data['status_order'] ?? 0;
-
-			$checkbox = '<input name="data[]" type="checkbox" value="'.$keluarbarang_id.'" />';
-
-			$link_referensi = '<a href="include/draft_invoice_1.php?keluarbarang_id='.$keluarbarang_id.'" target="_blank">'.$referensi.'</a>';
-
-			$edit = '';
-			if (strstr($_SESSION['akses'], "edit_".$c)) {
-				$edit = '<a href="index.php?component='.$c.'&task=edit&id='.$keluarbarang_id.'" title="Edit Data"><img src="images/edit_icon.png" width="16px" height="16px" /></a>';
-			}
-
-			if ($lunas == '1') $lunas = 'Lunas';
-			else $lunas = 'Piutang';
-
-			?>
-				data.push([
-					<?=$keluarbarang_id?>,
-					'<?=$checkbox?>',
-					'',
-					'<?=$tgl?>',
-					'<?=$link_referensi?>',
-					'<?=$customer_name?>',
-					'<?=$total?>',
-					'<?=$lunas?>',
-					//'<?=$edit?>',
-					<?=$status_order?>,
-				]);
-			<?php
-		}
-	?>
-</script>
 <script type="text/javascript" language="javascript" src="js/number_format.js"></script>
 <script type="text/javascript" language="javascript" src="js/apps/invoicepenjualan.js"></script>
 
@@ -100,6 +34,9 @@ $totalRows_data = mysqli_num_rows($data);
 <div id="result" style="display:none;"></div>
 
 <form id="formdata" name="formdata" method="post" action="component/<?php echo $c;?>/p_<?php echo $c;?>.php?p=mdelete">
+	<input type="hidden" name="c" id="c" value="<?=$c?>" />
+	<input type="hidden" name="branch_id" id="branch_id" value="<?=$branch_id?>" />
+
   <div class="tablebg">
 	<h1>Data Penjualan</h1>
 	
@@ -145,7 +82,9 @@ $totalRows_data = mysqli_num_rows($data);
 	  
 	  <br /><br />
 	  
-	  <div>
+
+		<!--
+		<div>
 				Periode: 
 				<span>
 					<input type="text" class="calendar" placeholder="Tanggal Mulai" name="startPeriode" id="startPeriode" size="20" />
@@ -183,6 +122,8 @@ $totalRows_data = mysqli_num_rows($data);
 				<br>
 				
 			  <input type="button" value="Cetak" onclick="generateReport();" />
-		  </div>
-  </div>
+		</div>
+		-->
+
+	</div>
 </form>

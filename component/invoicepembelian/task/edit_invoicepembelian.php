@@ -1,260 +1,207 @@
-<?php include('include/define.php');?>
 <?php
-$id = $_GET['id'];
-// query edit
-$query_edit = "select * from masukbarang where referensi='$id'";
-$edit = $mysqli->query($query_edit);
-$row_edit = mysqli_fetch_assoc($edit);
-$total_edit = mysqli_num_rows($edit);
-// get supplier
-$query_jkontak = "select a.kontak, a.kode, b.jenis from kontak a, jeniskontak b where a.jenis = b.kode AND b.klasifikasi ='supplier' AND a.aktif='1' order by b.jenis, a.kontak";
-$jkontak       = $mysqli->query($query_jkontak);
-$row_jkontak   = mysqli_fetch_assoc($jkontak);
-$total_jkontak = mysqli_num_rows($jkontak);
-// get mata uang
-$query_muang   = "select kode, matauang from matauang order by matauang";
-$muang         = $mysqli->query($query_muang);
-$row_muang     = mysqli_fetch_assoc($muang);
-$total_muang   = mysqli_num_rows($muang);
-// get masterbarang
-$query_mbarang = "select a.kode, a.barang, b.jenis from barang a, jenisbarang b where a.jenis = b.kode order by b.jenis, a.barang";
-$mbarang       = $mysqli->query($query_mbarang);
-$row_mbarang   = mysqli_fetch_assoc($mbarang);
-$total_mbarang = mysqli_num_rows($mbarang);
-// getsatuan
-$query_satuan = "select kode,satuan from satuan order by satuan";
-$satuan       = $mysqli->query($query_satuan);
-$row_satuan   = mysqli_fetch_assoc($satuan);
-$total_satuan = mysqli_num_rows($satuan);
-// list detail barang
-$query_detbrg = "select a.id, a.qty, b.kode, b.barang, a.subtotal, a.harga, a.tdiskon, a.diskon, c.satuan, d.jenis from dmasukbarang a, barang b, satuan c, jenisbarang d where a.barang = b.kode AND a.satuan = c.kode AND b.jenis = d.kode AND a.noreferensi='$row_edit[referensi]' order by a.id desc";
-$detbrg       = $mysqli->query($query_detbrg);
-$row_detbrg   = mysqli_fetch_assoc($detbrg);
-$total_detbrg = mysqli_num_rows($detbrg);
+
+global $mysqli, $c, $t, $branch_id;
+
+$branch_filter = '';
+if ($branch_id != 0) {
+	$branch_filter = " AND a.branch_id = $branch_id ";
+}
+
+$id = $_GET['id'] ?? 0;
+
+$query = "SELECT a.masukbarang_id, a.referensi, a.tgl, 
+			b.kontak AS supplier_name, 
+			( 
+				SELECT dt2.tipe 
+				FROM dmasukbarang dt1 
+				JOIN barang dt2 ON dt1.product_id = dt2.product_id 
+				WHERE dt1.masukbarang_id = a.masukbarang_id 
+				ORDER BY dt1.id ASC 
+				LIMIT 0,1 
+			) AS tipe 
+		FROM masukbarang a 
+		JOIN kontak b ON a.supplier = b.user_id 
+		WHERE masukbarang_id = $id 
+		$branch_filter ";
+
+$rs = $mysqli->query($query);
+$data = $rs->fetch_assoc();
+
+$masukbarang_id = $data['masukbarang_id'];
+$referensi = $data['referensi'];
+$tgl = $data['tgl'];
+$supplier_name = $data['supplier_name'];
+$tipe = $data['tipe'];
+
 ?>
-<script type="text/javascript" src="js/jquery.wysiwyg.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
 
-	$().ajaxStart(function() {
-		$('#loading').show();
-		$('#result').hide();
-	}).ajaxStop(function() {
-		$('#loading').hide();
-		$('#result').fadeIn('slow');
-	});
+<script type="text/javascript" language="javascript" src="js/number_format.js"></script>
+<script type="text/javascript" language="javascript" src="js/apps/edit_invoicepembelian.js"></script>
 
-	$('#edit').submit(function() {
-		$.ajax({
-			type: 'POST',
-			url: $(this).attr('action'),
-			data: $(this).serialize(),
-			success: function(data) {
-				$('#result').html(data);
-			}
-		})
-		return false;
-	});
-  $('#result').click(function(){
-  $(this).hide();
-  });
-})
+<h1>Edit Pembelian</h1>
 
-function setTipePembayaran(val) {
-    if (val == 1) { //cash
-        $("#jtempo").attr('disabled', 'disabled');
-    } else if (val == 2) { //jtempo
-        $("#jtempo").removeAttr('disabled');
-    }
-}
+<form name="form-edit" action="component/<?=$c?>/p_<?=$c?>.php?p=<?=$t?>" method="POST">
+	<input type="hidden" name="masukbarang_id" value="<?=$masukbarang_id?>" />
 
-$(function()
-  {
-      $('#keterangan').wysiwyg();
-  });
-</script>
-<style type="text/css">
-#result{ 
-	background-color: #F0FFED;
-	border: 1px solid #215800;
-	padding: 10px;
-	width: 400px;
-	margin-bottom: 20px;
-	position:absolute;
-	z-index:4;
-	margin-left:30%;
-}
-a.close {
-	float:right;
-}
-table, input, textarea, button {
-	font-family:Verdana, Arial, Helvetica, sans-serif;
-	font-size:11px;
-}
-table ul {
-	padding:0;
-	margin:0;
-}
-table ul li {
-	padding-left:20px;
-	list-style:none;	
-}
-</style>
-<link type="text/css" rel="stylesheet" href="css/jquery.wysiwyg.css" />
-<div id="loading" style="display:none;"><img src="images/loading.gif" alt="loading..." /></div>
-<div id="result" style="display:none;"></div>
-<h1> Edit Pembelian</h1> 
-<form action="component/<?php echo $c;?>/p_<?php echo $c;?>.php?p=<?php echo $t;?>" method="post" name="edit" id="edit">
-  <table width="100%" border="0" cellspacing="0" cellpadding="4">
-    <tr>
-      <td width="12%" align="right" valign="top">No. PO *</td>
-      <td width="1%" align="center" valign="top">:</td>
-      <td width="82%" valign="top"><label>
-        <input name="invoice" type="text" id="invoice" value="<?php echo $row_edit['referensi'];?>" size="10" maxlength="10" onfocus="this.blur();" />
-      </label><label>
-        <select name="matauang" id="matauang">
-          <option value="">Pilih Mata Uang</option>
-          <?php if($total_muang > 0) { do { ?>
-          <option value="<?php echo $row_muang['kode'];?>" <?php if($row_edit['matauang'] == $row_muang['kode']) { ?>selected="selected"<?php } ?>><?php echo $row_muang['matauang'];?></option>
-          <?php }while($row_muang = mysqli_fetch_assoc($muang)); } ?>
-        </select>
-      </label></td>
-    </tr>
-    <tr>
-      <td align="right" valign="top">Tanggal *</td>
-      <td align="center" valign="top">:</td>
-      <td valign="top"><label>
-        <input name="tgl" type="text" class="calendar" id="tgl" value="<?php echo $row_edit['tgl'];?>" size="10" maxlength="10"/>
-      </label>
-      </td>
-    </tr>
-    <tr>
-        <td align="right" valign="top">Pembayaran *</td>
-        <td align="center" valign="top">:</td>
-        <td valign="top">
-            <select id="tipePembayaran" name="tipePembayaran" onchange="setTipePembayaran(this.value);">
-                <option value="1" disabled="disabled">Cash</option>
-                <option value="2">Jatuh Tempo</option>
-            </select>
-            <label>
-                <input name="jtempo" type="text" class="calendar" id="jtempo" value="<?php echo date("Y-m-d");?>" size="10" maxlength="10" />
-            </label>
-        </td>
-    </tr>
-    <tr>
-      <td align="right" valign="top">Supplier *</td>
-      <td align="center" valign="top">:</td>
-      <td valign="top"><label>
-        <select name="supplier" id="supplier">
-          <option value="">Pilih Supplier</option>
-          <?php if($total_jkontak > 0) { do { ?>
-          <option value="<?php echo $row_jkontak['kode'];?>" <?php if($row_jkontak['kode']==$row_edit['supplier']) { ?>selected="selected"<?php } ?>><?php echo $row_jkontak['jenis'];?> - <?php echo $row_jkontak['kontak'];?></option>
-          <?php }while($row_jkontak = mysqli_fetch_assoc($jkontak)); } ?>
-        </select>
-      </label></td>
-    </tr>
-    <tr valign="top">
-      <td align="right">Detail Transaksi *</td>
-      <td align="center">:</td>
-      <td><div id="divManageInvoice">
-        <table width="100%" border="0" cellspacing="0" cellpadding="2" class="datatable">
-          <tr>
-            <th>Nama Barang</th>
-            <th width="6%">Qty</th>
-            <th width="10%">Satuan</th>
-            <th width="10%">Harga Satuan</th>
-            <th width="14%">Pot. Diskon</th>
-            <th width="10%">Sub Total</th>
-            <th width="8%">Pengaturan</th>
-          </tr>
-          <?php if($total_detbrg > 0) { $gtotal = 0; do { ?>
-        <tr valign="top">
-          <td><?php echo $row_detbrg['jenis'];?> - <?php echo $row_detbrg['barang'];?></td>
-          <td align="center"><?php echo $row_detbrg['qty'];?></td>
-          <td align="center"><?php echo $row_detbrg['satuan'];?></td>
-          <td align="right"><?php echo number_format($row_detbrg['harga'],0,',','.');?></td>
-          <td align="right"><?php if($row_detbrg['tdiskon']=='1') { echo $row_detbrg['diskon']." %"; }else{ echo number_format($row_detbrg['diskon'],0,',','.');}?></td>
-          <td align="right"><?php echo number_format($row_detbrg['subtotal'],0,',','.'); $gtotal += $row_detbrg['subtotal'];?></td>
-          <td width="10%" align="center"><a href="javascript:void(0);" onclick="manageInvoiceBeli('delete','<?php echo $row_detbrg['id'];?>');"><img src="images/close-icon.png" border="0" /> Hapus</a></td>
-        </tr>
-        <?php } while($row_detbrg = mysqli_fetch_assoc($detbrg)); ?>
-        <tr valign="top">
-          <td>&nbsp;</td>
-          <td align="center">&nbsp;</td>
-          <td align="center">&nbsp;</td>
-          <td align="right">Grand Total :</td>
-          <td align="right">&nbsp;</td>
-          <td align="right"><?php echo number_format($gtotal,0,',','.');?></td>
-          <td align="center"><input type="hidden" name="total" id="total" value="<?php echo $gtotal;?>"></td>
-        </tr>
-        <?php } ?>
-          <tr valign="top">
-            <td><label>
-              <input name="qbrg" type="text" id="qbrg" size="16" maxlength="30" placeholder="Cari Master Barang ..." onchange="getMasterBarang(this.value);"/>
-            </label>
-              <label id="divMBarang">
-                <select name="barang" id="barang">
-                  <option value="">Pilih Master Barang</option>
-                  <?php if($total_mbarang > 0) { do { ?>
-                  <option value="<?php echo $row_mbarang['kode'];?>"><?php echo $row_mbarang['jenis'];?> - <?php echo $row_mbarang['barang'];?></option>
-                  <?php }while($row_mbarang = mysqli_fetch_assoc($mbarang)); } ?>
-                </select>
-              </label></td>
-            <td align="center"><label>
-              <input name="qty" type="text" id="qty" size="4" maxlength="8" value="0" onchange="javascript:if(this.value &gt; 0) { this.form.subtotal.value = this.value * this.form.hsatuan.value; }else{ this.value=0;}"/>
-            </label></td>
-            <td align="center"><label>
-              <select name="satuan" id="satuan">
-                <option value="">Pilih Satuan</option>
-                <?php if($total_satuan > 0) { do { ?>
-                <option value="<?php echo $row_satuan['kode'];?>"><?php echo $row_satuan['satuan'];?></option>
-                <?php }while($row_satuan = mysqli_fetch_assoc($satuan)); } ?>
-              </select>
-            </label></td>
-            <td align="center"><label>
-              <input name="hsatuan" type="text" id="hsatuan" size="10" maxlength="10" value="0" onchange="javascript:if(this.value &gt; 0) { this.form.subtotal.value = this.value * this.form.qty.value; }else{ this.value=0;}"/>
-            </label></td>
-            <td align="center"><label>
-              <select name="tdiskon" id="tdiskon" style="font-size:9px;" onchange="javascript:if(this.form.tdiskon.value == 1) { this.form.subtotal.value = (this.form.hsatuan.value * this.form.qty.value) - ((this.form.hsatuan.value * this.form.qty.value * this.form.diskon.value) / 100); }else{ this.form.subtotal.value = (this.form.hsatuan.value * this.form.qty.value) - this.value; }">
-                <option value="0">Normal</option>
-                <option value="1">%</option>
-              </select>
-            </label>
-              <label>
-                <input name="diskon" type="text" id="diskon" size="8" maxlength="8" value="0" onchange="javascript:if(this.form.tdiskon.value == 1) { this.form.subtotal.value = (this.form.hsatuan.value * this.form.qty.value) - ((this.form.hsatuan.value * this.form.qty.value * this.value) / 100); }else{ this.form.subtotal.value = (this.form.hsatuan.value * this.form.qty.value) - this.value; }" style="font-size:9px;"/>
-              </label></td>
-            <td align="center"><label>
-              <input name="subtotal" type="text" id="subtotal" size="10" maxlength="10" value="0" onfocus="this.blur();" style="background:#DDD;border:solid 1px #BBB;"/>
-            </label></td>
-            <td align="center"><a href="javascript:void(0);" onclick="manageInvoiceBeli('add','');"><img src="images/add.png" border="0" /> Tambah</a></td>
-          </tr>
-        </table>
-      </div></td>
-    </tr>
-    <tr valign="top">
-      <td align="right">Info</td>
-      <td align="center">:</td>
-      <td><label>
-        <textarea name="info" id="info" cols="85" rows="5"><?php echo $row_edit['info'];?></textarea>
-      </label></td>
-    </tr>
-    <tr>
-      <td align="right">Lunas</td>
-      <td align="center" valign="top">:</td>
-      <td><label>
-        <input <?php if (!(strcmp($row_edit['lunas'],1))) {echo "checked=\"checked\"";} ?> name="lunas" type="checkbox" id="lunas" value="1" />
-      </label>
-        <small> Cek jika sudah lunas</small></td>
-    </tr>
-    <tr>
-      <td><em>*diisi</em></td>
-      <td align="center" valign="top">&nbsp;</td>
-      <td width="82%"><label>
-        <input name="Save" type="submit" id="Save" value="Simpan" />
-      </label>
-        <label>
-          <input name="Cancel" type="reset" id="Cancel" onclick="javascript:history.go(-1);" value="Batal"/>
-        </label></td>
-    </tr>
-  </table>
+	<div class="row mt-3">
+		<div class="col-sm-2 text-right text-secondary">
+			No. PO
+		</div>
+		<div class="col-sm-4 font-weight-bold">
+			<?=$referensi?>
+		</div>
+		<div class="col-sm-2 text-right text-secondary">
+			Tanggal
+		</div>
+		<div class="col-sm-4 font-weight-bold">
+			<?=$tgl?>
+		</div>
+	</div>
+
+	<div class="row mt-3">
+		<div class="col-sm-2 text-right text-secondary">
+			Supplier
+		</div>
+		<div class="col-sm-4 font-weight-bold">
+			<?=$supplier_name?>
+		</div>
+	</div>
+
+	<div class="row mt-3 mb-3">
+		<div class="col-sm-2 text-right text-secondary">
+			Detail
+		</div>
+		<div class="col-sm-4 font-weight-bold">
+			
+		</div>
+	</div>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">No.</th>
+				<th scope="col">Kode</th>
+				<th scope="col">Brand</th>
+				<th scope="col">Product</th>
+
+				<?php
+					switch ($tipe) {
+						case 1:
+							?>
+								<th scope="col">Frame</th>
+								<th scope="col">Color</th>
+							<?php
+						break;
+
+						case 2:
+							?>
+								<th scope="col">Minus</th>
+								<th scope="col">Color</th>
+								<th scope="col">Expiry Date</th>
+							<?php
+						break;
+
+						case 3:
+							?>
+								<th scope="col">SPH</th>
+								<th scope="col">CYL</th>
+								<th scope="col">ADD</th>
+							<?php
+						break;
+					}
+				?>
+
+				<th scope="col">Harga Jual</th>
+				<th scope="col">Harga Beli</th>
+				<th scope="col">Qty</th>
+				<th scope="col">Subtotal</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<?php
+				$query = "SELECT 
+							a.id, a.product_id, a.harga AS cost, a.qty, a.subtotal, 
+							b.kode, b.barang, b.frame, b.color, b.power_add, b.price2 AS price, b.ukuran, 
+							c.jenis AS brand_name 
+						FROM dmasukbarang a 
+						JOIN barang b ON a.product_id = b.product_id 
+						JOIN jenisbarang c ON b.brand_id = c.brand_id 
+						WHERE a.masukbarang_id = $masukbarang_id 
+						ORDER BY c.jenis ASC, b.kode ASC, b.barang ASC, b.frame ASC, b.color ASC, b.power_add ASC, b.ukuran ASC ";
+
+				$rs = $mysqli->query($query);
+			?>
+			
+			<?php
+				$i = 0;
+				$grandtotal = 0;
+			?>
+			<?php while ($data = $rs->fetch_assoc()): ?>
+				<?php
+					$i++;
+					$id = $data['id'];
+					$grandtotal += $data['subtotal'];
+				?>
+				
+				<tr>
+					<td scope="row"><?=$i?></td>
+					<td><?=$data['kode']?></td>
+					<td><?=$data['brand_name']?></td>
+					<td><?=$data['barang']?></td>
+					<td><?=$data['frame']?></td>
+					<td><?=$data['color']?></td>
+
+					<?php
+						switch ($tipe) {
+							case 2:
+								?>
+									<td><?=$data['ukuran']?></td>
+								<?php
+							break;
+
+							case 3:
+								?>
+									<td><?=$data['power_add']?></td>
+								<?php
+							break;
+						}
+					?>
+
+					<td><?=number_format($data['price'], 0)?></td>
+
+					<td>
+						<input type="hidden" name="id[]" value="<?=$id?>" />
+						<input type="hidden" name="product_id[]" value="<?=$data['product_id']?>" />
+						<input type="hidden" name="qty[]" value="<?=$data['qty']?>" />
+						<input type="number" name="cost[]" onkeyup="costChange(this.value, <?=$id?>)" style="width: 100px;" value="<?=$data['cost']?>" />
+					</td>
+					
+					<td id="qty-<?=$id?>"><?=$data['qty']?></td>
+					<td id="subtotal-<?=$id?>"><?=number_format($data['subtotal'], 0)?></td>
+				</tr>
+
+			<?php endwhile; ?>
+		</tbody>
+	</table>
+
+	<div class="row mt-3">
+		<div class="col-sm-2 text-right text-secondary">
+			Grand Total
+		</div>
+		<div id="grandtotal" class="col-sm-4 font-weight-bold">
+			<?=number_format($grandtotal, 0)?>
+		</div>
+	</div>
+
+	<div class="row mt-3 mb-3">
+		<div class="col-sm-2">
+			
+		</div>
+		<div class="col-sm-4">
+			<input type="submit" name="button-update" value="Update" class="btn btn-success btn-sm mr-1" />
+			<input type="reset" name="button-cancel" onclick="javascript:history.go(-1);" value="Cancel" class="btn btn-danger btn-sm" />
+		</div>
+	</div>
+	
 </form>

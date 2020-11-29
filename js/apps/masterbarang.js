@@ -623,6 +623,17 @@ function countChecked()
 	$("#totalChecked").html("(" + oTable.$('input:checked').size() + ")");
 }
 
+function editProduct(id) {
+	var c = $('#component').val();
+	var search = $('#example').DataTable().search();
+	//search = encodeURIComponent(search);
+	search = search.replace(/&/gi, ":;:");
+
+	var href = "index.php?component=" + c + "&task=edit&id=" + id + "&old_search=" + search;
+
+	window.location = href;
+}
+
 $(document).ready(function()
 {	
 	var table = $("#example").DataTable(
@@ -679,7 +690,13 @@ $(document).ready(function()
  
 			// Update footer
 			$( api.column( 8 ).footer() ).html( pageTotal + ' of ' + total );
-		}
+		},
+		"initComplete": function(settings, json) {
+			//alert(this);
+			//this.search("adidas").draw();
+			var old_search = $('#old_search').val();
+			this.api().search(old_search).draw();
+		},
 	});
 	
 	// Setup - add a text input to each footer cell
@@ -725,6 +742,18 @@ $(document).ready(function()
             //tr.addClass('shown');
         }
 	});
+
+	/*
+	table.on('init.dt', function() {
+		alert('oninit');
+	});
+	*/
+
+	/*
+	table.on('draw', function() {
+		alert(table.search());
+	});
+	*/
 
 });
 	

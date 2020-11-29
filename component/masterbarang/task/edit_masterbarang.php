@@ -10,6 +10,8 @@
 $db = new DBHelper($mysqli);
 
 $id = $_GET['id'];
+//$old_search = urlencode($_GET['old_search'] ?? '');
+$old_search = $_GET['old_search'];
 
 $b = new Barang();
 $b->setProductId($id);
@@ -262,7 +264,7 @@ table ul li {
 							?>
 								<option value="<?=$data2['kontak']?>" 
                                 <?php
-									if ($b->getInfo() == $data2['kontak']) echo "selected='selected'";
+									if (strtoupper($b->getInfo()) == strtoupper($data2['kontak'])) echo "selected='selected'";
                                 ?>><?=$data2['kontak']?></option>
 							<?php
 						}
@@ -277,7 +279,7 @@ table ul li {
         <input name="Save" type="submit" id="Save" value="Simpan" />
       </label>
         <label>
-          <input name="Cancel" type="reset" id="Cancel" onclick="javascript:window.location='<?=$base_url?>index-c-masterbarang.pos';" value="Batal"/>
+          <input name="Cancel" type="reset" id="Cancel" onclick="javascript:window.location='<?=$base_url?>index-c-masterbarang-q-<?=$old_search?>.pos';" value="Batal"/>
         </label></td>
     </tr>
   </table>

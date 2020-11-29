@@ -9,6 +9,15 @@
 			$branch_id = $_POST['branch_id'] ?? 0;
 			$_SESSION['branch_id'] = $branch_id;
 
+			if ($branch_id != 0) {
+				$rs3 = $mysqli->query("SELECT * FROM kontak WHERE user_id = $branch_id");
+				$data3 = $rs3->fetch_assoc();
+				$_SESSION['branch_name'] = $data3['kontak'];
+			}
+			else {
+				$_SESSION['branch_name'] = 'SEMUA CABANG';
+			}
+
 			$rs3 = $mysqli->query("SELECT * FROM config WHERE config = 'global_discount'");
 			$data3 = $rs3->fetch_assoc();
 			$temp = $data3['value'];

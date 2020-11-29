@@ -1,4 +1,7 @@
-<?php include('include/define.php');?>
+<?php
+include('include/define.php');
+global $mysqli;
+?>
 <?php
 // get supplier
 $query_jkontak = "select a.kontak, a.kode, b.jenis from kontak a, jeniskontak b where a.jenis = b.kode AND b.klasifikasi ='supplier' AND a.aktif='1' order by b.jenis, a.kontak";

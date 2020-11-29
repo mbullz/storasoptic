@@ -42,6 +42,8 @@ include('include/function.php');
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.3.0/css/tooltipster.min.css" integrity="sha512-awOgwBW6XldbPsuzBfoPhbi48OkYKn+TmMVwqD75MPrWnLvA6LN98sWdE4Jl17G4FHIyp8k/jFM9tfiGE8qFyw==" crossorigin="anonymous" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha512-rO2SXEKBSICa/AfyhEK5ZqWFCOok1rcgPYfGOqtX35OyiraBg6Xa4NnBJwXgpIRoXeWjcAmcQniMhp22htDc6g==" crossorigin="anonymous" />
 
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+
 	<link href="css/style.css" rel="stylesheet" type="text/css" />
 
 	<?php include('include/menu_js.php');?>

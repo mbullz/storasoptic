@@ -10,13 +10,13 @@ if ($branch_id != 0) {
 }
 
 $query_data = "SELECT 
-		a.id, a.tgl, a.referensi, a.jumlah, a.info, b.matauang, d.pembayaran 
+		a.id, a.tipe, a.account, a.tgl, a.referensi, a.jumlah, a.info, b.matauang, d.pembayaran 
 	FROM aruskas a 
 	JOIN matauang b ON a.matauang_id = b.matauang_id 
 	JOIN carabayar d ON a.carabayar_id = d.carabayar_id 
-	WHERE a.tipe='operasional' 
+	WHERE a.tipe = 'operasional' 
 	$branch_filter 
-	ORDER BY a.tgl DESC ";
+	ORDER BY a.tgl DESC, a.id DESC ";
 
 $data = $mysqli->query($query_data);
 ?>
@@ -42,7 +42,8 @@ $(document).ready(function()
 		tableTools:
 		{
 			"sSwfPath": "media/swf/copy_csv_xls_pdf.swf"
-		}
+		},
+		order: [],
 	});
 		
 	$().ajaxStart(function() {
@@ -108,10 +109,11 @@ $(document).ready(function()
 	<table id="example" class="display" cellspacing="0" cellpadding="0" width="100%">
 		<thead>
       <tr>
-        <th align="center"><font color="#0000CC">TANGGAL</font></th>
-        <th align="center"><font color="#0000CC">JUMLAH</font></th>
-        <th align="center"><font color="#0000CC">INFO</font></th>
-        <th align="center"><font color="#0000CC">&nbsp;</font></th>
+		<th class="text-center"><font color="#0000CC">TANGGAL</font></th>
+		<th class="text-center"><font color="#0000CC">JENIS</font></th>
+        <th class="text-center"><font color="#0000CC">JUMLAH</font></th>
+        <th class="text-center"><font color="#0000CC">INFO</font></th>
+        <th class="text-center"><font color="#0000CC">&nbsp;</font></th>
       </tr>
 		</thead>
         
@@ -119,9 +121,10 @@ $(document).ready(function()
       <?php $no=0; 
 	  while ($row_data = mysqli_fetch_assoc($data)) { ?>
       <tr valign="top">
-        <td align="center"><?=$row_data['tgl']?></td>
-        <td align="right"><?php echo number_format($row_data['jumlah'],0,',','.');?></td>
-        <td align="left"><?php echo $row_data['info'];?></td>
+		<td class="text-center"><?=$row_data['tgl']?></td>
+		<td><?=$row_data['account']?></td>
+        <td class="text-right"><?php echo number_format($row_data['jumlah'], 0);?></td>
+        <td><?php echo $row_data['info'];?></td>
         <td align="center">
         	<?php if(strstr($_SESSION['akses'],"edit_".$c)) { ?>
         		<!--

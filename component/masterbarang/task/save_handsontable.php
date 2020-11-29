@@ -193,7 +193,7 @@
 
 				$product_id = $result->id;
 
-				$mysqli->query("INSERT INTO dmasukbarang(id, masukbarang_id, product_id, satuan_id, harga, qty, tdiskon, diskon, subtotal) VALUES(0, $id, ".$b->getProductId().", 1, $price, $qty, '0', 0, '".($qty*$price)."')");
+				$mysqli->query("INSERT INTO dmasukbarang(id, masukbarang_id, product_id, satuan_id, harga, qty, tdiskon, diskon, subtotal) VALUES(0, $id, ".$result->id.", 1, $price, $qty, '0', 0, '".($qty*$price)."')");
 			}
 			
 		}
