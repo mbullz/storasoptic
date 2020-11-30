@@ -26,7 +26,7 @@ $query = "SELECT a.user_id, a.kontak, a.mulai, a.jabatan,
 
 			$globalAccess = '';
 			if ($jabatan == 'Administrator' || $jabatan == 'Co-Administrator') {
-				$globalAccess = '<img src="images/check.png" />';
+				$globalAccess = '<img src="images/check.png" height="16px" />';
 			}
 
 			$edit = '';
@@ -49,9 +49,11 @@ $query = "SELECT a.user_id, a.kontak, a.mulai, a.jabatan,
 	?>
 </script>
 
+<script type="text/javascript" language="javascript" src="js/apps/user.js"></script>
+
 <h1>User Internal</h1>
 
-<table id="example">
+<table id="example" class="display">
 	<thead>
 		<tr>
 			<th>Nama</th>

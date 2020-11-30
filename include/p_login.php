@@ -17,7 +17,7 @@ $pass   = $mysqli->real_escape_string($_POST['password']);
 							)");
 		if ($data2 = mysqli_fetch_assoc($rs2))
 		{
-			if ($data2['jabatan'] == 'Administrator') {
+			if ($data2['jabatan'] == 'Administrator' || $data2['jabatan'] == 'Co-Administrator') {
 				$_SESSION['i_sesadmin'] = 1;
 				$_SESSION['is_admin'] = true;
 			}
