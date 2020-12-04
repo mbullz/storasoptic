@@ -14,7 +14,7 @@ $password = $mysqli->real_escape_string($password);
 $password = md5($password);
 $note = $mysqli->real_escape_string($note);
 
-$rs = $mysqli->query("SELECT * FROM kontak WHERE kontak = '$username' AND pass = '$password' AND aktif = '1'");
+$rs = $mysqli->query("SELECT * FROM kontak WHERE kontak = '$username' AND pass = '$password' AND jenis = 'T001' AND aktif = '1'");
 
 if ($data = $rs->fetch_assoc()) {
 	$user_id = $data['user_id'];

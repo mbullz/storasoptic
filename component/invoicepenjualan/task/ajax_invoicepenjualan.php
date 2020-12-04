@@ -375,7 +375,8 @@
 
 			$query = "SELECT COUNT(*) AS records_total 
 					FROM keluarbarang a 
-					WHERE referensi != '' 
+					WHERE a.referensi != '' 
+					AND a.tgl BETWEEN NOW() - INTERVAL 180 DAY AND NOW() 
 					$branch_filter";
 
 			$rs = $mysqli->query($query);
@@ -385,7 +386,7 @@
 			$query = "SELECT COUNT(*) AS records_filtered 
 					FROM keluarbarang a 
 					JOIN kontak b ON a.client = b.user_id 
-					WHERE 1 = 1 
+					WHERE a.tgl BETWEEN NOW() - INTERVAL 180 DAY AND NOW() 
 					$branch_filter 
 					$search_filter ";
 
@@ -398,9 +399,9 @@
 						a.tipe_pembayaran , a.lunas, a.updated_by, 
 						f.status AS status_order 
 					FROM keluarbarang a 
-					JOIN kontak b ON b.user_id = a.client 
+					JOIN kontak b ON a.client = b.user_id 
 					LEFT JOIN keluarbarang_order f ON a.keluarbarang_id = f.keluarbarang_id 
-					WHERE 1 = 1 
+					WHERE a.tgl BETWEEN NOW() - INTERVAL 180 DAY AND NOW() 
 					$branch_filter 
 					$search_filter 
 					ORDER BY $orderBy a.keluarbarang_id DESC 

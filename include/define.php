@@ -190,5 +190,8 @@ $menu = array(
     'presence'      => array(
         '0'         => 'Absensi',
     ),
+    'kwitansi'     => array(
+        '0'         => 'Kwitansi',
+    ),
 );
 ?>

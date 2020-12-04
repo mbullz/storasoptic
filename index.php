@@ -234,16 +234,20 @@ include('include/function.php');
 	<div id="navigation">
 		<ul>
 		<li class="navbutton" onmouseover="this.className='navbuttonover';" onmouseout="this.className='navbutton';"><a href="index.php">Home</a></li>
-		<?php if(strstr($_SESSION['akses'],'user') OR strstr($_SESSION['akses'],'lokasigudang') OR strstr($_SESSION['akses'],'matauang') OR strstr($_SESSION['akses'],'cbayar') OR strstr($_SESSION['akses'],'satuan') OR strstr($_SESSION['akses'],'jenisbarang') OR strstr($_SESSION['akses'],'masterbarang') OR strstr($_SESSION['akses'],'targetpenjualan')) { ?>
+		
+		<?php if( strstr($_SESSION['akses'],'lokasigudang') OR strstr($_SESSION['akses'],'jenisbarang') OR strstr($_SESSION['akses'],'masterbarang') ) { ?>
 		<li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu11, '');" onmouseout="this.className='navbutton';delayhidemenu();">Gudang</li>
 		<?php } ?>
+
 		 <?php if(strstr($_SESSION['akses'],'jeniskontak') OR strstr($_SESSION['akses'],'masterkontak')) { ?>
 		<li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu1, '');" onmouseout="this.className='navbutton';delayhidemenu();">Data Kontak</li>
 		<?php } ?>
+		
 		<!--<li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu4, '');" onmouseout="this.className='navbutton';delayhidemenu();">Hari ini</li>-->
 		<?php if(strstr($_SESSION['akses'],'barangmasuk') OR strstr($_SESSION['akses'],'barangreturmasuk') OR strstr($_SESSION['akses'],'barangkeluar') OR strstr($_SESSION['akses'],'barangreturkeluar')) { ?>
 		<!--<li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu3, '');" onmouseout="this.className='navbutton';delayhidemenu();">Inventory</li>-->
 		<?php } ?>
+
 		<?php if(strstr($_SESSION['akses'],'invoicepembelian') OR strstr($_SESSION['akses'],'hutangjtempo') OR strstr($_SESSION['akses'],'pembayaranhutang') OR strstr($_SESSION['akses'],'add_invoicepembelian')) { ?>
 		<li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu4, '');" onmouseout="this.className='navbutton';delayhidemenu();">Pembelian</li>
 		<?php } ?>
@@ -252,7 +256,7 @@ include('include/function.php');
 		<li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu5, '');" onmouseout="this.className='navbutton';delayhidemenu();">Penjualan</li>
 		<?php } ?>
 		
-		<?php if(strstr($_SESSION['akses'],'pembayaranhutang') OR strstr($_SESSION['akses'],'pembayaranpiutang') OR strstr($_SESSION['akses'],'biayaops')) { ?>
+		<?php if( strstr($_SESSION['akses'],'biayaops') ) { ?>
 		<li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu7, '');" onmouseout="this.className='navbutton';delayhidemenu();">Arus Kas</li>
 		<?php } ?>
 
@@ -260,18 +264,22 @@ include('include/function.php');
 		<li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu13, '');" onmouseout="this.className='navbutton';delayhidemenu();">Laporan</li>
 	<?php endif; ?>
 
-		<?php if(strstr($_SESSION['akses'],'user') OR strstr($_SESSION['akses'],'lokasigudang') OR strstr($_SESSION['akses'],'matauang') OR strstr($_SESSION['akses'],'cbayar') OR strstr($_SESSION['akses'],'satuan') OR strstr($_SESSION['akses'],'jenisbarang') OR strstr($_SESSION['akses'],'masterbarang') OR strstr($_SESSION['akses'],'targetpenjualan')) { ?>
-		<li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu2, '');" onmouseout="this.className='navbutton';delayhidemenu();">Pengaturan</li>
-		<?php } ?>
-
 		<?php /* if(strstr($_SESSION['akses'],'reportjualper_pm') OR strstr($_SESSION['akses'],'reportjualper_customer') OR strstr($_SESSION['akses'],'reportjualper_barang') OR strstr($_SESSION['akses'],'reportrugilaba')) { ?>
 		<li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu6, '');" onmouseout="this.className='navbutton';delayhidemenu();">Laporan</li>
 		<?php } */ ?>
 		 <!--<li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu7, '');" onmouseout="this.className='navbutton';delayhidemenu();">Bantuan</li>-->
 
+		 <?php if (strstr($_SESSION['akses'], 'kwitansi')): ?>
+			<li class="navbutton" onmouseover="this.className='navbuttonover';" onmouseout="this.className='navbutton';"><a href="index-c-kwitansi.pos">Kwitansi</a></li>
+		<?php endif; ?>
+
 		 <?php if (strstr($_SESSION['akses'], 'presence')): ?>
 			<li class="navbutton" onmouseover="this.className='navbuttonover';" onmouseout="this.className='navbutton';"><a href="index-c-presence.pos" target="_blank">Absensi</a></li>
 		<?php endif; ?>
+
+		<?php if(strstr($_SESSION['akses'],'user') OR strstr($_SESSION['akses'],'lokasigudang') OR strstr($_SESSION['akses'],'matauang') OR strstr($_SESSION['akses'],'cbayar') OR strstr($_SESSION['akses'],'satuan') OR strstr($_SESSION['akses'],'targetpenjualan')) { ?>
+		<li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu2, '');" onmouseout="this.className='navbutton';delayhidemenu();">Pengaturan</li>
+		<?php } ?>
 
 		 <li class="navbutton" onmouseover="this.className='navbuttonover';" onmouseout="this.className='navbutton';"><a href="index.php?component=copyright">Copyright</a></li>
 		</ul>

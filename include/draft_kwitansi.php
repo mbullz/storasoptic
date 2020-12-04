@@ -4,74 +4,40 @@ include('config_db.php');
 include('function.php');
 include('config.php');
 
-$keluarbarang_id = $_GET['keluarbarang_id'] ?? 0;
 $aruskas_id = $_GET['aruskas_id'] ?? 0;
 
-$rs = $mysqli->query("SELECT 
-    a.*, b.kontak AS customer_name, c.kontak AS karyawan_name 
-    FROM keluarbarang a 
-    JOIN kontak b ON a.client = b.user_id 
-    JOIN kontak c ON a.updated_by = c.user_id 
-    WHERE keluarbarang_id = $keluarbarang_id ");
+$query = "SELECT a.*, b.kontak AS customer_name, c.kontak AS karyawan_name, 
+            d.jumlah, d.info 
+        FROM aruskas d 
+        JOIN keluarbarang a ON d.transaction_id = a.keluarbarang_id 
+        JOIN kontak b ON a.client = b.user_id 
+        JOIN kontak c ON a.updated_by = c.user_id 
+        WHERE d.id = $aruskas_id ";
+
+$rs = $mysqli->query($query);
 
 if ($data = $rs->fetch_assoc()) {
     $ref = $data['referensi'];
     $tgl = $data['tgl'];
-    $c = $data['client'];
-    $karyawan = $data['updated_by'];
+    $customer_name = $data['customer_name'];
+    $karyawan = $data['karyawan_name'];
     $tipe_pembayaran = $data['tipe_pembayaran'];
+
+    $dp = $data['jumlah'];
+    $keterangan = $data['info'];
 }
 else {
     return;
 }
 
-// get total payment
-if ($aruskas_id == 0) {
-    $rs = $mysqli->query("SELECT * FROM aruskas WHERE transaction_id = $keluarbarang_id AND tipe = 'piutang' ORDER BY tgl DESC, id DESC LIMIT 0,1");
-}
-else {
-    $rs = $mysqli->query("SELECT * FROM aruskas WHERE id = $aruskas_id");
-}
-
-$data = $rs->fetch_assoc();
-$dp = $data['jumlah'];
-$keterangan = $data['info'];
-
-// get order
-/* $query_gorder = "select a.referensi, a.tgl, a.total, a.info, a.sales, b.kontak, b.kperson, b.alamat, b.notlp, b.notlp2, b.hp, c.matauang from keluarbarang a, kontak b, matauang c where a.client = b.kode AND a.matauang = c.kode AND a.referensi='$ref'";
-  $gorder       = $mysqli->query($query_gorder);
-  $row_gorder   = mysqli_fetch_assoc($gorder); */
-
-// get customer
-$query_cust = "SELECT * FROM kontak WHERE user_id = $c";
-$cust = $mysqli->query($query_cust);
-$row_cust = mysqli_fetch_assoc($cust);
-$total_cust = mysqli_num_rows($cust);
-
-// list detail barang
-$query_detbrg = "SELECT a.*, c.satuan, d.jenis, 
-                        b.kode, b.barang, b.color
-                FROM dkeluarbarang a 
-                JOIN barang b ON b.product_id = a.product_id 
-                JOIN satuan c ON c.satuan_id = a.satuan_id 
-                JOIN jenisbarang d ON d.brand_id = b.brand_id 
-                WHERE a.keluarbarang_id = $keluarbarang_id 
-                ORDER BY a.id";
-$detbrg = $mysqli->query($query_detbrg);
-$row_detbrg = mysqli_fetch_assoc($detbrg);
-$total_detbrg = mysqli_num_rows($detbrg);
-// get sales / kary
-    $query_gkary = "select kontak from kontak where user_id = $karyawan";
-    $gkary       = $mysqli->query($query_gkary);
-    $row_gkary   = mysqli_fetch_assoc($gkary);
 ?>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha512-rO2SXEKBSICa/AfyhEK5ZqWFCOok1rcgPYfGOqtX35OyiraBg6Xa4NnBJwXgpIRoXeWjcAmcQniMhp22htDc6g==" crossorigin="anonymous" />
+
 <style type="text/css" media="all">
     body {
-        margin:1px;
-        padding:0;
-        font-family:tahoma;
-        color:#000;
     }
+
     .divInvoice {
         /*border:solid 1px #030303;*/
 
@@ -104,7 +70,7 @@ $total_detbrg = mysqli_num_rows($detbrg);
 
 </style>
 
-<body>
+<body class="container">
     <div class="button-print no-print">
         <input type="button" value="Print" onclick="javascript:window.print()" />
     </div>
@@ -128,10 +94,10 @@ $total_detbrg = mysqli_num_rows($detbrg);
         </tr>
     </table>
     
-    <table width="100%" border="0" cellspacing="5" cellpadding="10" style="font-family:'Helvetica';font-size:16px">
+    <table class="table table-borderless mt-3">
         <tr>
             <td align="left" width="25%">
-               	<strong>Sudah terima dari</strong>
+               	<strong>Telah terima dari</strong>
             </td>
             
             <td align="center" width="10%">
@@ -139,20 +105,20 @@ $total_detbrg = mysqli_num_rows($detbrg);
             </td>
             
             <td align="left" style="border-bottom:solid 1px #000000">
-            	<em><?=$row_cust['kontak']?></em>
+            	<em><?=$customer_name?></em>
             </td>
         </tr>
         
         <tr>
             <td align="left">
-               	<strong>Uang sebesar</strong>
+               	<strong>Uang sejumlah</strong>
             </td>
             
             <td align="center">
             	<strong>:</strong>
             </td>
             
-            <td align="left" style="background-color:#CCC">
+            <td align="left" class="table-secondary border-bottom border-dark">
             	<em><?=terBilang($dp)?> Rupiah</em>
             </td>
         </tr>
@@ -196,7 +162,7 @@ $total_detbrg = mysqli_num_rows($detbrg);
                	<strong>Jumlah Rp.</strong>
             </td>
             
-            <td align="left" style="background-color:#CCC;">
+            <td align="left" class="table-secondary">
             	<em><?=number_format($dp,0,",",".")?></em>
             </td>
         </tr>

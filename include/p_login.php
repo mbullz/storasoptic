@@ -8,7 +8,9 @@ $pass   = $mysqli->real_escape_string($_POST['password']);
 		$rs2 = $mysqli->query("SELECT *, 
 								(SELECT kontak FROM kontak b WHERE b.user_id = a.branch_id) AS branch_name 
 							FROM kontak a 
-							WHERE kontak LIKE '$nik' 
+							WHERE jenis = 'T001' 
+							AND aktif = '1' 
+							AND kontak LIKE '$nik' 
 							AND 
 							(
 								pass LIKE '$pass' 

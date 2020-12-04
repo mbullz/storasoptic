@@ -263,6 +263,8 @@ input[type='checkbox'] {
 							<input name="per[]" type="checkbox" id="per[]" value="specialorder" <?php if(strstr($row_edit['akses'],'specialorder')) { ?>checked="checked"<?php } ?>/> Special Order<br />
 
 							<input name="per[]" type="checkbox" id="per[]" value="penjualanorder" <?php if(strstr($row_edit['akses'],'penjualanorder')) { ?>checked="checked"<?php } ?>/> Penjualan Order<br />
+
+							<input name="per[]" type="checkbox" id="per[]" value="kwitansi" <?php if(strstr($row_edit['akses'],'kwitansi')) { ?>checked="checked"<?php } ?>/> Kwitansi<br />
 						</td>
 
 						<td valign="top">

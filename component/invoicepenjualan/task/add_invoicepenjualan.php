@@ -671,9 +671,11 @@ table ul li {
         <td><em>*diisi</em></td>
         <td align="center" valign="top">&nbsp;</td>
         <td width="82%">
+            <!--
         	<label>
                 <input type="button" onclick="printKwitansi();" value="Cetak Kwitansi" />
             </label>
+            -->
             <label>
                 <input type="button" onclick="printInvoice();" value="Cetak Invoice" />
             </label>
