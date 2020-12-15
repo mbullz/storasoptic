@@ -1,6 +1,6 @@
 <?php
 
-	if (!$_SESSION['is_admin']) return;
+	if (!$_SESSION['is_admin'] || $_SESSION['role'] != 'Administrator') return;
 
 	global $mysqli, $branch_id;
 
