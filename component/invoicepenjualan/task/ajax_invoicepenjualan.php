@@ -296,6 +296,8 @@
 			$c = $_GET['c'];
 			$branch_id = $_GET['branch_id'] ?? -1;
 
+			$interval = 30 * 24;
+
 			$draw = $_GET['draw'];
 			$start = $_GET['start'];
 			$length = $_GET['length'];
@@ -376,7 +378,7 @@
 			$query = "SELECT COUNT(*) AS records_total 
 					FROM keluarbarang a 
 					WHERE a.referensi != '' 
-					AND a.tgl BETWEEN NOW() - INTERVAL 180 DAY AND NOW() 
+					AND a.tgl BETWEEN NOW() - INTERVAL $interval DAY AND NOW() 
 					$branch_filter";
 
 			$rs = $mysqli->query($query);
@@ -386,7 +388,7 @@
 			$query = "SELECT COUNT(*) AS records_filtered 
 					FROM keluarbarang a 
 					JOIN kontak b ON a.client = b.user_id 
-					WHERE a.tgl BETWEEN NOW() - INTERVAL 180 DAY AND NOW() 
+					WHERE a.tgl BETWEEN NOW() - INTERVAL $interval DAY AND NOW() 
 					$branch_filter 
 					$search_filter ";
 
@@ -401,7 +403,7 @@
 					FROM keluarbarang a 
 					JOIN kontak b ON a.client = b.user_id 
 					LEFT JOIN keluarbarang_order f ON a.keluarbarang_id = f.keluarbarang_id 
-					WHERE a.tgl BETWEEN NOW() - INTERVAL 180 DAY AND NOW() 
+					WHERE a.tgl BETWEEN NOW() - INTERVAL $interval DAY AND NOW() 
 					$branch_filter 
 					$search_filter 
 					ORDER BY $orderBy a.keluarbarang_id DESC 
