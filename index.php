@@ -252,7 +252,7 @@ include('include/function.php');
 		<li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu4, '');" onmouseout="this.className='navbutton';delayhidemenu();">Pembelian</li>
 		<?php } ?>
 
-		<?php if(strstr($_SESSION['akses'],'invoicepenjualan') OR strstr($_SESSION['akses'],'piutangjtempo') OR strstr($_SESSION['akses'],'pembayaranpiutang') OR strstr($_SESSION['akses'],'add_invoicepenjualan')) { ?>
+		<?php if(strstr($_SESSION['akses'],',invoicepenjualan,') OR strstr($_SESSION['akses'],'piutangjtempo') OR strstr($_SESSION['akses'],'pembayaranpiutang') OR strstr($_SESSION['akses'],'specialorder') OR strstr($_SESSION['akses'],'penjualanorder') OR strstr($_SESSION['akses'],'add_invoicepenjualan')) { ?>
 		<li class="navbutton" onmouseover="this.className='navbuttonover';dropdownmenu(this, event, menu5, '');" onmouseout="this.className='navbutton';delayhidemenu();">Penjualan</li>
 		<?php } ?>
 		

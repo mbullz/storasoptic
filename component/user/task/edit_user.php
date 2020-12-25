@@ -252,7 +252,7 @@ input[type='checkbox'] {
 						</td>
 
 						<td valign="top">
-							<input name="per[]" type="checkbox" id="per[]" value="invoicepenjualan" <?php if(strstr($row_edit['akses'],'invoicepenjualan')) { ?>checked="checked"<?php } ?>/> View Data<br />
+							<input name="per[]" type="checkbox" id="per[]" value="invoicepenjualan" <?php if(strstr($row_edit['akses'],',invoicepenjualan,')) { ?>checked="checked"<?php } ?>/> View Data<br />
 
 							<input name="per[]" type="checkbox" id="per[]" value="add_invoicepenjualan" <?php if(strstr($row_edit['akses'],'add_invoicepenjualan')) { ?>checked="checked"<?php } ?>/> Add Data<br />
 							

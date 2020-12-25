@@ -12,12 +12,9 @@
 	$jper= count($per);
 	
 	// gen per
-	$genper = "";
+	$genper = ",";
 	for($i = 0; $i < $jper; $i++) {
-		$genper .= $per[$i];
-		if($i < $jper-1) {
-			$genper .=",";	
-		}
+		$genper .= $per[$i] . ",";
 	}
 
 	//------

@@ -117,7 +117,7 @@ menu4[13]='<a href="quotes.php?validity=Expired"> - Expired Quotes</a>'
 menu4[14]='<a href="quotes.php?action=manage"> - Create New</a>'
 */
 var menu5=new Array()
-<?php if(strstr($_SESSION['akses'],'invoicepenjualan')) { ?>
+<?php if(strstr($_SESSION['akses'],',invoicepenjualan,')) { ?>
 menu5[0]='<a href="index-c-invoicepenjualan.pos"><img src="images/invoices.png" align="left" hspace="1" vspace="4"/> Data Penjualan</a>'
 <?php } ?>
 <?php if(strstr($_SESSION['akses'],'piutangjtempo')) { ?>
