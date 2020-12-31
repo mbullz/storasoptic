@@ -66,6 +66,10 @@ $dkeluarbarang_info = '';
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha512-rO2SXEKBSICa/AfyhEK5ZqWFCOok1rcgPYfGOqtX35OyiraBg6Xa4NnBJwXgpIRoXeWjcAmcQniMhp22htDc6g==" crossorigin="anonymous" />
 <style type="text/css" media="all">
+    body {
+        color: #000;
+    }
+
     .font-8 {
         font-size: 8px;
     }
@@ -75,20 +79,22 @@ $dkeluarbarang_info = '';
     }
 
     .font-12 {
-        font-size: 12px;
+        font-size: 13px;
     }
 
     .divInvoice tr td {
-        font-size: 12px;
+        font-size: 13px;
+        color: #000;
+    }
+
+    .divOrder tr th {
+        font-size: 13px;
+        color: #000;
+        -webkit-print-color-adjust: exact;
     }
 
     .garisbawah {
         border-bottom:solid 2px #000;	
-    }
-
-    .divOrder tr th {
-        font-size: 12px;
-        -webkit-print-color-adjust: exact;
     }
 
     .button-print {
@@ -110,7 +116,7 @@ $dkeluarbarang_info = '';
         }
 
         .table th {
-            background-color: #eee !important;
+            /*background-color: #eee !important;*/
         }
     }
     
