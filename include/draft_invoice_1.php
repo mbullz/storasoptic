@@ -74,8 +74,12 @@ $dkeluarbarang_info = '';
         font-size: 10px;
     }
 
+    .font-12 {
+        font-size: 12px;
+    }
+
     .divInvoice tr td {
-        font-size: 10px;
+        font-size: 12px;
     }
 
     .garisbawah {
@@ -83,7 +87,7 @@ $dkeluarbarang_info = '';
     }
 
     .divOrder tr th {
-        font-size: 11px;
+        font-size: 12px;
         -webkit-print-color-adjust: exact;
     }
 
@@ -117,7 +121,7 @@ $dkeluarbarang_info = '';
         <input type="button" class="btn btn-primary btn-sm" value="Print" onclick="javascript:window.print()" />
     </div>
 
-    <ul class="nav nav-tabs no-print" id="myTab" role="tablist">
+    <ul class="nav nav-tabs no-print mb-3" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
             <a class="nav-link active" id="invoice-besar-tab" data-toggle="tab" href="#invoice-besar" role="tab" aria-controls="invoice-besar" aria-selected="true">Invoice Besar</a>
         </li>
@@ -127,7 +131,7 @@ $dkeluarbarang_info = '';
     </ul>
 
     <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active mt-3" id="invoice-besar" role="tabpanel" aria-labelledby="invoice-besar-tab">
+    <div class="tab-pane fade show active" id="invoice-besar" role="tabpanel" aria-labelledby="invoice-besar-tab">
     
 
     <table class="divInvoice table table-borderless table-sm">
@@ -155,7 +159,7 @@ $dkeluarbarang_info = '';
         </tr>
     </table>
 
-    <table class="divInvoice table table-borderless table-sm">
+    <table class="divInvoice table table-borderless table-sm mt-4">
         <tbody>
             <tr>
                 <td width="1%" class="font-weight-bold text-nowrap pr-2">Customer</td>
@@ -174,7 +178,7 @@ $dkeluarbarang_info = '';
         </tbody>
     </table>
 
-    <table class="divOrder divInvoice table table-bordered table-sm">
+    <table class="divOrder divInvoice table table-bordered mt-4 mb-4">
         <tr class="table-secondary">
             <th width="5%" class="text-center">No</th>
             <th class="text-center">Deskripsi Barang</th>
@@ -215,7 +219,8 @@ $dkeluarbarang_info = '';
                             </td>
                             <td class="text-right">
                                 <div class="no-print">
-                                    <?php echo number_format($row_detbrg['harga'], 0, ',', '.'); ?>
+                                    <?php //echo number_format($row_detbrg['harga'], 0, ',', '.'); ?>
+                                    1
                                 </div>
                                 <div class="section-to-print">1</div>
                             </td>
@@ -239,7 +244,7 @@ $dkeluarbarang_info = '';
                                     } 
                                 ?>
                                 <div class="no-print">
-                                    <?php echo number_format($price, 0, ',', '.'); ?> Rupiah
+                                    <?php //echo number_format($price, 0, ',', '.'); ?>1 Rupiah
                                 </div>
                                 <div class="section-to-print">1 Rupiah</div>
                             </td>
@@ -252,13 +257,13 @@ $dkeluarbarang_info = '';
                     if ($i == 0) {
                         $ik_rsph = $row_detbrg['rSph'];
                         $ik_rcyl = $row_detbrg['rCyl'];
-                        $ik_raxis = $row_detbrg['rAxis'];
+                        $ik_raxis = $row_detbrg['rAxis'] / 100;
                         $ik_radd = $row_detbrg['rAdd'];
                         $ik_rpd = $row_detbrg['rPd'];
 
                         $ik_lsph = $row_detbrg['lSph'];
                         $ik_lcyl = $row_detbrg['lCyl'];
-                        $ik_laxis = $row_detbrg['lAxis'];
+                        $ik_laxis = $row_detbrg['lAxis'] / 100;
                         $ik_ladd = $row_detbrg['lAdd'];
                         $ik_lpd = $row_detbrg['lPd'];
                     }
@@ -290,7 +295,8 @@ $dkeluarbarang_info = '';
                             </td>
                             <td class="text-right">
                                 <div class="no-print">
-                                    <?php echo number_format($row_detbrg['harga_lensa'], 0, ',', '.'); ?>
+                                    <?php //echo number_format($row_detbrg['harga_lensa'], 0, ',', '.'); ?>
+                                    1
                                 </div>
                                 <div class="section-to-print">1</div>
                             </td>
@@ -306,7 +312,7 @@ $dkeluarbarang_info = '';
                                     $price -= (($row_detbrg['diskon_lensa']/100) * $price);
                                 ?>
                                 <div class="no-print">
-                                    <?php echo number_format($price, 0, ',', '.'); ?> Rupiah
+                                    <?php //echo number_format($price, 0, ',', '.'); ?>1 Rupiah
                                 </div>
                                 <div class="section-to-print">1 Rupiah</div>
                             </td>
@@ -347,7 +353,7 @@ $dkeluarbarang_info = '';
         </tr>
     </table>
 
-    <div class="row m-1 font-10">
+    <div class="row m-1 font-12">
         <div class="col-4 text-right font-weight-bold">Terbilang : </div>
         <div class="col-5 border-bottom font-italic">
             <?php
@@ -358,7 +364,7 @@ $dkeluarbarang_info = '';
         <div class="col-3">&nbsp;</div>
     </div>
 
-    <div class="row m-1 mt-3 font-10">
+    <div class="row m-1 mt-4 font-12">
         <div class="col-7">
             <p class="font-weight-bold m-0">Keterangan : </p>
             <p class="m-0 p-1"><?=nl2br($dkeluarbarang_info)?></p>
@@ -390,7 +396,7 @@ $dkeluarbarang_info = '';
             <div class="col-8 p-0 mt-1">
                 <p class="pl-1 mb-1">Tanggal : <?=$tgl?></p>
                 <p class="pl-1 mb-1">Frame : <?=$ik_barang ?? '-'?></p>
-                <p class="pl-1 mb-1">Lensa : <?=$ik_lensa ?? '-'?></p>
+                <p class="pl-1 mb-1">Keterangan : <?=$ik_lensa ?? '-'?></p>
                 <p class="p-1 m-0">
                     <table class="table table-bordered table-sm font-8">
                         <thead>
