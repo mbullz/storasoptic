@@ -173,10 +173,15 @@ function viewInfo(infoID) {
 						<td><?php echo 'Rp. ' . number_format($row_detail['jumlah']); ?></td>
 						<td><?php echo $row_detail['info']; ?></td>
 						<td>
-							<a href="index.php?component=<?=$c?>&amp;task=add&amp;id=<?=$row_data['keluarbarang_id']?>&amp;klasifikasi=<?=$row_detail['id']?>" title="Edit Data">
-								<img src="images/edit_icon.png" width="16px" height="16px" />
-							</a>
-							<img src="images/delete_icon.png" height="16px" width="16px" style="cursor: pointer;" onclick="deleteTransaction(<?=$row_detail['id']?>)" />
+							<?php if(strstr($_SESSION['akses'], "edit_pembayaranpiutang")): ?>
+								<a href="index.php?component=<?=$c?>&amp;task=add&amp;id=<?=$row_data['keluarbarang_id']?>&amp;klasifikasi=<?=$row_detail['id']?>" title="Edit Data">
+									<img src="images/edit_icon.png" width="16px" height="16px" />
+								</a>
+							<?php endif; ?>
+
+							<?php if(strstr($_SESSION['akses'], "delete_pembayaranpiutang")): ?>
+								<img src="images/delete_icon.png" height="16px" width="16px" style="cursor: pointer;" onclick="deleteTransaction(<?=$row_detail['id']?>)" />
+							<?php endif; ?>
 						</td>
 					</tr>
 					<?php } ?>

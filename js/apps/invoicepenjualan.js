@@ -31,6 +31,25 @@ function generateReport(){
     NewWindow(url + data,'name','900','600','yes');
 }
 
+function editTransaction()
+{
+	var oTable = $("#example").dataTable();
+	var id = 0;
+
+	if (oTable.$('input:checked').length != 1) {
+		alert('Pilih 1 data untuk di edit');
+		return;
+	}
+
+	oTable.$('input:checked').each(function()
+	{
+		id = $(this).val();
+	});
+
+			
+	window.location = "index-c-invoicepenjualan-t-add-" + id + ".pos";
+}
+
 function getInfo(row, tr, keluarbarang_id) {
 	var html = '';
 	$.ajax({
@@ -310,6 +329,7 @@ $(document).ready(function()
 				d.mode = "get_data";
 				d.c = $('#c').val();
 				d.branch_id = $('#branch_id').val();
+				d.q = $('#radioDataValue').val();
 			},
 		},
 		//deferRender: true,

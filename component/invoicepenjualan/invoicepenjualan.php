@@ -1,6 +1,25 @@
 <?php
 
-	global $mysqli, $c, $branch_id;
+	global $mysqli, $c, $q, $branch_id;
+
+	if ($q == '') {
+		$radioDataValue = 'now';
+
+		$radioDataNowChecked = 'checked';
+		$radioDataNowOnClick = '';
+
+		$radioDataAllChecked = '';
+		$radioDataAllOnClick = "javascript:window.location='index-c-invoicepenjualan-q-all.pos';";
+	}
+	else {
+		$radioDataValue = 'all';
+
+		$radioDataNowChecked = '';
+		$radioDataNowOnClick = "javascript:window.location='index-c-invoicepenjualan.pos';";
+
+		$radioDataAllChecked = 'Checked';
+		$radioDataAllOnClick = '';
+	}
 
 ?>
 
@@ -39,6 +58,20 @@
 
   <div class="tablebg">
 	<h1>Data Penjualan</h1>
+
+	<div class="form-group">
+		<input type="hidden" id="radioDataValue" value="<?=$radioDataValue?>" />
+		<label class="mr-2">Filter Data :</label>
+		<div class="btn-group btn-group-toggle" data-toggle="buttons">
+	  		<label class="btn btn-primary active">
+	    		<input type="radio" name="radioData" id="radioDataNow" onclick="<?=$radioDataNowOnClick?>" <?=$radioDataNowChecked?> > Tahun Berjalan
+	  		</label>
+	  
+	  		<label class="btn btn-primary">
+	    		<input type="radio" name="radioData" id="radioDataAll" onclick="<?=$radioDataAllOnClick?>" <?=$radioDataAllChecked?> > Semua Data
+	  		</label>
+		</div>
+	</div>
 	
 	<?php if(strstr($_SESSION['akses'],"add_".$c)) { ?>
 		<a href="index-c-<?php echo $c;?>-t-add.pos" class="btn btn-success btn-sm">Tambah Data</a>
@@ -74,9 +107,14 @@
 			</tr>
 		</tfoot>
 	</table>
+
+	<img src="images/arrow_ltr.png" />&nbsp;&nbsp;
+
+		<?php if(strstr($_SESSION['akses'],"edit_".$c)) { ?>
+			<button type="button" class="btn btn-warning btn-sm text-white" onclick="editTransaction()">Edit Data</button>
+		<?php } ?>
 	
 	  <?php if(strstr($_SESSION['akses'],"delete_".$c)) { ?>
-		  <img src="images/arrow_ltr.png" />&nbsp;&nbsp;
 		  <input name="D_ALL" type="submit" id="D_ALL" value="Hapus Sekaligus" class="btn btn-danger btn-sm" onclick="javascript:if(prompt('Kode Hapus :') == '0000') return confirm('Lanjutkan Proses ... ?'); else return false;" />
 	  <?php } ?>
 	  

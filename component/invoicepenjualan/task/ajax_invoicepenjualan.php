@@ -121,6 +121,23 @@
 			echo json_encode($arr);
 		break;
 
+		case "get_detail":
+			$id = $_GET['id'] ?? 0;
+			
+			$arr = array();
+			$rs = $mysqli->query("
+				SELECT * 
+				FROM dkeluarbarang a 
+				WHERE id = $id ");
+			
+			if ($data = mysqli_fetch_assoc($rs))
+			{
+				$arr = $data;
+			}
+			
+			echo json_encode($arr);
+		break;
+
 		case 'get_info':
 			$keluarbarang_id = $_GET['keluarbarang_id'];
 
@@ -295,8 +312,12 @@
 
 			$c = $_GET['c'];
 			$branch_id = $_GET['branch_id'] ?? -1;
+			$q = $_GET['q'];
 
-			$interval = 30 * 24;
+			if ($q == 'now')
+				$interval = date('z') + 1;
+			else
+				$interval = 30 * 60;
 
 			$draw = $_GET['draw'];
 			$start = $_GET['start'];

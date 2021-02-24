@@ -313,6 +313,57 @@ function barangBaru(value)
 	}
 }
 
+function editDetail(id) {
+	$('#div-button-add').hide();
+	$('#div-button-edit').show();
+	$('#edit_detail_id').val(id);
+
+	$.ajax({
+		url: 'component/invoicepenjualan/task/ajax_invoicepenjualan.php',
+		type: 'GET',
+		dataType: 'json',
+		data: 'mode=get_detail&id=' + id,
+		success: function(result)
+		{
+			$('#tipe').val(result.tipe).trigger('change');
+
+			$('#barang').val(result.product_id).trigger('change');
+			$('#qty').val(result.qty);
+			$('#hsatuan').val(result.harga);
+			$('#diskon').val(result.diskon);
+
+			$('#hargaLensa').val(result.harga_lensa);
+			$('#hargaLensaSO').val(result.harga_lensa);
+
+			if (result.special_order == '1') {
+				$('#checkSOLensa').prop('checked', 'checked');
+			}
+			else {
+				$('#checkSOLensa').prop('checked', false);
+			}
+			specialOrderLensa();
+
+			$('#detailInfo').val(result.info);
+			$('#infoSOLensa').val(result.info_special_order);
+
+			$('#qbrg').prop('disabled', true);
+			$('#barang').prop('disabled', true);
+			$('#searchLensa').prop('disabled', true);
+			$('#lensa').prop('disabled', true);
+		}
+	});
+}
+
+function submitEdit() {
+	var id = $('#edit_detail_id').val();
+	manageInvoiceJual('edit', id);
+}
+
+function cancelEdit() {
+	resetField();
+	calculate_grandtotal();
+}
+
 $(document).ready(function() {
 
 	$().ajaxStart(function() {
@@ -497,42 +548,7 @@ function onLoad()
 	$('.divSpecialOrderLensa').hide();
 	$('.divSpecialOrderSoftlens').hide();
 	
-	$("#dialog").dialog(
-	{
-		autoOpen: false,
-		modal: true,
-		show:
-		{
-			effect: "drop",
-			duration: 500
-		},
-		hide:
-		{
-			effect: "drop",
-			duration: 500
-		},
-		open: function()
-		{
-			jQuery('.ui-widget-overlay').bind('click',function()
-			{
-				jQuery('#dialog').dialog('close');
-			});
-		},
-		close: function()
-		{
-		},
-		buttons:
-		{
-			Cancel: function()
-			{
-				$("#dialog").dialog("close");
-			},
-			"Add": function()
-			{
-				addItem();
-			}
-		}
-	});
+	$('#div-button-edit').hide();
 }
 
 function manageInvoiceJual(t, v)
@@ -665,7 +681,8 @@ function resetField()
 	$('#barang option').eq(0).prop('selected', true);
 	$('#qty').val('0');
 	$('#hsatuan').val('0');
-	//$('#diskon').val('0');
+	var global_discount = $('#global_discount').val();
+	$('#diskon').val(global_discount);
 	$('#promo').val('0');
 	$('#subtotal').val('0');
 
@@ -673,6 +690,14 @@ function resetField()
 	$('#hargaLensaSO').val('0');
 	$('#searchLensa').val('');
 	refreshLensa();
+
+	$('#qbrg').prop('disabled', false);
+	$('#barang').prop('disabled', false);
+	$('#searchLensa').prop('disabled', false);
+	$('#lensa').prop('disabled', false);
+
+	$('#div-button-add').show();
+	$('#div-button-edit').hide();
 }
 
 function formatLensSize(lens) {

@@ -154,8 +154,13 @@ function viewInfo(infoID) {
               <br />
               &nbsp;<?php echo $row_detbrg['info'];?>&nbsp;</td>
             <td>
-              <a href="index-c-pembayaranpiutang-t-add-k-<?=$row_detbrg['id']?>-<?=$row_data['keluarbarang_id']?>.pos"><img src="images/edit_icon.png" height="16px" width="16px" /></a>
-              <img src="images/delete_icon.png" height="16px" width="16px" style="cursor: pointer;" onclick="deleteTransaction(<?=$row_detbrg['id']?>)" />
+              <?php if(strstr($_SESSION['akses'], "edit_pembayaranpiutang")): ?>
+                <a href="index-c-pembayaranpiutang-t-add-k-<?=$row_detbrg['id']?>-<?=$row_data['keluarbarang_id']?>.pos"><img src="images/edit_icon.png" height="16px" width="16px" /></a>
+              <?php endif; ?>
+
+              <?php if(strstr($_SESSION['akses'], "delete_pembayaranpiutang")): ?>
+                <img src="images/delete_icon.png" height="16px" width="16px" style="cursor: pointer;" onclick="deleteTransaction(<?=$row_detbrg['id']?>)" />
+              <?php endif; ?>
             </td>
           </tr>
           <?php }while($row_detbrg = mysqli_fetch_assoc($detbrg));?>

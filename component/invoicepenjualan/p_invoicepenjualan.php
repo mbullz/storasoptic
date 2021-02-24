@@ -97,7 +97,7 @@ $data = $_POST['data'] ?? [];
 $jdata = count($data);
 $stat = '';
 //Validasi
-if ($p <> 'mdelete' AND $p <> 'delete') {
+if ($p <> 'mdelete' AND $p <> 'delete' && $p != 'edit') {
 	
 	if (trim($tgl) == '') {
 		$error[] = '- Tanggal harus diisi !!!';
@@ -158,21 +158,27 @@ if (isset($error)) {
 
 			break;
 		case("edit"):
-			$query_exe = "update keluarbarang set client='$cus', sales='$sal', tgl='$tgl', jtempo='$jte', total=$total, info='$inf', matauang='$matauang_id', lunas='$lun' where keluarbarang_id = $keluarbarang_id ";
-			$exe = $mysqli->query($query_exe);
-			if ($exe) {
-				// adjustment stok
-				$adj_value = $_POST['stok'] - $_POST['qtyold'];
-				$stoknow = $adj_value + $qty;
-				// update stok
-				$updatestok = $mysqli->query("update stokbarang set qty='$stoknow' where id='$_POST[stokid]'");
-				//---
-				$stat = 'Data telah disimpan ...';
-				//echo "<center><img src=\"images/_info.png\" hspace=\"5\"/><b style=\"color:#1A4D80;\">Data telah disimpan ...</b></center>";
-			} else {
-				$stat = 'Data gagal disimpan, coba lagi !!!';
-				//echo "<center><img src=\"images/alert.gif\" hspace=\"5\"/><b style=\"color:#FA5121;\">Data gagal disimpan, coba lagi !!!</b></center>";
-			}
+			
+				$query_exe = "UPDATE keluarbarang SET 
+						ppn = $ppn,
+						total = $total, 
+						updated_by = $_SESSION[user_id], 
+						updated_at = NOW() 
+					WHERE keluarbarang_id = $keluarbarang_id 
+				";
+				$exe = $mysqli->query($query_exe);
+
+				if ($exe) {
+					$stat = 'Data berhasil disimpan';
+				} else {
+					$stat = 'Data gagal disimpan, coba lagi !!!';
+				}
+
+				echo json_encode(array(
+					'status'	=> 'success',
+					'message'	=> 'Success',
+				));
+
 			break;
 		case("barangkeluar"):
 			$product_id = $_POST['barang'];

@@ -103,12 +103,24 @@ if($tsk =='add' || $tsk == "add2") {
 	{
 		$valid = 'yes';
 	}
-}else if($tsk=='delete') {
+}
+else if ($tsk == 'delete') {
 	if($rid=='') {
 		$valid = 'no';	
 	}else{
 		$valid = 'yes';
 	}
+}
+else if ($tsk == 'edit') {
+	if ($sub <= 0 || $rid == '')
+		$valid = 'no';
+	else if($tipe != '3' && ($qty <= 0 || $hsa <= 0))
+		$valid = 'no';
+	else
+		$valid = 'yes';
+}
+else if ($tsk == 'refresh') {
+	$valid = 'yes';
 }
 // proses save
 if($valid=='yes')
@@ -264,9 +276,26 @@ if($valid=='yes')
 			$mysqli->query("INSERT INTO keluarbarang_discount(promo_id, keluarbarang_id, dkeluarbarang_id, discount, description, updated_by, updated_at) VALUES($promo_id, $keluarbarang_id, $dkeluarbarang_id, $promo, '$promo_name', $user_id, NOW())");
 		}
 
-	}else{
+	}
+	else if ($tsk == 'delete') {
 		$query_ajaxsave = "delete from dkeluarbarang where id='$rid'";
 		$ajax_save      = $mysqli->query($query_ajaxsave);
+	}
+	else if ($tsk == 'edit') {
+		$special_order = $tipe == '2' ? $sosoftlens : $solensa;
+
+		if ($special_order == '1') $hargaLensa = $hargaLensaSO;
+
+		$query = "UPDATE dkeluarbarang SET 
+						harga = $hsa, 
+						qty = $qty, 
+						subtotal = $sub, 
+						harga_lensa = $hargaLensa,
+						info = '$info', 
+						info_special_order = '$infoLensaSO' 
+					WHERE id = $rid ";
+
+		$mysqli->query($query);
 	}
 }
 
@@ -432,7 +461,11 @@ $total_detbrg = mysqli_num_rows($detbrg);
 	  	<?=number_format($row_detbrg['subtotal'], 0, ',', '.')?>
       </td>
 
-      <td align="center"><a href="javascript:void(0);" onclick="manageInvoiceJual('delete','<?php echo $row_detbrg['id'];?>');"><img src="images/close-icon.png" border="0" /> Hapus</a></td>
+      <td align="center">
+      	<a href="javascript:void(0);" onclick="editDetail('<?=$row_detbrg['id']?>')"><img src="images/edit_icon.png" height="16px" width="16px" border="0" /> Edit</a>
+      	<br /><br />
+      	<a href="javascript:void(0);" onclick="manageInvoiceJual('delete','<?php echo $row_detbrg['id'];?>');"><img src="images/close-icon.png" border="0" /> Hapus</a>
+      </td>
     </tr>
     
     <?php } ?>

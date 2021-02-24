@@ -11,31 +11,27 @@ global $branch_id;
 		$t = 'edit';
 		$keluarbarang_id = $_GET['id'];
 
-		$rs = $mysqli->query("SELECT * FROM keluarbarang WHERE keluarbarang_id = $keluarbarang_id");
+		$rs = $mysqli->query("SELECT a.*, b.kontak AS customer_name 
+                                FROM keluarbarang a 
+                                JOIN kontak b ON a.client = b.user_id 
+                                WHERE keluarbarang_id = $keluarbarang_id");
 		if ($data = $rs->fetch_assoc())
 		{
-			$po = $data['po'];
-			if (substr($po, 0, 1) == '8') $po_type = 'alat';
-			else if (substr($po, 0, 1) == '9') $po_type = 'intern';
-			else $po_type = 'purchasing';
-			$date = $data['date'];
-			$project_id = $data['project_id'];
-			$vendor_id = $data['vendor_id'];
-			$shipment_id = $data['shipment_id'];
-			$logistics_id = $data['logistics_id'];
-			$shipment_detail = $data['shipment_detail'];
-			$currency_id = $data['currency_id'];
-			$rates = $data['rates'];
-			$tdiskon = $data['tdiskon'];
-			$diskon = $data['diskon'];
-			$ppn = $data['ppn'];
-			$pph = $data['pph'];
-			$expense = $data['expense'];
-			$expense_info = $data['expense_info'];
-			$round = $data['round'];
-			$note = $data['note'];
-			$condition = $data['condition'];
-			$revisi = $data['revisi'];
+			$referensi = $data['referensi'];
+			
+			$tgl = $data['tgl'];
+			$client = $data['client'];
+			$sales = $data['sales'];
+
+            $matauang_id = 1;
+            $tdiskon = $data['tdiskon'];
+            $diskon = $data['diskon'];
+            $ppn = $data['ppn'];
+            $info = $data['info'];
+
+            $customer_name = $data['customer_name'];
+
+            $disabled = 'disabled';
 		}
 	}
 	else
@@ -62,6 +58,8 @@ global $branch_id;
 		$diskon = 0;
 		$ppn = 0;
 		$info = '';
+
+        $disabled = '';
 	}
 
 // get matauang
@@ -110,7 +108,7 @@ table ul li {
 </style>
 <link type="text/css" rel="stylesheet" href="css/jquery.wysiwyg.css" />
 
-<h1> Penjualan Baru</h1> 
+<h1> <?=$t=='edit'?'Edit':''?> Penjualan Baru</h1>
 
 <input type="hidden" id="global_discount" value="<?=($_SESSION['global_discount'] ?? 0)?>" />
 <input type="hidden" id="global_discount_lensa" value="<?=($_SESSION['global_discount_lensa'] ?? 0)?>" />
@@ -197,7 +195,7 @@ table ul li {
       <td width="14%" align="right">No. Invoice *</td>
       <td width="1%" align="center">:</td>
       <td width="85%">
-            <input name="invoice" type="text" id="invoice" value="<?=$referensi?>" size="15" maxlength="15">
+            <input name="invoice" type="text" id="invoice" value="<?=$referensi?>" size="15" maxlength="15" <?=$disabled?> />
 
         <?php if ($total_jkontak == 1) { ?>
             <input type="hidden" name="matauang" id="matauang" value="<?php echo $row_jkontak['kode']; ?>" />
@@ -214,7 +212,7 @@ table ul li {
       <td align="right">Tanggal *</td>
       <td align="center">:</td>
       <td>
-        <input name="tgl" type="text" class="calendar" id="tgl" value="<?=$tgl?>" size="10" maxlength="10"/>
+        <input name="tgl" type="text" class="calendar" id="tgl" value="<?=$tgl?>" size="10" maxlength="10" <?=$disabled?> />
       </td>
     </tr>
 
@@ -222,15 +220,15 @@ table ul li {
       <td align="right">Customer *</td>
       <td align="center">:</td>
 		<td>
-          	<input type="text" placeholder="Cari Customer" maxlength="15" size="15" onkeyup="refreshCustomer(this.value);" />
-        	<select name="customer" id="customer" onchange="onChangeCustomer()"></select>
+          	<input type="text" placeholder="Cari Customer" size="15" onkeyup="refreshCustomer(this.value);" <?=$disabled?> />
+        	<select name="customer" id="customer" onchange="onChangeCustomer()" <?=$disabled?> ></select>
 		</td>
     </tr>
 	<tr>
 		<td align="right">Sales</td>
 		<td align="center">:</td>
 		<td>
-				<select name="sales" id="sales">
+				<select name="sales" id="sales" <?=$disabled?> >
                 	<option value="0">-</option>
 					<?php
 						$rs3 = $mysqli->query("SELECT a.user_id,a.kontak 
@@ -592,9 +590,19 @@ table ul li {
                 </tr>
             </table>
             <br />
-			<a href="javascript:void(0);" onclick="manageInvoiceJual('add','');">
-				<img src="images/shopping_cart.png" border="0" height="24px" /> Add to Cart
-			</a>
+
+            <div id="div-button-add">
+                <a href="javascript:void(0);" onclick="manageInvoiceJual('add','');">
+                    <img src="images/shopping_cart.png" border="0" height="24px" /> Add to Cart
+                </a>
+            </div>
+
+            <div id="div-button-edit">
+                <input type="hidden" id="edit_detail_id" value="0" />
+                <input type="button" class="btn btn-primary btn-sm" onclick="submitEdit()" value="Edit" />
+                <input type="button" class="btn btn-danger btn-sm" onclick="cancelEdit()" value="Cancel" />
+            </div>
+			
             <br /><br />
         </div>
     </div>
@@ -615,7 +623,7 @@ table ul li {
             <ul>
                 <li style="display: table-row;">
                     <div style="display: table-cell; vertical-align: middle;">
-                        <input type="checkbox" name="checkOrder" />
+                        <input type="checkbox" name="checkOrder" <?=$disabled?> />
                     </div>
                     <div style="display: table-cell; vertical-align: middle;padding-top: 2px;">&nbsp;Penjualan Order</div>
                 </li>
@@ -640,7 +648,7 @@ table ul li {
         <td align="right">Pembayaran</td>
         <td align="center">:</td>
         <td>
-            <select name="carabayar_id">
+            <select name="carabayar_id" <?=$disabled?> >
 				<?php
                     $rs = $mysqli->query("SELECT * FROM carabayar ORDER BY carabayar_id ASC");
                     while ($data = mysqli_fetch_assoc($rs))
@@ -657,14 +665,14 @@ table ul li {
         <td align="right">Jumlah</td>
         <td align="center">:</td>
         <td>
-            <input type="text" name="uangMuka" id="uangMuka" size="20" maxlength="20" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" autocomplete="off" />
+            <input type="text" name="uangMuka" id="uangMuka" size="20" maxlength="20" value="0" onfocus="javascript:if(this.value=='0')this.value='';" onblur="javascript:if(this.value=='')this.value='0';" autocomplete="off" <?=$disabled?> />
         </td>
     </tr>
     <tr>
         <td align="right">Keterangan Pembayaran</td>
         <td align="center">:</td>
         <td>
-            <textarea rows="3" cols="50" name="textInfoPembayaran" id="textInfoPembayaran"></textarea>
+            <textarea rows="3" cols="50" name="textInfoPembayaran" id="textInfoPembayaran" <?=$disabled?> ></textarea>
         </td>
     </tr>
     <tr>
@@ -683,22 +691,37 @@ table ul li {
                 <input type="button" name="Save" id="Save" value="Simpan" onclick="formSubmit()">
             </label>
             <label style="margin-left: 10px;">
-                <input name="Cancel" type="reset" id="Cancel" onclick="javascript:location.reload();" value="Transaksi Baru"/>
+                <input name="Cancel" type="reset" id="Cancel" onclick="javascript:window.location='index-c-invoicepenjualan-t-add.pos';" value="Transaksi Baru"/>
             </label>
         </td>
     </tr>
   </table>
 </form>
 
-<div id="dialog">
-</div>
-
 <script>
+    <?php
+        if ($t == 'add') {
+            ?>
+                refreshCustomer('');
+            <?php
+        }
+    ?>
+
     refreshTipe();
     refreshBarang();
     refreshLensa();
-    refreshCustomer('');
 	
 	setTipePembayaran(1);
 	onLoad();
+
+    <?php
+        if ($t == 'edit') {
+            ?>
+                manageInvoiceJual('refresh','');
+                refreshCustomer('<?=$customer_name?>');
+                $('#sales').val(<?=$sales?>);
+                $('#ppn').val(<?=$ppn?>);
+            <?php
+        }
+    ?>
 </script>
