@@ -158,10 +158,22 @@ if (isset($error)) {
 
 			break;
 		case("edit"):
+
+				$rs = $mysqli->query("SELECT * FROM aruskas WHERE transaction_id = $keluarbarang_id");
+				$aruskasTotal = 0;
+				while ($data = $rs->fetch_assoc()) {
+					$aruskasTotal += $data['jumlah'];
+				}
+
+				if ($aruskasTotal < $total)
+					$lunas = 0;
+				else
+					$lunas = 1;
 			
 				$query_exe = "UPDATE keluarbarang SET 
 						ppn = $ppn,
 						total = $total, 
+						lunas = '$lunas', 
 						updated_by = $_SESSION[user_id], 
 						updated_at = NOW() 
 					WHERE keluarbarang_id = $keluarbarang_id 
